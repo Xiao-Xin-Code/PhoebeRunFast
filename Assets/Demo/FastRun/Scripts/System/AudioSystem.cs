@@ -7,9 +7,19 @@ public class AudioSystem : AbstractSystem
 {
 	protected override void OnInit()
 	{
-		
+
+
+		_bgmSource = new GameObject("BGM").AddComponent<AudioSource>();
 	}
 
+
+	protected override void OnDeinit()
+	{
+		base.OnDeinit();
+
+		if (_bgmSource != null) 
+			GameObject.Destroy(_bgmSource.gameObject);
+	}
 
 
 
@@ -48,6 +58,11 @@ public class AudioSystem : AbstractSystem
 	}
 
 
+	public void PlaySFX(AudioClip clip)
+	{
+		if (clip == null) return;
+		
+	}
 
 
 
