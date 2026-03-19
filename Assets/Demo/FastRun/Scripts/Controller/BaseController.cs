@@ -5,7 +5,8 @@ public abstract class BaseController : MonoBehaviour, IController
 {
 	protected abstract void Init();
 
-	protected virtual void Start(){
+	protected virtual void Start()
+	{
 		Init();
 	}
 
