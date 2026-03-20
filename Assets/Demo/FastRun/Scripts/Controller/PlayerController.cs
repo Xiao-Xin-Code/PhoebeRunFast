@@ -1,6 +1,11 @@
 using Frame;
+using QMVC;
+using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static Codice.Client.Common.EventTracking.TrackFeatureUseEvent.Features.DesktopGUI.Filters;
+
+
 
 public class PlayerController : BaseController
 {
@@ -15,10 +20,15 @@ public class PlayerController : BaseController
 
 		MonoService.Instance.AddUpdateListener(TouchInput);
 		MonoService.Instance.AddFixedUpdateListener(PlayerMove);
+
+		RoadSystem roadsystem = this.GetSystem<RoadSystem>();
+		roadsystem.playerController = this;
 	}
 
 	InputController control;
-	float speed = 1;
+	float speed = 5;
+	float space = 2;
+	float upForce = 10;
 
 	[SerializeField] GameObject commCollision;
 	[SerializeField] GameObject halfCollision;
@@ -28,13 +38,13 @@ public class PlayerController : BaseController
 	private void OnLeftPressed(InputAction.CallbackContext callback)
 	{
 		Debug.Log("Left");
-		transform.position -= new Vector3(1, 0, 0);
+		LeftMovement();
 	}
 
 	private void OnRightPressed(InputAction.CallbackContext callback)
 	{
 		Debug.Log("Right");
-		transform.position += new Vector3(1, 0, 0);
+		RightMovement();
 	}
 
 	private void OnUpPressed(InputAction.CallbackContext callback)
@@ -42,6 +52,9 @@ public class PlayerController : BaseController
 		Debug.Log("Up");
 		commCollision.SetActive(true);
 		halfCollision.SetActive(false);
+
+		GetComponent<Rigidbody>().velocity = new Vector3(GetComponent<Rigidbody>().velocity.x, 0, GetComponent<Rigidbody>().velocity.z);
+		GetComponent<Rigidbody>().AddForce(Vector3.up * upForce, ForceMode.Impulse);
 	}
 
 	private void OnDownPressed(InputAction.CallbackContext callback)
@@ -56,10 +69,10 @@ public class PlayerController : BaseController
 
 	private void PlayerMove()
 	{
-		transform.position += new Vector3(0, 0, 1) * speed * Time.deltaTime;
+		transform.position += transform.forward * speed * Time.deltaTime;
 	}
 
-
+	public bool isTurn;
 
 	bool isDrag = false;
 	Vector2 startPos;
@@ -93,8 +106,16 @@ public class PlayerController : BaseController
 					{
 						if (dur.x < -minDis) 
 						{
-							Debug.Log("Left");
-							transform.position -= new Vector3(1, 0, 0);
+							if (isTurn)
+							{
+								isTurn = false;
+								LeftTurn(90);
+							}
+							else
+							{
+								Debug.Log("Left");
+								LeftMovement();
+							}
 						}
 					}
 					else if (angle >= 60 && angle <= 120)
@@ -112,13 +133,46 @@ public class PlayerController : BaseController
 					{
 						if (dur.x > minDis)  
 						{
-							Debug.Log("Right");
-							transform.position += new Vector3(1, 0, 0);
+							if (isTurn)
+							{
+								isTurn = false;
+								RightTurn(90);
+							}
+							else
+							{
+								Debug.Log("Right");
+								RightMovement();
+							}
 						}
 					}
 				}
 			}
 		}
 	}
+
+
+
+
+	private void LeftMovement()
+	{
+		transform.position -= transform.right * space;
+	}
+
+	private void RightMovement()
+	{
+		transform.position += transform.right * space;
+	}
+
+	private void LeftTurn(float angle)
+	{
+		transform.Rotate(new Vector3(0, -angle, 0));
+	}
+
+	private void RightTurn(float angle)
+	{
+		transform.Rotate(new Vector3(0, angle, 0));
+	}
+
+
 
 }
