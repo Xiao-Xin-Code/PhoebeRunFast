@@ -15,16 +15,16 @@ public class RoadSystem : AbstractSystem
 
 
 		Debug.Log("Roads");
-		//pool = new MonoPool<RoadController>(Resources.Load<RoadController>("Prefabs/Roads/Road"));
+		pool = new MonoPool<RoadController>(Resources.Load<RoadController>("Prefabs/Roads/Road"));
 
 
-		//for (int i = 0; i < 3; i++)
-		//{
-		//	SpawnRoad();
-		//}
+		for (int i = 0; i < 3; i++)
+		{
+			SpawnRoad();
+		}
 
 
-		//MonoService.Instance.AddUpdateListener(RoadSystemRun);
+		MonoService.Instance.AddUpdateListener(RoadSystemRun);
 	}
 
 	MonoPool<RoadController> pool;
@@ -58,6 +58,8 @@ public class RoadSystem : AbstractSystem
 		road.transform.rotation = spawnRotation;
 		roadControllers.Add(road);
 		curSpawn = road.endPoint.position;
+
+		road.Spawn();
 	}
 
 

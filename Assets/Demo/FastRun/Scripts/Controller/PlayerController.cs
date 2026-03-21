@@ -27,7 +27,7 @@ public class PlayerController : BaseController
 
 	InputController control;
 	float speed = 5;
-	float space = 2;
+	float space = 1;
 	float upForce = 10;
 
 	[SerializeField] GameObject commCollision;
