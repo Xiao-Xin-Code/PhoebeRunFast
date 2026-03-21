@@ -83,7 +83,7 @@ public class RoadController : BaseController
 
 	public void Spawn()
 	{
-		int minSpace = 2;
+		int minSpace = 4;
 
 		NonRepeatRandom nonRepeat = new NonRepeatRandom(0, roadLines.Length - 1);
 		int[] lastFrags = new int[roadLines.Length];
