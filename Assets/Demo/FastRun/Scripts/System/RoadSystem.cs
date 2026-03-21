@@ -82,6 +82,7 @@ public class RoadSystem : AbstractSystem
 			if (distance > spawnDistance)
 			{
 				roadControllers.RemoveAt(0);
+				first.UnSpawn();
 				pool.Recycle(first);
 			}
 			else

@@ -148,6 +148,23 @@ public class RoadController : BaseController
 	}
 
 
+	public void UnSpawn()
+	{
+		for(int i = 0; i < roadLines.Length; i++)
+		{
+			for(int x = 0;x< roadLines[i].canTos.Length; x++)
+			{
+				roadLines[i].canTos[x] = true;
+			}
+			for (int x = 0; x < roadLines[i].obstacles.Length; x++)
+			{
+				if (roadLines[i].obstacles[x] != null)
+				{
+					Destroy(roadLines[i].obstacles[x].gameObject);
+				}
+			}
+		}
+	}
 
 
 	private bool CheckPlace(int curRow,int curCol)
