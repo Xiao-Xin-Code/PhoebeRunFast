@@ -239,6 +239,37 @@ Transform:
   - {fileID: 2120204563}
   m_Father: {fileID: 104606694}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &454465233
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 454465234}
+  m_Layer: 8
+  m_Name: groundcheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &454465234
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 454465233}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1482635594}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &561203642
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,6 +803,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commCollision: {fileID: 561203642}
   halfCollision: {fileID: 317170410}
+  lanes:
+  - -1
+  - 0
+  - 1
+  laneChangeSpeed: 15
+  baseSpeed: 8
+  maxSpeed: 20
+  speedIncreaseRate: 0.1
+  jumpForce: 10
+  gravity: 25
+  jumpBufferTime: 0.15
+  coyoteTime: 0.1
+  groundCheck: {fileID: 454465234}
+  groundCheckRadius: 0.3
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 512
   isTurn: 0
 --- !u!136 &1482635591
 CapsuleCollider:
@@ -861,6 +909,7 @@ Transform:
   m_Children:
   - {fileID: 561203643}
   - {fileID: 317170411}
+  - {fileID: 454465234}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &1482635595
