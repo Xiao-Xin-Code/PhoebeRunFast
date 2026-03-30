@@ -9,5 +9,6 @@ public class ObstacleController : BaseController
 	protected override void Init()
 	{
 		
+
 	}
 }
