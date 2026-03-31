@@ -1,6 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,33 +39,15 @@ public class DisplayRole : MonoBehaviour
 
     public string state = "Home";
 
+	public Image mask;
+	public Image load;
 
-	public Camera mainCamera;
-	private CircularMaskEffect maskEffect;
-
+	public TMP_Text appName;
 
 	void Start()
     {
-		mainCamera.clearFlags = CameraClearFlags.Depth;
-		mainCamera.cullingMask = 0;
-		mainCamera.depth = mainCamera.depth + 1;
-		mainCamera.orthographic = true;
-		mainCamera.orthographicSize = 1;
-
-
-		// 添加效果到相机
-		maskEffect = mainCamera.gameObject.AddComponent<CircularMaskEffect>();
-		// 执行转场
-		maskEffect.FullTransition(
-			onMiddle: () => {
-				Debug.Log("完全黑屏 - 可以切换场景");
-				//LoadScene();
-			},
-			onComplete: () => {
-				Debug.Log("转场完成");
-			}
-		).Play();
-
+		//mask.material.SetFloat("_Aspect", mask.rectTransform.rect.width / mask.rectTransform.rect.height);
+		Transitions();
 
 		cur = Instantiate(prefab);
         cur.gameObject.SetActive(true);
@@ -180,17 +163,32 @@ public class DisplayRole : MonoBehaviour
 		Sequence sequence = DOTween.Sequence();
 		if (open)
 		{
-			sequence.Append(setObj.DOScale(Vector3.one, 1f));
+			sequence.Append(setObj.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack));
 		}
 		else
 		{
-            sequence.Append(setObj.DOScale(new Vector3(0, 0, 1), 1f));
+			sequence.Append(setObj.DOScale(new Vector3(0, 0, 1), 0.15f).SetEase(Ease.InBack));
+		}
+		return sequence;
+	}
+
+	private Sequence TransitionSequence(bool open)
+	{
+		Sequence sequence = DOTween.Sequence();
+		if (open)
+		{
+			sequence.Append(DOTween.To(() => mask.material.GetFloat("_Radius"), x => mask.material.SetFloat("_Radius", x), 0, 0.4f).SetEase(Ease.InOutQuad));
+		}
+		else
+		{
+			sequence.Append(DOTween.To(() => mask.material.GetFloat("_Radius"), x => mask.material.SetFloat("_Radius", x), 1, 0.5f).SetEase(Ease.OutBack));
 		}
 		return sequence;
 	}
 
 
-    private void Btn1Pressed()
+
+	private void Btn1Pressed()
     {
         switch (state)
         {
@@ -235,8 +233,9 @@ public class DisplayRole : MonoBehaviour
 				break;
             case "Shop":
 				canvasGroup.interactable = false;
-				Sequence sequence = HomeSequence(false);
-                sequence.OnComplete(() => { shopObj.SetActive(true); canvasGroup.interactable = true; });
+				shopObj.SetActive(false);
+				Sequence sequence = HomeSequence(true);
+                sequence.OnComplete(() => { canvasGroup.interactable = true; });
                 sequence.Play();
 				state = "Home";
 				break;
@@ -285,4 +284,39 @@ public class DisplayRole : MonoBehaviour
         sequence.OnComplete(() => { setObj.gameObject.SetActive(false); canvasGroup.interactable = true; });
 		sequence.Play();
 	}
+
+
+	private void Transitions()
+	{
+		VertexGradient gradient = new VertexGradient();
+		gradient.topLeft = new Color(1, 1, 1, 0);
+		gradient.topRight = new Color(1, 1, 1, 0);
+		gradient.bottomLeft = new Color(1, 1, 1, 0);
+		gradient.bottomRight = new Color(1, 1, 1, 0);
+		appName.colorGradient = gradient;
+
+		Sequence mainSequence = DOTween.Sequence();
+		Sequence sequence1 = TransitionSequence(true);
+		sequence1.OnComplete(() => load.gameObject.SetActive(true));
+		Sequence sequence2 = DOTween.Sequence();
+		sequence2.Append(load.rectTransform.DOScale(Vector3.one, 0.25f).SetEase(Ease.OutBack));
+		sequence2.Append(DOTween.To(() => 0f, x =>
+		{
+			gradient.topLeft = new Color(1, 1, 1, x);
+			gradient.topRight = new Color(1, 1, 1, x);
+		}, 1, 1).SetEase(Ease.Linear).OnUpdate(() => appName.colorGradient = gradient));
+		sequence2.Append(DOTween.To(() => 0f, x =>
+		{
+			gradient.bottomLeft = new Color(1, 1, 1, x);
+			gradient.bottomRight = new Color(1, 1, 1, x);
+		}, 1, 1).SetEase(Ease.Linear).OnUpdate(() => appName.colorGradient = gradient));
+		sequence2.Append(load.rectTransform.DOScale(new Vector3(0, 0, 1), 0.15f).SetEase(Ease.InBack).OnComplete(() => load.gameObject.SetActive(false)));
+		Sequence sequence3 = TransitionSequence(false);
+		mainSequence.Append(sequence1);
+		mainSequence.Append(sequence2);
+		mainSequence.Append(sequence3);
+		mainSequence.OnComplete(() => mask.gameObject.SetActive(false));
+		mainSequence.Play();
+	}
+
 }
