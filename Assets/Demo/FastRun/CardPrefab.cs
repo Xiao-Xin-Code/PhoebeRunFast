@@ -19,66 +19,7 @@ public class CardPrefab : MonoBehaviour,
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
-		Sequence mainSequence = DOTween.Sequence();
-
-		Sequence shakeSequence = DOTween.Sequence();
-		shakeSequence.Append(transform.DOPunchRotation(
-		  new Vector3(0, 0, shakeStrength),
-		  shakeDuration,
-		  shakeVibrato,
-		  0.5f
-		));
-		shakeSequence.Join(transform.DOPunchScale(
-			new Vector3(0.1f, 0.1f, 0),
-			shakeDuration,
-			shakeVibrato,
-			0.5f
-		));
-
-		// 使用 DOTween 的 DoVirtual 实现 3D 翻转效果
-		Sequence flipSequence = DOTween.Sequence();
-
-		// 记录初始旋转
-		Vector3 startRot = transform.eulerAngles;
-		Vector3 midRot = startRot + new Vector3(0, 90, 0);
-		Vector3 endRot = startRot + new Vector3(0, 180, 0);
-
-		// 前半段：旋转到90度（中间状态）
-		flipSequence.Append(
-			transform.DORotate(midRot, flipDuration / 2).SetEase(Ease.InOutQuad)
-		);
-
-		// 在中间状态切换图片（背面→正面）
-		flipSequence.AppendCallback(() => {
-			cardBack.gameObject.SetActive(false);
-			cardFront.gameObject.SetActive(true);
-
-			// 设置卡片正面图片（根据稀有度）
-			//SetCardFrontImage();
-
-			// 播放翻转音效
-			//AudioManager.Play("CardFlip");
-		});
-
-		// 后半段：旋转到180度（完成）
-		flipSequence.Append(
-			transform.DORotate(endRot, flipDuration / 2).SetEase(Ease.InOutQuad)
-		);
-
-		// 翻转完成后回调
-		flipSequence.OnComplete(() => {
-			// 最终归位
-			transform.DORotate(startRot + new Vector3(0, 180, 0), 0);
-
-			// 触发揭开完成事件
-			//OnCardRevealed();
-		});
-
-
-		mainSequence.Append(shakeSequence);
-		mainSequence.Append(flipSequence);
-
-		mainSequence.Play();
+		ShakeAndFlip();
 	}
 
 	public void OnPointerUp(PointerEventData eventData)
@@ -86,15 +27,41 @@ public class CardPrefab : MonoBehaviour,
 		
 	}
 
-	// Start is called before the first frame update
-	void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	private void ShakeAndFlip()
+	{
+		Sequence mainSequence = DOTween.Sequence();
+		Sequence shakeSequence = ShakeSequence();
+		Sequence flipSequence = FlipSequence();
+		mainSequence.Append(shakeSequence);
+		mainSequence.Append(flipSequence);
+		mainSequence.Play();
+	}
+
+
+
+	Sequence ShakeSequence()
+	{
+		Sequence shakeSequence = DOTween.Sequence();
+		shakeSequence.Append(transform.DOShakePosition(2, shakeStrength, shakeVibrato).SetEase(Ease.Linear));
+		shakeSequence.Join(transform.DOShakeRotation(2, shakeStrength, shakeVibrato).SetEase(Ease.Linear));
+		shakeSequence.Join(transform.DOShakeScale(2, 0.1f, shakeVibrato).SetEase(Ease.Linear));
+		return shakeSequence;
+	}
+
+	Sequence FlipSequence()
+	{
+		Sequence flipSequence = DOTween.Sequence();
+		Vector3 midRot = new Vector3(0, 90, 0);
+		Vector3 endRot = new Vector3(0, 180, 0);
+
+		flipSequence.Append(transform.DORotate(midRot, flipDuration / 2).SetEase(Ease.InOutQuad));
+		flipSequence.AppendCallback(() =>
+		{
+			cardBack.gameObject.SetActive(false);
+			cardFront.gameObject.SetActive(true);
+		});
+		flipSequence.Append(transform.DORotate(endRot, flipDuration / 2).SetEase(Ease.InOutQuad));
+		return flipSequence;
+	}
 }
