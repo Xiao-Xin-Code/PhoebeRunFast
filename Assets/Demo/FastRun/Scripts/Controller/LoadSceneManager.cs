@@ -19,6 +19,18 @@ public class LoadSceneManager : MonoBehaviour
     }
 
 
+    IEnumerator LoadAsync()
+    {
+        yield return SceneManager.UnloadSceneAsync(2);
+        //卸载完成
+        //清除不再使用的数据
+
+        yield return SceneManager.LoadSceneAsync(1);
+        //加载完成
+        //加载新的数据
+	}
+
+
 
     private void LoadSceneAsync(int unLoad, int load)
     {

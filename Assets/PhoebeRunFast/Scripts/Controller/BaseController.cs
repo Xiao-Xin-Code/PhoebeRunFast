@@ -8,7 +8,7 @@ public abstract class BaseController : MonoBehaviour, IController
 		return PhoebeRunFast.Interface;
 	}
 
-	private void Start()
+	private void Awake()
 	{
 		OnInit();
 	}
