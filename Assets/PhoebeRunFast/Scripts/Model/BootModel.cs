@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using QMVC;
 using UnityEngine;
 
-public class GameModel : AbstractModel
+public class BootModel : AbstractModel
 {
-	public BindableProperty<Stage> Stage = new BindableProperty<Stage>(global::Stage.Home);
+	public Stage stage;
 
 
 	protected override void OnInit()

@@ -74,4 +74,19 @@ public class TransitionView : MonoBehaviour
 		iconText.colorGradient = gradient;
 	}
 
+	public void ProgressDelta(float delta)
+	{
+		if (gradient.topLeft.a < 1)
+		{
+			gradient.topLeft = new Color(1, 1, 1, gradient.topLeft.a + delta);
+			gradient.topRight = new Color(1, 1, 1, gradient.topRight.a + delta);
+		}
+		else
+		{
+			gradient.bottomLeft = new Color(1, 1, 1, gradient.bottomLeft.a + delta);
+			gradient.bottomRight = new Color(1, 1, 1, gradient.bottomRight.a + delta);
+		}
+		iconText.colorGradient = gradient;
+	}
+
 }

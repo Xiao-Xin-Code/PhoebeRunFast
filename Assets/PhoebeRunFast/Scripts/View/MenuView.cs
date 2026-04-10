@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class MenuView : MonoBehaviour
@@ -13,42 +14,31 @@ public class MenuView : MonoBehaviour
 	[SerializeField] Button lotteryBtn;
 
 
-	#region event
-
-	event Action onRolePressed;
-	event Action onBackPackPressed;
-	event Action onBattlePressed;
-	event Action onShopPressed;
-	event Action onLotteryPressed;
-
-	#endregion
-
-
 	#region Regiester
 
-	public void RegisterRolePressed(Action action)
+	public void RegisterRolePressed(UnityAction action)
 	{
-		onRolePressed += action;
+		roleBtn.onClick.AddListener(action);
 	}
 
-	public void RegisterBackPackPressed(Action action)
+	public void RegisterBackPackPressed(UnityAction action)
 	{
-		onBackPackPressed += action;
+		backpackBtn.onClick.AddListener(action);
 	}
 
-	public void RegisterBattlePressed(Action action)
+	public void RegisterBattlePressed(UnityAction action)
 	{
-		onBattlePressed += action;
+		battleBtn.onClick.AddListener(action);
 	}
 
-	public void RegisterShopPressed(Action action)
+	public void RegisterShopPressed(UnityAction action)
 	{
-		onShopPressed += action;
+		shopBtn.onClick.AddListener(action);
 	}
 
-	public void RegisterLotteryPressed(Action action)
+	public void RegisterLotteryPressed(UnityAction action)
 	{
-		onLotteryPressed += action;
+		lotteryBtn.onClick.AddListener(action);
 	}
 
 	#endregion
@@ -56,29 +46,29 @@ public class MenuView : MonoBehaviour
 
 	#region UnRegister
 
-	public void UnRegisterRolePressed(Action action)
+	public void UnRegisterRolePressed(UnityAction action)
 	{
-		onRolePressed -= action;
+		roleBtn.onClick.RemoveListener(action);
 	}
 
-	public void UnRegisterBackPackPressed(Action action)
+	public void UnRegisterBackPackPressed(UnityAction action)
 	{
-		onBackPackPressed -= action;
+		backpackBtn.onClick.RemoveListener(action);
 	}
 
-	public void UnRegisterBattlePressed(Action action)
+	public void UnRegisterBattlePressed(UnityAction action)
 	{
-		onBattlePressed -= action;
+		battleBtn.onClick.RemoveListener(action);
 	}
 
-	public void UnRegisterShopPressed(Action action)
+	public void UnRegisterShopPressed(UnityAction action)
 	{
-		onShopPressed -= action;
+		shopBtn.onClick.RemoveListener(action);
 	}
 
-	public void UnRegisterLotteryPressed(Action action)
+	public void UnRegisterLotteryPressed(UnityAction action)
 	{
-		onLotteryPressed -= action;
+		lotteryBtn.onClick.RemoveListener(action);
 	}
 
 	#endregion

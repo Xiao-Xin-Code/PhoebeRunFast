@@ -38,8 +38,11 @@ public class BindableProperty<T> : IBindableProperty<T>
 			if (value != null && Comparer(value, mValue)) return;
 
 			mOnBeforeValueChanged.Trigger(mValue);
+			T temp = mValue;
 			SetValue(value);
 			mOnValueChanged.Trigger(value);
+			mOnValueChangedWithOld.Trigger(temp, value);
+
 		}
 	}
 
@@ -52,6 +55,8 @@ public class BindableProperty<T> : IBindableProperty<T>
 	private EasyEvent<T> mOnValueChanged = new EasyEvent<T>();
 
 	private EasyEvent<T> mOnBeforeValueChanged = new EasyEvent<T>();
+
+	private EasyEvent<T,T> mOnValueChangedWithOld = new EasyEvent<T,T>();
 
 	public IUnRegister Register(Action<T> onValueChanged)
 	{
@@ -69,9 +74,16 @@ public class BindableProperty<T> : IBindableProperty<T>
 		return mOnBeforeValueChanged.Register(onBeforeValueChanged);
 	}
 
+	public IUnRegister RegisterWithOldValue(Action<T,T> onValueChangedWithOld)
+	{
+		return mOnValueChangedWithOld.Register(onValueChangedWithOld);
+	}
+
 	public void UnRegister(Action<T> onValueChanged) => mOnValueChanged.UnRegister(onValueChanged);
 
 	public void BeforeChangedUnRegister(Action<T> onBeforeValueChanged) => mOnBeforeValueChanged.UnRegister(onBeforeValueChanged);
+
+	public void ValueChangedWithOldUnRegister(Action<T, T> onValueChangedWithOld) => mOnValueChangedWithOld.UnRegister(onValueChangedWithOld);
 
 	IUnRegister IEasyEvent.Register(Action onEvent)
 	{
