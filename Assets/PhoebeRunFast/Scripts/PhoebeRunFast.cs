@@ -8,6 +8,5 @@ public class PhoebeRunFast : Architecture<PhoebeRunFast>
 		RegisterModel(new GameModel());
 
 		RegisterSystem(new StageSystem());
-
 	}
 }

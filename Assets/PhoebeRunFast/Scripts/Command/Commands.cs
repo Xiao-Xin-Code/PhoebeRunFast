@@ -114,3 +114,65 @@ public class UnLoadGameCommand : AbstractCommand
 	}
 }
 
+
+
+
+public class BackPackActiveCommand : AbstractCommand
+{
+	bool isActive;
+
+	public BackPackActiveCommand(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new BackPackActiveEvent(isActive));
+	}
+}
+
+public class BattleActiveCommand : AbstractCommand
+{
+	bool isActive;
+
+	public BattleActiveCommand(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new BattleActiveEvent(isActive));
+	}
+}
+
+public class ShopActiveCommand : AbstractCommand
+{
+	bool isActive;
+
+	public ShopActiveCommand(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new ShopActiveEvent(isActive));
+	}
+}
+
+public class LotteryActiveCommand : AbstractCommand
+{
+	bool isActive;
+
+	public LotteryActiveCommand(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new LotteryActiveEvent(isActive));
+	}
+}

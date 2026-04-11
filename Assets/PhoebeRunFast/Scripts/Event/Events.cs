@@ -76,3 +76,58 @@ public class UnLoadGameEvent
 {
 	public IEnumerator enumerator;
 }
+
+
+
+
+
+public class RoleMenuActiveEvent
+{
+	public bool isActive;
+
+	public RoleMenuActiveEvent(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+}
+
+public class BackPackActiveEvent
+{
+	public bool isActive;
+
+	public BackPackActiveEvent(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+}
+
+public class BattleActiveEvent
+{
+	public bool isActive;
+
+	public BattleActiveEvent(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+}
+
+public class ShopActiveEvent
+{
+	public bool isActive;
+
+	public ShopActiveEvent(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+
+}
+
+public class LotteryActiveEvent
+{
+	public bool isActive;
+
+	public LotteryActiveEvent(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+}
