@@ -29,33 +29,34 @@ public class MenuController : BaseController
 
 	private void OnRolePressed()
 	{
-		//TODO: 开启Role界面
 		Menu.Value = global::Menu.Role;
 	}
 
 
 	private void OnBackPackPressed()
 	{
-		//TODO: 开启背包界面
 		Menu.Value = global::Menu.BackPack;
 	}
 
 	private void OnBattlePressed()
 	{
-		//TODO: 开启战斗界面
-		//this.SendCommand(new OpenTransitionCommand(() => _gameModel.Stage.Value = Stage.Game));
-		Menu.Value = global::Menu.Battle;
+		if(Menu.Value == global::Menu.Battle)
+		{
+			this.SendCommand(new OpenTransitionCommand(() => _gameModel.Stage.Value = Stage.Game));
+		}
+		else
+		{
+			Menu.Value = global::Menu.Battle;
+		}
 	}
 
 	private void OnShopPressed()
 	{
-		//TODO: 开启商店界面
 		Menu.Value = global::Menu.Shop;
 	}
 
 	private void OnLotteryPressed()
 	{
-		//TODO: 开启抽奖界面
 		Menu.Value = global::Menu.Lottery;
 	}
 
