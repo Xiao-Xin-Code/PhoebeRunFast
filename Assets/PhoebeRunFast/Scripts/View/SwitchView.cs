@@ -46,13 +46,13 @@ public class SwitchView : MonoBehaviour
 		Sequence sequence = DOTween.Sequence();
 		if (isOpen)
 		{
-			sequence.Join(leftBtn.GetComponent<RectTransform>().DOAnchorPosX(50, 0));
-			sequence.Join(rightBtn.GetComponent<RectTransform>().DOAnchorPosX(-50, 0));
+			sequence.Join(leftBtn.GetComponent<RectTransform>().DOAnchorPosX(50, 0.25f));
+			sequence.Join(rightBtn.GetComponent<RectTransform>().DOAnchorPosX(-50, 0.25f));
 		}
 		else
 		{
-			sequence.Join(leftBtn.GetComponent<RectTransform>().DOAnchorPosX(-150, 0));
-			sequence.Join(rightBtn.GetComponent<RectTransform>().DOAnchorPosX(150, 0));
+			sequence.Join(leftBtn.GetComponent<RectTransform>().DOAnchorPosX(-150, 0.25f));
+			sequence.Join(rightBtn.GetComponent<RectTransform>().DOAnchorPosX(150, 0.25f));
 		}
 		return sequence;
 	}

@@ -12,8 +12,17 @@ public class GameController : BaseController
 
 		this.RegisterEvent<LoadGameEvent>(OnLoadGame);
 		this.RegisterEvent<UnLoadGameEvent>(OnUnLoadGame);
+		this.RegisterEvent<GameInitByTransitionOverEvent>(OnGameInitByTransitionOver);
 	}
 
+
+
+	private void OnGameInitByTransitionOver(GameInitByTransitionOverEvent evt)
+	{
+		//TODO: 初始可以是一个开场动画（实时）
+		//播放
+		Debug.Log("开场动画");
+	}
 
 
 	private void OnLoadGame(LoadGameEvent evt)
@@ -29,7 +38,11 @@ public class GameController : BaseController
 
 	IEnumerator GameAssetLoad()
 	{
-		yield return new WaitForSeconds(5f);
+		//TODO: 加载资源
+		//TODO: 初始一段环境
+		//TODO: 初始Player
+
+		yield return new WaitForSeconds(5f);		
 	}
 
 	IEnumerator GameAssetUnLoad()
@@ -38,5 +51,16 @@ public class GameController : BaseController
 	}
 
 
+
+
+	protected override void OnDeInit()
+	{
+		base.OnDeInit();
+
+		this.UnRegisterEvent<LoadGameEvent>(OnLoadGame);
+		this.UnRegisterEvent<UnLoadGameEvent>(OnUnLoadGame);
+		this.UnRegisterEvent<GameInitByTransitionOverEvent>(OnGameInitByTransitionOver);
+
+	}
 
 }

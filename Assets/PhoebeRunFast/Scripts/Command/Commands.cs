@@ -116,6 +116,36 @@ public class UnLoadGameCommand : AbstractCommand
 
 
 
+public class SettingActiveCommand : AbstractCommand
+{
+	bool isActive;
+
+	public SettingActiveCommand(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new SettingActiveEvent(isActive));
+	}
+}
+
+
+public class RoleMenuActiveCommand : AbstractCommand
+{
+	bool isActive;
+
+	public RoleMenuActiveCommand(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new RoleMenuActiveEvent(isActive));
+	}
+}
 
 public class BackPackActiveCommand : AbstractCommand
 {
@@ -174,5 +204,24 @@ public class LotteryActiveCommand : AbstractCommand
 	protected override void OnExecute()
 	{
 		this.SendEvent(new LotteryActiveEvent(isActive));
+	}
+}
+
+
+
+
+public class ToLeftRoleCommand : AbstractCommand
+{
+	protected override void OnExecute()
+	{
+		this.SendEvent<ToLeftRoleEvent>();
+	}
+}
+
+public class ToRightRoleCommand : AbstractCommand
+{
+	protected override void OnExecute()
+	{
+		this.SendEvent<ToRightRoleEvent>();
 	}
 }

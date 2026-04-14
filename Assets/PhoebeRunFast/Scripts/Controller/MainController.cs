@@ -12,8 +12,15 @@ public class MainController : BaseController
 
 		this.RegisterEvent<LoadMainEvent>(OnLoadMain);
 		this.RegisterEvent<UnLoadMainEvent>(OnUnLoadMain);
+		this.RegisterEvent<MainInitByTransitionOverEvent>(OnMainInitByTransitionOver);
 	}
 
+
+
+	private void OnMainInitByTransitionOver(MainInitByTransitionOverEvent evt)
+	{
+
+	}
 
 
 	private void OnLoadMain(LoadMainEvent evt)
@@ -30,14 +37,22 @@ public class MainController : BaseController
 
 	IEnumerator MainAssetLoad()
 	{
-		yield return new WaitForSeconds(5f);
+		yield return new WaitForSeconds(1f);
 	}
 
 	IEnumerator MainAssetUnLoad()
 	{
-		yield return new WaitForSeconds(5f);
+		yield return new WaitForSeconds(1f);
 	}
 
 
+	protected override void OnDeInit()
+	{
+		base.OnDeInit();
+
+		this.UnRegisterEvent<LoadMainEvent>(OnLoadMain);
+		this.UnRegisterEvent<UnLoadMainEvent>(OnUnLoadMain);
+		this.UnRegisterEvent<MainInitByTransitionOverEvent>(OnMainInitByTransitionOver);
+	}
 
 }

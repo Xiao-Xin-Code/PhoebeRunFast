@@ -13,11 +13,11 @@ public class PropertyView : BaseController
         Sequence sequence = DOTween.Sequence();
         if (isOpen)
         {
-			sequence.Append(rectTransform.DOAnchorPosY(0, -300));
+			sequence.Append(rectTransform.DOAnchorPosY(-400,0.25f));
 		}
         else
         {
-			sequence.Append(rectTransform.DOAnchorPosY(0, -1500));
+            sequence.Append(rectTransform.DOAnchorPosY(-1500, 0.25f));
 		}
 		return sequence;
     }
@@ -25,7 +25,7 @@ public class PropertyView : BaseController
 
     public void StateInit()
     {
-        rectTransform.anchoredPosition = new Vector2(0, -300);
+        rectTransform.anchoredPosition = new Vector2(0, -400);
 	}
 
 

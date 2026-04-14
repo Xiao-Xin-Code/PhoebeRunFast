@@ -34,7 +34,7 @@ public class StageSystem : AbstractSystem
 		}
 		Tween half2 = DOTween.To(() => cur, x => { cur = x; this.SendEvent(new UpdateProgressEvent(cur)); }, 1f, 1f);
 		yield return half2.WaitForCompletion();
-		this.SendEvent(new CloseTransitionEvent(null));
+		this.SendEvent(new CloseTransitionEvent(() => OnInitByLoadOver(newStage)));
 	}
 
 	IEnumerator UnLoad(Stage stage)
@@ -81,6 +81,28 @@ public class StageSystem : AbstractSystem
 				LoadGameEvent loadGameEvent = new LoadGameEvent();
 				this.SendEvent(loadGameEvent);
 				yield return loadGameEvent.enumerator;
+				break;
+			default:
+				break;
+		}
+	}
+
+	/// <summary>
+	/// 用于触发一些，需要加载完毕并在结束转场后才触发的
+	/// </summary>
+	/// <param name="stage"></param>
+	private void OnInitByLoadOver(Stage stage)
+	{
+		switch (stage)
+		{
+			case Stage.Home:
+				this.SendEvent<HomeInitByTransitionOverEvent>();
+				break;
+			case Stage.Main:
+				this.SendEvent<MainInitByTransitionOverEvent>();
+				break;
+			case Stage.Game:
+				this.SendEvent<GameInitByTransitionOverEvent>();
 				break;
 			default:
 				break;

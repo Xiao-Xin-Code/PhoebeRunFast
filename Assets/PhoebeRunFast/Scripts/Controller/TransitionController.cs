@@ -42,8 +42,11 @@ public class TransitionController : BaseController
 		Sequence iconSequence = _view.IconSequence(false);//图标
 		mainSequence.Append(iconSequence);
 		mainSequence.Append(maskSequence);
-		mainSequence.OnComplete(evt.action);
-        mainSequence.OnComplete(() => gameObject.SetActive(false));
+		mainSequence.OnComplete(() =>
+		{
+			evt.action?.Invoke();
+			gameObject.SetActive(false);
+		});
 		mainSequence.Play();
 	}
 

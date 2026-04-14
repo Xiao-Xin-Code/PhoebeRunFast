@@ -13,6 +13,8 @@ public class LotteryController : BaseController
 		base.OnInit();
 
 		this.RegisterEvent<LotteryActiveEvent>(OnLotteryActive);
+
+		gameObject.SetActive(false);
 	}
 	
 
@@ -32,6 +34,14 @@ public class LotteryController : BaseController
 		gameObject.SetActive(evt.isActive);
 	}
 
+
+
+	protected override void OnDeInit()
+	{
+		base.OnDeInit();
+
+		this.UnRegisterEvent<LotteryActiveEvent>(OnLotteryActive);
+	}
 
 
 }

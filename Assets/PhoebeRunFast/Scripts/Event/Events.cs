@@ -81,6 +81,37 @@ public class UnLoadGameEvent
 
 
 
+public class HomeInitByTransitionOverEvent
+{
+
+}
+
+public class MainInitByTransitionOverEvent
+{
+
+}
+
+public class GameInitByTransitionOverEvent
+{
+
+}
+
+
+
+
+
+
+public class SettingActiveEvent
+{
+	public bool isActive;
+
+	public SettingActiveEvent(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+}
+
+
 public class RoleMenuActiveEvent
 {
 	public bool isActive;
@@ -130,4 +161,19 @@ public class LotteryActiveEvent
 	{
 		this.isActive = isActive;
 	}
+}
+
+
+
+
+
+public class ToLeftRoleEvent
+{
+
+}
+
+
+public class ToRightRoleEvent
+{
+
 }

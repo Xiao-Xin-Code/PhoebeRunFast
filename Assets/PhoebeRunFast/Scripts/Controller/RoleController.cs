@@ -26,6 +26,8 @@ public class RoleController : BaseController
 		characterPool = new MonoPool<CharacterController>(prefab, poolParent, 2);
 
 		this.RegisterEvent<RoleMenuActiveEvent>(OnRoleMenuActive);
+		this.RegisterEvent<ToLeftRoleEvent>(OnToLeftRole);
+		this.RegisterEvent<ToRightRoleEvent>(OnToRightRole);
 	}
 
 	private void Start()
@@ -69,25 +71,62 @@ public class RoleController : BaseController
 
 
 
-
-
-
-	private void ToLeft()
+	private void OnToLeftRole(ToLeftRoleEvent evt)
 	{
 		if (_entity.isBusy) return;
 		_entity.isBusy = true;
-
 		CharacterController leftCharacter = characterPool.Get();
-		//设置归属的形象
-
 		leftCharacter.transform.position = _view.Left.position;
-		
+		CharacterController temp = character;
+		character = leftCharacter;
+		Sequence mainSequence = DOTween.Sequence();
+		Sequence oldSequence = DOTween.Sequence();
+		oldSequence.Append(temp.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
+		oldSequence.Join(RoleMenuSequence(false));
+		oldSequence.Append(temp.transform.DOMoveX(_view.Right.position.x, 1f));
+		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		Sequence newSequence = DOTween.Sequence();
+		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
+		newSequence.Append(leftCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
+		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		newSequence.Join(RoleMenuSequence(true));
+		mainSequence.Join(oldSequence);
+		mainSequence.Join(newSequence);
+		mainSequence.OnComplete(() =>
+		{
+			characterPool.Recycle(temp);
+			_entity.isBusy = false;
+		});
+		mainSequence.Play();
+	}
 
-		//界面变化
-
-		//character 移动
-
-		//界面恢复
+	private void OnToRightRole(ToRightRoleEvent evt)
+	{
+		if (_entity.isBusy) return;
+		_entity.isBusy = true;
+		CharacterController rightCharacter = characterPool.Get();
+		rightCharacter.transform.position = _view.Right.position;
+		CharacterController temp = character;
+		character = rightCharacter;
+		Sequence mainSequence = DOTween.Sequence();
+		Sequence oldSequence = DOTween.Sequence();
+		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
+		oldSequence.Join(RoleMenuSequence(false));
+		oldSequence.Append(temp.transform.DOMoveX(_view.Left.position.x, 1f));
+		oldSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		Sequence newSequence = DOTween.Sequence();
+		newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
+		newSequence.Append(rightCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
+		newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		newSequence.Join(RoleMenuSequence(true));
+		mainSequence.Join(oldSequence);
+		mainSequence.Join(newSequence);
+		mainSequence.OnComplete(() =>
+		{
+			characterPool.Recycle(temp);
+			_entity.isBusy = false;
+		});
+		mainSequence.Play();
 	}
 
 
@@ -114,17 +153,4 @@ public class RoleController : BaseController
 
 
 
-public class RoleMenuActiveCommand : AbstractCommand
-{
-	bool isActive;
 
-	public RoleMenuActiveCommand(bool isActive)
-	{
-		this.isActive = isActive;
-	}
-
-	protected override void OnExecute()
-	{
-		this.SendEvent(new RoleMenuActiveEvent(isActive));
-	}
-}
