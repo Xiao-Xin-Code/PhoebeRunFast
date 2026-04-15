@@ -225,3 +225,13 @@ public class ToRightRoleCommand : AbstractCommand
 		this.SendEvent<ToRightRoleEvent>();
 	}
 }
+
+
+
+public class BirdUpCommand : AbstractCommand
+{
+	protected override void OnExecute()
+	{
+		this.SendEvent<BirdUpEvent>();
+	}
+}

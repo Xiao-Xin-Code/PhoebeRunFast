@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Frame;
 using QMVC;
 using UnityEngine;
 
@@ -11,7 +12,8 @@ public class BootController : BaseController
 	protected override void OnInit()
 	{
 		base.OnInit();
-		
+
+		MonoService.Instance.RemoveAllUpdateListeners();
 	}
 
 	private void Start()

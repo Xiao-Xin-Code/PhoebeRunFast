@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -51,12 +52,13 @@ public class MonoPool<T> : IPool<T> where T : MonoBehaviour
         }
     }
 
-    public void RecycleAll()
+    public void RecycleAll(Action<T> onRecycle = null)
     {
         var itemsToRecycle = new HashSet<T>(_activeItems);
         _activeItems.Clear();
         foreach (var item in itemsToRecycle) 
         {
+            onRecycle?.Invoke(item);
             item.gameObject.SetActive(false);
             item.transform.SetParent(_parent);
             _pool.Enqueue(item);

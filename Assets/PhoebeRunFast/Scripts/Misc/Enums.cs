@@ -13,3 +13,11 @@ public enum Menu
 	Shop = 4,
 	Lottery = 5
 }
+
+
+public enum FlyBirdState
+{
+	Ready,
+	Run,
+	Over
+}
