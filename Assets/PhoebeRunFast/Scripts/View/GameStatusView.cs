@@ -3,13 +3,14 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 
 /// <summary>
-/// 暂停视图
+/// 游戏状态视图
 /// </summary>
-public class PauseView : MonoBehaviour
+public class GameStatusView : MonoBehaviour
 {
     [SerializeField] Button pauseButton;
     [SerializeField] GameObject pauseMenu;
     [SerializeField] Button resumeButton;
+    [SerializeField] Text coinText;
 
     #region Register
 
@@ -76,5 +77,14 @@ public class PauseView : MonoBehaviour
                 pauseMenu.SetActive(false);
                 break;
         }
+    }
+
+    /// <summary>
+    /// 更新金币显示
+    /// </summary>
+    /// <param name="coinCount">金币数量</param>
+    public void UpdateCoinDisplay(int coinCount)
+    {
+        coinText.text = coinCount.ToString();
     }
 }

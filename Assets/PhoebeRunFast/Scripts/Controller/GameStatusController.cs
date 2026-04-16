@@ -2,11 +2,11 @@ using QMVC;
 using UnityEngine;
 
 /// <summary>
-/// 暂停控制器
+/// 游戏状态控制器
 /// </summary>
-public class PauseController : BaseController
+public class GameStatusController : BaseController
 {
-    [SerializeField] PauseView _view;
+    [SerializeField] GameStatusView _view;
 
     /// <summary>
     /// 初始化方法
