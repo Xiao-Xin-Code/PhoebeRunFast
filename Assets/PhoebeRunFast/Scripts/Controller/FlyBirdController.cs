@@ -4,8 +4,14 @@ using Frame;
 using QMVC;
 using UnityEngine;
 
+/// <summary>
+/// 飞行小鸟控制器
+/// </summary>
 public class FlyBirdController : BaseController
 {
+	/// <summary>
+	/// 管道对象池
+	/// </summary>
 	MonoPool<PipeController> pipePool;
 
 	[SerializeField] PipeController pipe;
@@ -14,20 +20,28 @@ public class FlyBirdController : BaseController
 
 	FlyBirdEntity _entity;
 
-
 	[SerializeField] BirdController bird;
 
-
+	/// <summary>
+	/// 获取管道对象池
+	/// </summary>
 	public MonoPool<PipeController> PipePool => pipePool;
 
+	/// <summary>
+	/// 获取管道回收点
+	/// </summary>
 	public RectTransform PipeRecyclePoint => _view.PipeRecyclePoint;
 
+	/// <summary>
+	/// 飞行小鸟状态
+	/// </summary>
 	public FlyBirdState FlyBirdState { get => _entity.FlyBirdState.Value; set => _entity.FlyBirdState.Value = value; }
-
 
 	Coroutine coroutine;
 	
-
+	/// <summary>
+	/// 初始化方法
+	/// </summary>
 	protected override void OnInit()
 	{
 		base.OnInit();
@@ -37,16 +51,17 @@ public class FlyBirdController : BaseController
 
 		_entity = new FlyBirdEntity();
 
+		// 注册状态变化事件
 		_entity.FlyBirdState.Register(OnFlyBirdStateChanged);
 
-
-
+		// 注册输入事件
 		this.RegisterEvent<BirdInputDownEvent>(OnStartInput);
-		
-
 	}
 
-
+	/// <summary>
+	/// 生成管道
+	/// </summary>
+	/// <returns>协程</returns>
 	IEnumerator PipeSpawn()
 	{
 		while (true)
@@ -60,11 +75,12 @@ public class FlyBirdController : BaseController
 		}
 	}
 
-
-
+	/// <summary>
+	/// 飞行小鸟状态变化事件
+	/// </summary>
+	/// <param name="newState">新状态</param>
 	private void OnFlyBirdStateChanged(FlyBirdState newState)
 	{
-
 		switch (newState)
 		{
 			case FlyBirdState.Ready:
@@ -92,16 +108,16 @@ public class FlyBirdController : BaseController
 				MonoService.Instance.StopCoroutine(coroutine);
 				pipePool.RecycleAll(OnPipeRectcle);
 				_entity.FlyBirdState.Value = FlyBirdState.Ready;
-
-
 				break;
 			default:
 				break;
 		}
 	}
 
-
-
+	/// <summary>
+	/// 开始输入事件
+	/// </summary>
+	/// <param name="evt">事件参数</param>
 	private void OnStartInput(BirdInputDownEvent evt)
 	{
 		if(_entity.FlyBirdState.Value == FlyBirdState.Ready)
@@ -110,14 +126,18 @@ public class FlyBirdController : BaseController
 		}
 	}
 
-
-
+	/// <summary>
+	/// 管道回收
+	/// </summary>
+	/// <param name="pipe">管道控制器</param>
 	private void OnPipeRectcle(PipeController pipe)
 	{
 		MonoService.Instance.RemoveUpdateListener(pipe.OnPipeMove);
 	}
 
-
+	/// <summary>
+	/// 反初始化方法
+	/// </summary>
 	protected override void OnDeInit()
 	{
 		base.OnDeInit();

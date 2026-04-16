@@ -2,6 +2,9 @@ using System.Collections;
 using DG.Tweening;
 using QMVC;
 
+/// <summary>
+/// 打开转场命令
+/// </summary>
 public class OpenTransitionCommand : AbstractCommand
 {
 	private TweenCallback action;
@@ -17,6 +20,9 @@ public class OpenTransitionCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 关闭转场命令
+/// </summary>
 public class CloseTransitionCommand : AbstractCommand
 {
 	private TweenCallback action;
@@ -32,6 +38,9 @@ public class CloseTransitionCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 更新进度命令
+/// </summary>
 public class UpdateProgressCommand : AbstractCommand
 {
 	private float progress;
@@ -47,6 +56,9 @@ public class UpdateProgressCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 更新进度增量命令
+/// </summary>
 public class UpdateProgressDeltaCommand : AbstractCommand
 {
 	private float delta;
@@ -62,7 +74,9 @@ public class UpdateProgressDeltaCommand : AbstractCommand
 	}
 }
 
-
+/// <summary>
+/// 加载主页命令
+/// </summary>
 public class LoadHomeCommand : AbstractCommand<IEnumerator>
 {
 	protected override IEnumerator OnExecute()
@@ -70,10 +84,12 @@ public class LoadHomeCommand : AbstractCommand<IEnumerator>
 		LoadHomeEvent loadHomeEvent = new LoadHomeEvent();
 		this.SendEvent<LoadHomeEvent>();
 		yield return loadHomeEvent.enumerator;
-		//return loadHomeEvent.enumerator;
 	}
 }
 
+/// <summary>
+/// 卸载主页命令
+/// </summary>
 public class UnLoadHomeCommand : AbstractCommand
 {
 	protected override void OnExecute()
@@ -82,6 +98,9 @@ public class UnLoadHomeCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 加载主界面命令
+/// </summary>
 public class LoadMainCommand : AbstractCommand
 {
 	protected override void OnExecute()
@@ -90,6 +109,9 @@ public class LoadMainCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 卸载主界面命令
+/// </summary>
 public class UnLoadMainCommand : AbstractCommand
 {
 	protected override void OnExecute()
@@ -98,6 +120,9 @@ public class UnLoadMainCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 加载游戏命令
+/// </summary>
 public class LoadGameCommand : AbstractCommand
 {
 	protected override void OnExecute()
@@ -106,6 +131,9 @@ public class LoadGameCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 卸载游戏命令
+/// </summary>
 public class UnLoadGameCommand : AbstractCommand
 {
 	protected override void OnExecute()
@@ -114,8 +142,9 @@ public class UnLoadGameCommand : AbstractCommand
 	}
 }
 
-
-
+/// <summary>
+/// 设置激活命令
+/// </summary>
 public class SettingActiveCommand : AbstractCommand
 {
 	bool isActive;
@@ -131,7 +160,9 @@ public class SettingActiveCommand : AbstractCommand
 	}
 }
 
-
+/// <summary>
+/// 角色菜单激活命令
+/// </summary>
 public class RoleMenuActiveCommand : AbstractCommand
 {
 	bool isActive;
@@ -147,6 +178,9 @@ public class RoleMenuActiveCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 背包激活命令
+/// </summary>
 public class BackPackActiveCommand : AbstractCommand
 {
 	bool isActive;
@@ -162,6 +196,9 @@ public class BackPackActiveCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 战斗激活命令
+/// </summary>
 public class BattleActiveCommand : AbstractCommand
 {
 	bool isActive;
@@ -177,6 +214,9 @@ public class BattleActiveCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 商店激活命令
+/// </summary>
 public class ShopActiveCommand : AbstractCommand
 {
 	bool isActive;
@@ -192,6 +232,9 @@ public class ShopActiveCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 抽奖激活命令
+/// </summary>
 public class LotteryActiveCommand : AbstractCommand
 {
 	bool isActive;
@@ -201,15 +244,18 @@ public class LotteryActiveCommand : AbstractCommand
 		this.isActive = isActive;
 	}
 
+	/// <summary>
+	/// 执行命令
+	/// </summary>
 	protected override void OnExecute()
 	{
 		this.SendEvent(new LotteryActiveEvent(isActive));
 	}
 }
 
-
-
-
+/// <summary>
+/// 切换到左侧角色命令
+/// </summary>
 public class ToLeftRoleCommand : AbstractCommand
 {
 	protected override void OnExecute()
@@ -218,6 +264,9 @@ public class ToLeftRoleCommand : AbstractCommand
 	}
 }
 
+/// <summary>
+/// 切换到右侧角色命令
+/// </summary>
 public class ToRightRoleCommand : AbstractCommand
 {
 	protected override void OnExecute()
@@ -226,8 +275,9 @@ public class ToRightRoleCommand : AbstractCommand
 	}
 }
 
-
-
+/// <summary>
+/// 小鸟上升命令
+/// </summary>
 public class BirdUpCommand : AbstractCommand
 {
 	protected override void OnExecute()

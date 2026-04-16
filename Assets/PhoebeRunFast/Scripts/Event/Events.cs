@@ -3,6 +3,9 @@
 using System.Collections;
 using DG.Tweening;
 
+/// <summary>
+/// 打开转场事件
+/// </summary>
 public class OpenTransitionEvent
 {
 	public TweenCallback action;
@@ -13,6 +16,9 @@ public class OpenTransitionEvent
 	}
 }
 
+/// <summary>
+/// 关闭转场事件
+/// </summary>
 public class CloseTransitionEvent
 {
 	public TweenCallback action;
@@ -23,6 +29,9 @@ public class CloseTransitionEvent
 	}
 }
 
+/// <summary>
+/// 更新进度事件
+/// </summary>
 public class UpdateProgressEvent
 {
 	public float progress;
@@ -33,6 +42,9 @@ public class UpdateProgressEvent
 	}
 }
 
+/// <summary>
+/// 更新进度增量事件
+/// </summary>
 public class UpdateProgressDeltaEvent
 {
 	public float delta;
@@ -43,64 +55,81 @@ public class UpdateProgressDeltaEvent
 	}
 }
 
-
-
+/// <summary>
+/// 加载主页事件
+/// </summary>
 public class LoadHomeEvent
 {
 	public IEnumerator enumerator;
 }
 
+/// <summary>
+/// 卸载主页事件
+/// </summary>
 public class UnLoadHomeEvent
 {
 	public IEnumerator enumerator;
 }
 
-
+/// <summary>
+/// 加载主界面事件
+/// </summary>
 public class LoadMainEvent
 {
 	public IEnumerator enumerator;
 }
 
+/// <summary>
+/// 卸载主界面事件
+/// </summary>
 public class UnLoadMainEvent
 {
 	public IEnumerator enumerator;
 }
 
-
+/// <summary>
+/// 加载游戏事件
+/// </summary>
 public class LoadGameEvent
 {
 	public IEnumerator enumerator;
 }
 
+/// <summary>
+/// 卸载游戏事件
+/// </summary>
 public class UnLoadGameEvent
 {
 	public IEnumerator enumerator;
 }
 
-
-
-
-
+/// <summary>
+/// 主页初始化完成事件
+/// </summary>
 public class HomeInitByTransitionOverEvent
 {
 
 }
 
+/// <summary>
+/// 主界面初始化完成事件
+/// </summary>
 public class MainInitByTransitionOverEvent
 {
 
 }
 
+/// <summary>
+/// 游戏初始化完成事件
+/// </summary>
 public class GameInitByTransitionOverEvent
 {
 
 }
 
-
-
-
-
-
+/// <summary>
+/// 设置激活事件
+/// </summary>
 public class SettingActiveEvent
 {
 	public bool isActive;
@@ -111,7 +140,9 @@ public class SettingActiveEvent
 	}
 }
 
-
+/// <summary>
+/// 角色菜单激活事件
+/// </summary>
 public class RoleMenuActiveEvent
 {
 	public bool isActive;
@@ -122,6 +153,9 @@ public class RoleMenuActiveEvent
 	}
 }
 
+/// <summary>
+/// 背包激活事件
+/// </summary>
 public class BackPackActiveEvent
 {
 	public bool isActive;
@@ -132,6 +166,9 @@ public class BackPackActiveEvent
 	}
 }
 
+/// <summary>
+/// 战斗激活事件
+/// </summary>
 public class BattleActiveEvent
 {
 	public bool isActive;
@@ -142,6 +179,9 @@ public class BattleActiveEvent
 	}
 }
 
+/// <summary>
+/// 商店激活事件
+/// </summary>
 public class ShopActiveEvent
 {
 	public bool isActive;
@@ -153,6 +193,9 @@ public class ShopActiveEvent
 
 }
 
+/// <summary>
+/// 抽奖激活事件
+/// </summary>
 public class LotteryActiveEvent
 {
 	public bool isActive;
@@ -163,23 +206,25 @@ public class LotteryActiveEvent
 	}
 }
 
-
-
-
-
+/// <summary>
+/// 切换到左侧角色事件
+/// </summary>
 public class ToLeftRoleEvent
 {
 
 }
 
-
+/// <summary>
+/// 切换到右侧角色事件
+/// </summary>
 public class ToRightRoleEvent
 {
 
 }
 
-
-
+/// <summary>
+/// 小鸟上升事件
+/// </summary>
 public class BirdUpEvent
 {
 

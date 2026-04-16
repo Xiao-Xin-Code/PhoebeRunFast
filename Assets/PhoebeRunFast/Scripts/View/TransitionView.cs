@@ -3,6 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 转场视图
+/// </summary>
 public class TransitionView : MonoBehaviour
 {
     [SerializeField] Image mask;
@@ -11,6 +14,9 @@ public class TransitionView : MonoBehaviour
 
 	VertexGradient gradient;
 
+	/// <summary>
+	/// 状态初始化
+	/// </summary>
 	public void StateInit()
     {
         mask.material.SetFloat("_Radius", 1);
@@ -24,7 +30,11 @@ public class TransitionView : MonoBehaviour
 		iconText.gameObject.SetActive(true);
 	}
 
-
+	/// <summary>
+	/// 遮罩动画序列
+	/// </summary>
+	/// <param name="isOpen">是否打开</param>
+	/// <returns>动画序列</returns>
 	public Sequence MaskSequence(bool isOpen)
 	{
 		Sequence sequence = DOTween.Sequence();
@@ -47,6 +57,11 @@ public class TransitionView : MonoBehaviour
 		return sequence;
 	}
 
+	/// <summary>
+	/// 图标动画序列
+	/// </summary>
+	/// <param name="isOpen">是否打开</param>
+	/// <returns>动画序列</returns>
 	public Sequence IconSequence(bool isOpen)
 	{
 		Sequence sequence = DOTween.Sequence();
@@ -61,8 +76,10 @@ public class TransitionView : MonoBehaviour
 		return sequence;
 	}
 
-
-
+	/// <summary>
+	/// 设置进度
+	/// </summary>
+	/// <param name="value">进度值</param>
 	public void Progress(float value)
 	{
 		float top = value >= 0.5f ? 1 : value * 2;
@@ -74,6 +91,10 @@ public class TransitionView : MonoBehaviour
 		iconText.colorGradient = gradient;
 	}
 
+	/// <summary>
+	/// 设置进度增量
+	/// </summary>
+	/// <param name="delta">增量值</param>
 	public void ProgressDelta(float delta)
 	{
 		if (gradient.topLeft.a < 1)

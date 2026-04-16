@@ -4,20 +4,35 @@ using DG.Tweening;
 using QMVC;
 using UnityEngine;
 
+/// <summary>
+/// 角色控制器
+/// </summary>
 public class RoleController : BaseController
 {
     [SerializeField] RoleView _view;
 
     RoleEntity _entity;
 
+	/// <summary>
+	/// 角色对象池
+	/// </summary>
 	MonoPool<CharacterController> characterPool;
 
+	/// <summary>
+	/// 当前角色
+	/// </summary>
 	CharacterController character;
 
 	[SerializeField] CharacterController prefab;
 
+	/// <summary>
+	/// 对象池父物体
+	/// </summary>
 	Transform poolParent;
 
+	/// <summary>
+	/// 初始化方法
+	/// </summary>
 	protected override void OnInit()
 	{
 		base.OnInit();
@@ -25,17 +40,23 @@ public class RoleController : BaseController
 		poolParent = new GameObject("Pool").transform;
 		characterPool = new MonoPool<CharacterController>(prefab, poolParent, 2);
 
+		// 注册事件
 		this.RegisterEvent<RoleMenuActiveEvent>(OnRoleMenuActive);
 		this.RegisterEvent<ToLeftRoleEvent>(OnToLeftRole);
 		this.RegisterEvent<ToRightRoleEvent>(OnToRightRole);
 	}
 
+	/// <summary>
+	/// 开始时初始化角色
+	/// </summary>
 	private void Start()
 	{
 		CharacterInit();
 	}
 
-
+	/// <summary>
+	/// 初始化角色
+	/// </summary>
 	private void CharacterInit()
 	{
 		//初始显示
@@ -44,8 +65,9 @@ public class RoleController : BaseController
 		this.character = character;
 	}
 
-
-
+	/// <summary>
+	/// 角色移动到目标位置
+	/// </summary>
 	private void ToTarget()
 	{
 		CharacterController targetCharacter = characterPool.Get();
@@ -68,9 +90,10 @@ public class RoleController : BaseController
 		mainSequence.Play();
 	}
 
-
-
-
+	/// <summary>
+	/// 切换到左侧角色
+	/// </summary>
+	/// <param name="evt">事件参数</param>
 	private void OnToLeftRole(ToLeftRoleEvent evt)
 	{
 		if (_entity.isBusy) return;
@@ -100,6 +123,10 @@ public class RoleController : BaseController
 		mainSequence.Play();
 	}
 
+	/// <summary>
+	/// 切换到右侧角色
+	/// </summary>
+	/// <param name="evt">事件参数</param>
 	private void OnToRightRole(ToRightRoleEvent evt)
 	{
 		if (_entity.isBusy) return;
@@ -129,8 +156,11 @@ public class RoleController : BaseController
 		mainSequence.Play();
 	}
 
-
-
+	/// <summary>
+	/// 角色菜单动画序列
+	/// </summary>
+	/// <param name="isOpen">是否打开</param>
+	/// <returns>动画序列</returns>
 	Sequence RoleMenuSequence(bool isOpen)
 	{
 		Sequence mainSequence = DOTween.Sequence();
@@ -141,7 +171,10 @@ public class RoleController : BaseController
 		return mainSequence;
 	}
 
-
+	/// <summary>
+	/// 角色菜单激活事件
+	/// </summary>
+	/// <param name="evt">事件参数</param>
 	private void OnRoleMenuActive(RoleMenuActiveEvent evt)
 	{
 		_view.SetSwitchActive(evt.isActive);

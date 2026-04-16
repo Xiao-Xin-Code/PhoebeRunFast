@@ -4,21 +4,39 @@ using Frame;
 using QMVC;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// 阶段系统
+/// </summary>
 public class StageSystem : AbstractSystem
 {
-	GameModel _gameModel;
+	BootModel _bootModel;
 
+	/// <summary>
+	/// 初始化方法
+	/// </summary>
 	protected override void OnInit()
 	{
-		_gameModel = this.GetModel<GameModel>();
-		_gameModel.Stage.RegisterWithOldValue(BeforeStageChanged);
+		_bootModel = this.GetModel<BootModel>();
+		// 注册阶段变化事件
+		_bootModel.Stage.RegisterWithOldValue(BeforeStageChanged);
 	}
 
+	/// <summary>
+	/// 阶段变化前事件
+	/// </summary>
+	/// <param name="stage">旧阶段</param>
+	/// <param name="newStage">新阶段</param>
 	private void BeforeStageChanged(Stage stage, Stage newStage)
 	{
 		MonoService.Instance.StartCoroutine(TotalProgress(stage, newStage));
 	}
 
+	/// <summary>
+	/// 总进度协程
+	/// </summary>
+	/// <param name="oldStage">旧阶段</param>
+	/// <param name="newStage">新阶段</param>
+	/// <returns>协程</returns>
 	IEnumerator TotalProgress(Stage oldStage, Stage newStage)
 	{
 		float cur = 0;
@@ -37,6 +55,11 @@ public class StageSystem : AbstractSystem
 		this.SendEvent(new CloseTransitionEvent(() => OnInitByLoadOver(newStage)));
 	}
 
+	/// <summary>
+	/// 卸载场景
+	/// </summary>
+	/// <param name="stage">阶段</param>
+	/// <returns>协程</returns>
 	IEnumerator UnLoad(Stage stage)
 	{
 		switch (stage)
@@ -62,6 +85,11 @@ public class StageSystem : AbstractSystem
 		yield return SceneManager.UnloadSceneAsync((int)stage);
 	}
 
+	/// <summary>
+	/// 加载场景
+	/// </summary>
+	/// <param name="stage">阶段</param>
+	/// <returns>协程</returns>
 	IEnumerator Load(Stage stage)
 	{
 		yield return SceneManager.LoadSceneAsync((int)stage, LoadSceneMode.Additive);
@@ -90,7 +118,7 @@ public class StageSystem : AbstractSystem
 	/// <summary>
 	/// 用于触发一些，需要加载完毕并在结束转场后才触发的
 	/// </summary>
-	/// <param name="stage"></param>
+	/// <param name="stage">阶段</param>
 	private void OnInitByLoadOver(Stage stage)
 	{
 		switch (stage)
@@ -109,5 +137,4 @@ public class StageSystem : AbstractSystem
 		}
 	}
 
-	
 }
