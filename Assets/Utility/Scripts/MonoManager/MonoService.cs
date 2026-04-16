@@ -6,13 +6,13 @@ namespace Frame
     using UnityEngine.UI;
 
     /// <summary>
-    /// Mono业务逻辑管理单例
+    /// Mono鏈嶅姟
     /// </summary>
     public sealed partial class MonoService : AutoSingleton<MonoService>
     {
         public MonoService() { }
 
-        #region 协程
+        #region 鍗忕▼
         public Coroutine StartCoroutine(IEnumerator routine)
         {
             if (routine != null)
