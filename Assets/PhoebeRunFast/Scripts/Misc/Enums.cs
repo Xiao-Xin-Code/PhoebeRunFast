@@ -29,3 +29,14 @@ public enum FlyBirdState
 	Run,    // 运行
 	Over    // 结束
 }
+
+/// <summary>
+/// 游戏状态枚举
+/// </summary>
+public enum GameState
+{
+	Ready,   // 准备
+	Running, // 运行中
+	Paused,  // 暂停
+	Over     // 结束
+}
