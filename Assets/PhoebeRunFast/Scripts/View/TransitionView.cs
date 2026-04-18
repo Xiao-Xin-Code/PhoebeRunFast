@@ -20,7 +20,7 @@ public class TransitionView : MonoBehaviour
 	public void StateInit()
     {
         mask.material.SetFloat("_Radius", 1);
-        icon.rectTransform.localScale = Vector3.one;
+        icon.rectTransform.localScale = Vector3.zero;
 		gradient = new VertexGradient();
 		gradient.topLeft = new Color(1, 1, 1, 0);
 		gradient.topRight = new Color(1, 1, 1, 0);
@@ -29,6 +29,13 @@ public class TransitionView : MonoBehaviour
 		iconText.colorGradient = gradient;
 		iconText.gameObject.SetActive(true);
 	}
+
+	public void SetIconTextActive(bool isActive)
+	{
+		iconText.gameObject.SetActive(isActive);
+	}
+
+
 
 	/// <summary>
 	/// 遮罩动画序列

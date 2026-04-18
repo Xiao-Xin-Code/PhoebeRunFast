@@ -1,4 +1,5 @@
 using System.Collections;
+using Frame;
 using QMVC;
 using UnityEngine;
 
@@ -18,6 +19,7 @@ public class GameController : BaseController
 		this.RegisterEvent<LoadGameEvent>(OnLoadGame);
 		this.RegisterEvent<UnLoadGameEvent>(OnUnLoadGame);
 		this.RegisterEvent<GameInitByTransitionOverEvent>(OnGameInitByTransitionOver);
+		this.RegisterEvent<GameResetEvent>(OnGameReset);
 	}
 
 	/// <summary>
@@ -30,6 +32,12 @@ public class GameController : BaseController
 		//播放
 		Debug.Log("开场动画");
 	}
+
+	private void OnGameReset(GameResetEvent evt)
+	{
+		MonoService.Instance.StartCoroutine(GameReset());
+	}
+
 
 	/// <summary>
 	/// 加载游戏事件
@@ -70,6 +78,16 @@ public class GameController : BaseController
 	{
 		yield return new WaitForSeconds(5f);
 	}
+
+
+
+	IEnumerator GameReset()
+	{
+		yield return new WaitForSeconds(5f);
+		this.SendCommand(new CloseTransitionCommand(() => OnGameInitByTransitionOver(null)));
+	}
+
+
 
 	/// <summary>
 	/// 反初始化方法

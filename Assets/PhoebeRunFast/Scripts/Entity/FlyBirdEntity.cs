@@ -27,4 +27,7 @@ public class FlyBirdEntity : IEntity
 	/// </summary>
 	public float globalPipeSpeed = 10f;
 
+	public float maxScore = 0;
+
+	public float currentScore = 0;
 }

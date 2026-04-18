@@ -2,6 +2,7 @@ using System.Collections;
 using DG.Tweening;
 using Frame;
 using QMVC;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -18,7 +19,7 @@ public class StageSystem : AbstractSystem
 	{
 		_bootModel = this.GetModel<BootModel>();
 		// 注册阶段变化事件
-		_bootModel.Stage.RegisterWithOldValue(BeforeStageChanged);
+		_bootModel.Stage.RegisterWithOldValue(OnStageChanged);
 	}
 
 	/// <summary>
@@ -26,7 +27,7 @@ public class StageSystem : AbstractSystem
 	/// </summary>
 	/// <param name="stage">旧阶段</param>
 	/// <param name="newStage">新阶段</param>
-	private void BeforeStageChanged(Stage stage, Stage newStage)
+	private void OnStageChanged(Stage stage, Stage newStage)
 	{
 		MonoService.Instance.StartCoroutine(TotalProgress(stage, newStage));
 	}
@@ -42,11 +43,11 @@ public class StageSystem : AbstractSystem
 		float cur = 0;
 		yield return UnLoad(oldStage);
 		bool half1Complete = false;
-		Tween half1 = DOTween.To(() => cur, x => { cur = x; this.SendEvent(new UpdateProgressEvent(cur)); }, 0.5f, 10f);
-		half1.OnComplete(() => half1Complete = false);
+		Tween half1 = DOTween.To(() => cur, x => { cur = x; this.SendEvent(new UpdateProgressEvent(cur)); }, 0.5f, 1f);
+		half1.OnComplete(() => half1Complete = true);
 		half1.Play();
 		yield return Load(newStage);
-		while (half1Complete)
+		while (!half1Complete)
 		{
 			yield return null;
 		}

@@ -9,25 +9,22 @@ public class PlayerStatusView : MonoBehaviour
     [SerializeField] Image healthBar;
     [SerializeField] Image manaBar;
 
+
     /// <summary>
-    /// 更新血条
+    /// 更新生命值
     /// </summary>
-    /// <param name="currentHealth">当前生命值</param>
-    /// <param name="maxHealth">最大生命值</param>
-    public void UpdateHealthBar(float currentHealth, float maxHealth)
+    /// <param name="currentHealth"></param>
+    public void UpdateHealthBar(float currentHealth)
     {
-        float fillAmount = currentHealth / maxHealth;
-        healthBar.fillAmount = Mathf.Clamp01(fillAmount);
+        healthBar.fillAmount = currentHealth;
     }
 
     /// <summary>
-    /// 更新蓝量条
+    /// 更新精力值
     /// </summary>
-    /// <param name="currentMana">当前魔法值</param>
-    /// <param name="maxMana">最大魔法值</param>
-    public void UpdateManaBar(float currentMana, float maxMana)
+    /// <param name="currentMana"></param>
+    public void UpdateManaBar(float currentMana)
     {
-        float fillAmount = currentMana / maxMana;
-        manaBar.fillAmount = Mathf.Clamp01(fillAmount);
+        manaBar.fillAmount = currentMana;
     }
 }

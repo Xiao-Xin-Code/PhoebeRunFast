@@ -8,51 +8,57 @@ using UnityEngine.UI;
 /// </summary>
 public class SkillsView : MonoBehaviour
 {
-    [SerializeField] Button[] skillButtons;
+    [SerializeField] Button ultimateButton; // 大招按钮
+    [SerializeField] Button normalSkillButton; // 小技能按钮
 
     #region Register
 
-    /// <summary>
-    /// 注册技能使用事件
-    /// </summary>
-    /// <param name="action">回调函数</param>
-    public void RegisterSkillUsed(Action<int> action)
+    public void RegisterUltimatePressed(UnityAction action)
     {
-        for (int i = 0; i < skillButtons.Length; i++)
-        {
-            int index = i;
-            skillButtons[i].onClick.AddListener(() => action(index));
-        }
+        ultimateButton.onClick.AddListener(action);
+    }
+
+    public void RegisterNormalSkillPressed(UnityAction action)
+    {
+        normalSkillButton.onClick.AddListener(action);
     }
 
     #endregion
 
     #region UnRegister
 
-    /// <summary>
-    /// 注销技能使用事件
-    /// </summary>
-    /// <param name="action">回调函数</param>
-    public void UnRegisterSkillUsed(Action<int> action)
+    public void UnRegisterUltimatePressed(UnityAction action)
     {
-        for (int i = 0; i < skillButtons.Length; i++)
-        {
-            skillButtons[i].onClick.RemoveAllListeners();
-        }
+        ultimateButton.onClick.RemoveListener(action);
+    }
+
+    public void UnRegisterNormalSkillPressed(UnityAction action)
+    {
+        normalSkillButton.onClick.RemoveListener(action);
     }
 
     #endregion
+
+    #region Cooldown
 
     /// <summary>
     /// 更新技能冷却
     /// </summary>
     /// <param name="skillIndex">技能索引</param>
     /// <param name="cooldown">冷却时间</param>
-    public void UpdateSkillCooldown(int skillIndex, float cooldown)
+    public void UpdateUltimateCooldown(float cooldown)
     {
-        if (skillIndex >= 0 && skillIndex < skillButtons.Length)
-        {
-            // 实现技能冷却显示逻辑
-        }
+        // 实现大招冷却显示逻辑
     }
+
+    /// <summary>
+    /// 更新小技能冷却
+    /// </summary>
+    /// <param name="cooldown">冷却时间</param>
+    public void UpdateNormalSkillCooldown(float cooldown)
+    {
+        // 实现小技能冷却显示逻辑
+    }
+
+    #endregion
 }

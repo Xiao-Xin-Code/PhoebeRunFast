@@ -17,10 +17,6 @@ public class GameStatusController : BaseController
 
         // 注册视图事件
         _view.RegisterPausePressed(OnPausePressed);
-        _view.RegisterResumePressed(OnResumePressed);
-
-        // 注册系统事件
-        this.RegisterEvent<GameStateChangeEvent>(OnGameStateChange);
     }
 
     /// <summary>
@@ -28,8 +24,7 @@ public class GameStatusController : BaseController
     /// </summary>
     private void OnPausePressed()
     {
-        // 发送暂停命令
-        this.SendCommand(new PauseGameCommand());
+        this.SendCommand<GamePauseCommand>();
     }
 
     /// <summary>
@@ -42,15 +37,6 @@ public class GameStatusController : BaseController
     }
 
     /// <summary>
-    /// 游戏状态变化事件
-    /// </summary>
-    /// <param name="evt">事件参数</param>
-    private void OnGameStateChange(GameStateChangeEvent evt)
-    {
-        _view.UpdatePauseUI(evt.newState);
-    }
-
-    /// <summary>
     /// 反初始化方法
     /// </summary>
     protected override void OnDeInit()
@@ -59,7 +45,5 @@ public class GameStatusController : BaseController
 
         // 注销事件
         _view.UnRegisterPausePressed(OnPausePressed);
-        _view.UnRegisterResumePressed(OnResumePressed);
-        this.UnRegisterEvent<GameStateChangeEvent>(OnGameStateChange);
     }
 }

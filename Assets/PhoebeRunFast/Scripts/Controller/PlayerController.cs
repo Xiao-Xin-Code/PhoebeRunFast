@@ -7,9 +7,8 @@ using UnityEngine;
 /// </summary>
 public class PlayerController : BaseController
 {
-    [SerializeField] private Rigidbody _rb;
-    [SerializeField] private Transform _groundCheck;
-    [SerializeField] private LayerMask _groundLayer;
+    [SerializeField] PlayerView _view;
+
 
     #region 轨道配置
     [Header("轨道配置")]
@@ -52,11 +51,8 @@ public class PlayerController : BaseController
     {
         base.OnInit();
 
-        if (_rb == null)
-            _rb = GetComponent<Rigidbody>();
-
-        _rb.useGravity = false;
-        _rb.freezeRotation = true;
+        _view.RB.useGravity = false;
+        _view.RB.freezeRotation = true;
 
         _currentSpeed = baseSpeed;
 
@@ -181,7 +177,7 @@ public class PlayerController : BaseController
     /// </summary>
     private void GroundCheck()
     {
-        _isGrounded = Physics.CheckSphere(_groundCheck.position, groundCheckRadius, _groundLayer);
+        _isGrounded = Physics.CheckSphere(_view.GroundCheck.position, groundCheckRadius, _view.GroundLayer);
 
         if (_isGrounded)
         {
@@ -211,9 +207,9 @@ public class PlayerController : BaseController
     /// </summary>
     private void MoveForward()
     {
-        Vector3 velocity = _rb.velocity;
+        Vector3 velocity = _view.RB.velocity;
         velocity.z = _currentSpeed;
-        _rb.velocity = velocity;
+        _view.RB.velocity = velocity;
     }
 
     /// <summary>
@@ -241,12 +237,12 @@ public class PlayerController : BaseController
     private void Jump()
     {
         // 清除Y轴速度
-        Vector3 velocity = _rb.velocity;
+        Vector3 velocity = _view.RB.velocity;
         velocity.y = 0;
-        _rb.velocity = velocity;
+        _view.RB.velocity = velocity;
 
         // 施加跳跃力
-        _rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        _view.RB.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
         // 重置缓冲时间
         _lastJumpPressedTime = 0;
@@ -259,16 +255,16 @@ public class PlayerController : BaseController
     {
         if (!_isGrounded)
         {
-            Vector3 velocity = _rb.velocity;
+            Vector3 velocity = _view.RB.velocity;
             velocity.y -= gravity * Time.fixedDeltaTime;
-            _rb.velocity = velocity;
+            _view.RB.velocity = velocity;
         }
-        else if (_rb.velocity.y < 0)
+        else if (_view.RB.velocity.y < 0)
         {
             // 落地时重置Y轴速度
-            Vector3 velocity = _rb.velocity;
+            Vector3 velocity = _view.RB.velocity;
             velocity.y = 0;
-            _rb.velocity = velocity;
+            _view.RB.velocity = velocity;
         }
     }
 
@@ -295,10 +291,10 @@ public class PlayerController : BaseController
     /// </summary>
     private void OnDrawGizmosSelected()
     {
-        if (_groundCheck != null)
+        if (_view.GroundCheck != null)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(_groundCheck.position, groundCheckRadius);
+            Gizmos.DrawWireSphere(_view.GroundCheck.position, groundCheckRadius);
         }
 
         Gizmos.color = Color.yellow;

@@ -9,6 +9,8 @@ public class PlayerStatusController : BaseController
 {
     [SerializeField] PlayerStatusView _view;
 
+    PlayerStatusEntity _entity;
+
     GameModel _gameModel;
 
     /// <summary>
@@ -18,41 +20,23 @@ public class PlayerStatusController : BaseController
     {
         base.OnInit();
 
+        _entity = new PlayerStatusEntity();
         _gameModel = this.GetModel<GameModel>();
 
-        // 注册事件
-        this.RegisterEvent<HealthChangeEvent>(OnHealthChange);
-        this.RegisterEvent<ManaChangeEvent>(OnManaChange);
+        _entity.Health.Register(OnHealthChanged);
+        _entity.Mana.Register(OnManaChanged);
 
-        // 初始化显示
-        UpdateStatusDisplay();
     }
 
-    /// <summary>
-    /// 生命值变化事件
-    /// </summary>
-    /// <param name="evt">事件参数</param>
-    private void OnHealthChange(HealthChangeEvent evt)
+
+    private void OnHealthChanged(float currentHealth)
     {
-        _view.UpdateHealthBar(evt.currentHealth, evt.maxHealth);
+        _view.UpdateHealthBar(_entity.Health.Value);
     }
 
-    /// <summary>
-    /// 魔法值变化事件
-    /// </summary>
-    /// <param name="evt">事件参数</param>
-    private void OnManaChange(ManaChangeEvent evt)
+    private void OnManaChanged(float currentMana)
     {
-        _view.UpdateManaBar(evt.currentMana, evt.maxMana);
-    }
-
-    /// <summary>
-    /// 更新状态显示
-    /// </summary>
-    private void UpdateStatusDisplay()
-    {
-        _view.UpdateHealthBar(_gameModel.PlayerHealth.Value, _gameModel.PlayerMaxHealth.Value);
-        _view.UpdateManaBar(_gameModel.PlayerMana.Value, _gameModel.PlayerMaxMana.Value);
+        _view.UpdateManaBar(_entity.Mana.Value);
     }
 
     /// <summary>
@@ -63,7 +47,7 @@ public class PlayerStatusController : BaseController
         base.OnDeInit();
 
         // 注销事件
-        this.UnRegisterEvent<HealthChangeEvent>(OnHealthChange);
-        this.UnRegisterEvent<ManaChangeEvent>(OnManaChange);
+        _entity.Health.UnRegister(OnHealthChanged);
+        _entity.Mana.UnRegister(OnManaChanged);
     }
 }

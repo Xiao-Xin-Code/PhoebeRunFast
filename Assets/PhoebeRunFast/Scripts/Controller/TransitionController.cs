@@ -37,6 +37,7 @@ public class TransitionController : BaseController
 
     private void OnCloseTransition(CloseTransitionEvent evt)
     {
+		_view.SetIconTextActive(false);
 		Sequence mainSequence = DOTween.Sequence();
 		Sequence maskSequence = _view.MaskSequence(false);//遮挡
 		Sequence iconSequence = _view.IconSequence(false);//图标
