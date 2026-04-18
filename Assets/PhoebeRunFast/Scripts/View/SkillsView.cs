@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class SkillsView : MonoBehaviour
 {
     [SerializeField] Button ultimateButton; // 大招按钮
-    [SerializeField] Button normalSkillButton; // 小技能按钮
+    [SerializeField] Button skillButton; // 小技能按钮
 
     #region Register
 
@@ -18,9 +18,9 @@ public class SkillsView : MonoBehaviour
         ultimateButton.onClick.AddListener(action);
     }
 
-    public void RegisterNormalSkillPressed(UnityAction action)
+    public void RegisterSkillPressed(UnityAction action)
     {
-        normalSkillButton.onClick.AddListener(action);
+        skillButton.onClick.AddListener(action);
     }
 
     #endregion
@@ -32,9 +32,9 @@ public class SkillsView : MonoBehaviour
         ultimateButton.onClick.RemoveListener(action);
     }
 
-    public void UnRegisterNormalSkillPressed(UnityAction action)
+    public void UnRegisterSkillPressed(UnityAction action)
     {
-        normalSkillButton.onClick.RemoveListener(action);
+        skillButton.onClick.RemoveListener(action);
     }
 
     #endregion
@@ -55,7 +55,7 @@ public class SkillsView : MonoBehaviour
     /// 更新小技能冷却
     /// </summary>
     /// <param name="cooldown">冷却时间</param>
-    public void UpdateNormalSkillCooldown(float cooldown)
+    public void UpdateSkillCooldown(float cooldown)
     {
         // 实现小技能冷却显示逻辑
     }

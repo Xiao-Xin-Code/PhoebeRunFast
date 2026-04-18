@@ -1,0 +1,45 @@
+{
+    "identity": {
+        "roleId": 1,
+        "roleName": 0
+    },
+    "level": {
+        "propertyLevel": {
+            "healthLevel": 0,
+            "energyLevel": 0,
+            "defenseLevel": 0,
+            "cooldownReductionLevel": 0
+        },
+        "starLevel": 1
+    },
+    "baseProperty": {
+        "health": 100.0,
+        "energy": 50.0,
+        "attack": 20.0,
+        "defense": 10.0,
+        "speed": 5.0,
+        "cooldownReduction": 0.0,
+        "skillCooldown": 5.0,
+        "ultimateCooldown": 10.0
+    },
+    "rolePropertyUpgrades": [
+        {
+            "healthPerLevel": 10,
+            "energyPerLevel": 5,
+            "defensePerLevel": 2,
+            "cooldownReductionPerLevel": 1
+        }
+    ],
+    "roleStarUpgrades": [
+        {
+            "healthPerStar": 50.0,
+            "energyPerStar": 25.0,
+            "attackPerStar": 10.0,
+            "defensePerStar": 5.0,
+            "speedPerStar": 1.0,
+            "cooldownReductionPerStar": 0.05000000074505806,
+            "skillCooldownPerStar": -0.5,
+            "ultimateCooldownPerStar": -1.0
+        }
+    ]
+}

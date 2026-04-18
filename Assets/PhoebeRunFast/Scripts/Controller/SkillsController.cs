@@ -20,11 +20,11 @@ public class SkillsController : BaseController
         base.OnInit();
         _entity = new SkillsEntity();
 
-        _view.RegisterNormalSkillPressed(OnNormalSkillPressed);
+        _view.RegisterSkillPressed(OnSkillPressed);
         _view.RegisterUltimatePressed(OnUltimatePressed);
     }
 
-    private void OnNormalSkillPressed()
+    private void OnSkillPressed()
     {
         
 
@@ -37,14 +37,14 @@ public class SkillsController : BaseController
         
     }
 
-    IEnumerator OnNormalSkillCoolDown()
+    IEnumerator OnSkillCoolDown()
     {
-        float cooldown = _entity.normalSkillCooldown;
-        _view.UpdateNormalSkillCooldown(1);
+        float cooldown = _entity.skillCooldown;
+        _view.UpdateSkillCooldown(1);
         while (cooldown > 0)
         {
-            float parent = cooldown/_entity.normalSkillCooldown;
-            _view.UpdateNormalSkillCooldown(parent);
+            float parent = cooldown/_entity.skillCooldown;
+            _view.UpdateSkillCooldown(parent);
             yield return null;
         }
     }
@@ -82,7 +82,7 @@ public class SkillsController : BaseController
         base.OnDeInit();
 
         // 注销事件
-        _view.UnRegisterNormalSkillPressed(OnNormalSkillPressed);
+        _view.UnRegisterSkillPressed(OnSkillPressed);
         _view.UnRegisterUltimatePressed(OnUltimatePressed);
     }
 }

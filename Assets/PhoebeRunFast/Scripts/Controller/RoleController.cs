@@ -1,189 +1,46 @@
-using System.Collections;
-using System.Collections.Generic;
-using DG.Tweening;
-using QMVC;
 using UnityEngine;
+using QMVC;
 
-/// <summary>
-/// 角色控制器
-/// </summary>
-public class RoleController : BaseController
+public abstract class RoleController : BaseController
 {
     [SerializeField] RoleView _view;
 
     RoleEntity _entity;
 
-	/// <summary>
-	/// 角色对象池
-	/// </summary>
-	MonoPool<CharacterController> characterPool;
+    public RoleData RoleData =>_entity.roleData;
 
-	/// <summary>
-	/// 当前角色
-	/// </summary>
-	CharacterController character;
+    /// <summary>
+    /// 初始化方法
+    /// </summary>
+    protected override void OnInit()
+    {
+        base.OnInit();
+        _entity = new RoleEntity();
 
-	[SerializeField] CharacterController prefab;
+        for(int i = 0;i<_entity.roleData.level.starLevel;i++)
+        {
+            ApplyTalent(i);
+        }
+    }
 
-	/// <summary>
-	/// 对象池父物体
-	/// </summary>
-	Transform poolParent;
+    public abstract void MoveForward();
+    public abstract void MoveToLeft();
+    public abstract void MoveToRight();
+    public abstract void Jump();
+    public abstract void Roll();
 
-	/// <summary>
-	/// 初始化方法
-	/// </summary>
-	protected override void OnInit()
-	{
-		base.OnInit();
-		_entity = new RoleEntity();
-		poolParent = new GameObject("Pool").transform;
-		characterPool = new MonoPool<CharacterController>(prefab, poolParent, 2);
 
-		// 注册事件
-		this.RegisterEvent<RoleMenuActiveEvent>(OnRoleMenuActive);
-		this.RegisterEvent<ToLeftRoleEvent>(OnToLeftRole);
-		this.RegisterEvent<ToRightRoleEvent>(OnToRightRole);
-	}
+    /// <summary>
+    /// 作用天赋，表示天赋可使用时作用于角色的状态变化，通常是初始化时作用
+    /// </summary>
+    /// <param name="star">星级</param>
+    protected abstract void ApplyTalent(int star);
 
-	/// <summary>
-	/// 开始时初始化角色
-	/// </summary>
-	private void Start()
-	{
-		CharacterInit();
-	}
+    /// <summary>
+    /// 激活天赋,表示触发那个天赋
+    /// </summary>
+    /// <param name="star">星级</param>
+    protected abstract void ActiveTalent(int star);
 
-	/// <summary>
-	/// 初始化角色
-	/// </summary>
-	private void CharacterInit()
-	{
-		//初始显示
-		CharacterController character = characterPool.Get();
-		character.transform.position = _view.Center.position;
-		this.character = character;
-	}
-
-	/// <summary>
-	/// 角色移动到目标位置
-	/// </summary>
-	private void ToTarget()
-	{
-		CharacterController targetCharacter = characterPool.Get();
-		targetCharacter.transform.position = _view.Left.position;
-		Sequence mainSequence = DOTween.Sequence();
-		Sequence sequence1 = DOTween.Sequence();
-		sequence1.Append(character.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
-		Sequence sequence2 = _view.PropertySequence(false);
-		sequence1.Join(sequence2);
-		sequence1.Append(character.transform.DOMoveX(_view.Right.position.x, 2f));
-		Sequence sequence3 = DOTween.Sequence();
-		sequence3.Append(targetCharacter.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
-		sequence3.Append(targetCharacter.transform.DOMoveX(_view.Center.position.x, 2f));
-		sequence3.Append(targetCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
-		Sequence sequence4 = _view.PropertySequence(true);
-		sequence3.Join(sequence4);
-		mainSequence.Join(sequence1);
-		mainSequence.Join(sequence3);
-		mainSequence.OnComplete(() => _entity.isBusy = false);
-		mainSequence.Play();
-	}
-
-	/// <summary>
-	/// 切换到左侧角色
-	/// </summary>
-	/// <param name="evt">事件参数</param>
-	private void OnToLeftRole(ToLeftRoleEvent evt)
-	{
-		if (_entity.isBusy) return;
-		_entity.isBusy = true;
-		CharacterController leftCharacter = characterPool.Get();
-		leftCharacter.transform.position = _view.Left.position;
-		CharacterController temp = character;
-		character = leftCharacter;
-		Sequence mainSequence = DOTween.Sequence();
-		Sequence oldSequence = DOTween.Sequence();
-		oldSequence.Append(temp.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
-		oldSequence.Join(RoleMenuSequence(false));
-		oldSequence.Append(temp.transform.DOMoveX(_view.Right.position.x, 1f));
-		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
-		Sequence newSequence = DOTween.Sequence();
-		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
-		newSequence.Append(leftCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
-		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
-		newSequence.Join(RoleMenuSequence(true));
-		mainSequence.Join(oldSequence);
-		mainSequence.Join(newSequence);
-		mainSequence.OnComplete(() =>
-		{
-			characterPool.Recycle(temp);
-			_entity.isBusy = false;
-		});
-		mainSequence.Play();
-	}
-
-	/// <summary>
-	/// 切换到右侧角色
-	/// </summary>
-	/// <param name="evt">事件参数</param>
-	private void OnToRightRole(ToRightRoleEvent evt)
-	{
-		if (_entity.isBusy) return;
-		_entity.isBusy = true;
-		CharacterController rightCharacter = characterPool.Get();
-		rightCharacter.transform.position = _view.Right.position;
-		CharacterController temp = character;
-		character = rightCharacter;
-		Sequence mainSequence = DOTween.Sequence();
-		Sequence oldSequence = DOTween.Sequence();
-		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
-		oldSequence.Join(RoleMenuSequence(false));
-		oldSequence.Append(temp.transform.DOMoveX(_view.Left.position.x, 1f));
-		oldSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
-		Sequence newSequence = DOTween.Sequence();
-		newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
-		newSequence.Append(rightCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
-		newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
-		newSequence.Join(RoleMenuSequence(true));
-		mainSequence.Join(oldSequence);
-		mainSequence.Join(newSequence);
-		mainSequence.OnComplete(() =>
-		{
-			characterPool.Recycle(temp);
-			_entity.isBusy = false;
-		});
-		mainSequence.Play();
-	}
-
-	/// <summary>
-	/// 角色菜单动画序列
-	/// </summary>
-	/// <param name="isOpen">是否打开</param>
-	/// <returns>动画序列</returns>
-	Sequence RoleMenuSequence(bool isOpen)
-	{
-		Sequence mainSequence = DOTween.Sequence();
-		Sequence switchSequence = _view.SwitchSequence(isOpen);
-		Sequence propertySequence = _view.PropertySequence(isOpen);
-		mainSequence.Join(switchSequence);
-		mainSequence.Join(propertySequence);
-		return mainSequence;
-	}
-
-	/// <summary>
-	/// 角色菜单激活事件
-	/// </summary>
-	/// <param name="evt">事件参数</param>
-	private void OnRoleMenuActive(RoleMenuActiveEvent evt)
-	{
-		_view.SetSwitchActive(evt.isActive);
-		_view.SetPropertyActive(evt.isActive);
-	}
 
 }
-
-
-
-
-

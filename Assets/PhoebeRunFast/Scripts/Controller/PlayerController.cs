@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Frame;
 using QMVC;
 using UnityEngine;
@@ -8,6 +9,8 @@ using UnityEngine;
 public class PlayerController : BaseController
 {
     [SerializeField] PlayerView _view;
+
+    [SerializeField] RoleController _roleController;
 
 
     #region 轨道配置
@@ -246,6 +249,9 @@ public class PlayerController : BaseController
 
         // 重置缓冲时间
         _lastJumpPressedTime = 0;
+
+        //同步切换运动状态
+        _roleController.Jump();
     }
 
     /// <summary>
