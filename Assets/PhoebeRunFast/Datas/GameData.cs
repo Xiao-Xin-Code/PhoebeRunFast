@@ -2,7 +2,14 @@
 public class GameData
 {
     //账户资源数据
-    //星声数量，金币数量
+    public AccountData accountData;
 
 
+
+}
+
+public class AccountData
+{
+    public int starSoundCount;
+    public int goldCount;
 }

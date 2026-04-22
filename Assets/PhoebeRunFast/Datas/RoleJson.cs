@@ -26,6 +26,7 @@ public class IdentityJson
 {
     public int roleId;
     public string roleName;
+    public string roleDesc;//角色描述
 }
 
 [Serializable]

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading.Tasks.Dataflow;
 using Frame;
 using QMVC;
 using UnityEngine;
@@ -8,6 +9,18 @@ using UnityEngine;
 /// </summary>
 public class GameController : BaseController
 {
+	[SerializeField] GameView _view;
+
+
+
+	public Transform[] GetLine()
+	{
+		return _view.Lanes;
+	}
+
+
+
+
 	/// <summary>
 	/// 初始化方法
 	/// </summary>
