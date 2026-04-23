@@ -1,11 +1,14 @@
 
+using UnityEngine;
+
 public class FixedObstacleController : ObstacleController
 {
     [SerializeField] FixedObstacleView _view;
 
-    public override void Init()
+
+    protected override void OnInit()
     {
-        base.Init();
+        base.OnInit();
 
         _view.ColliderArea.RegisterEnterEvent(TakeDamage);
     }

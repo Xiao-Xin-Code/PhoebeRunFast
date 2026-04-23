@@ -1,6 +1,6 @@
 using UnityEngine;
 using System;
-
+    
 public class TriggerArea : MonoBehaviour
 {
     event Action OnEnter;

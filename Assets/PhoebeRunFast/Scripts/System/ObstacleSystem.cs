@@ -1,8 +1,10 @@
+using System;
+using System.Collections.Generic;
 using QMVC;
 
 public class ObstacleSystem : AbstractSystem
 {
-    Dictionary<Type,MonoPool<ObstacleController>> obstaclePools = new Dictionary<string,MonoPool<ObstacleController>>();
+	Dictionary<Type, MonoPool<ObstacleController>> obstaclePools = new Dictionary<Type, MonoPool<ObstacleController>>();
 
 
 
@@ -19,18 +21,15 @@ public class ObstacleSystem : AbstractSystem
         }
         else
         {
-            MonoPool<ObstacleController> pool = new MonoPool<ObstacleController>(obstacle);
-            obstaclePools.Add(obstacle, pool);
+            //MonoPool<ObstacleController> pool = new MonoPool<ObstacleController>();
+            //obstaclePools.Add(obstacle, pool);
             return null;
         }
     }
 
 
-
-
-    public override void Init()
-    {
-        base.Init();
-    }
-
+	protected override void OnInit()
+	{
+		
+	}
 }

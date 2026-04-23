@@ -9,8 +9,9 @@ using UnityEngine;
 public class PlayerController : BaseController
 {
     [SerializeField] PlayerView _view;
-
     [SerializeField] RoleController _roleController;
+
+    PlayerEntity _entity;
 
 
     #region 轨道配置
@@ -28,11 +29,8 @@ public class PlayerController : BaseController
 
     #region 跳跃参数
     [Header("跳跃参数")]
-    public float jumpForce = 10f;
-    public float gravity = 25f;
-    public float jumpBufferTime = 0.15f;
     public float coyoteTime = 0.1f;
-    public float groundCheckRadius = 0.3f;
+
     #endregion
 
     private int _currentLane = 1;
@@ -180,7 +178,7 @@ public class PlayerController : BaseController
     /// </summary>
     private void GroundCheck()
     {
-        _isGrounded = Physics.CheckSphere(_view.GroundCheck.position, groundCheckRadius, _view.GroundLayer);
+        _isGrounded = Physics.CheckSphere(_view.GroundCheck.position, _entity.groundCheckRadius, _view.GroundLayer);
 
         if (_isGrounded)
         {
@@ -189,7 +187,7 @@ public class PlayerController : BaseController
 
         // 跳跃逻辑（带缓冲）
         bool canJump = (_isGrounded || Time.time - _lastGroundedTime <= coyoteTime);
-        bool jumpBuffered = (Time.time - _lastJumpPressedTime <= jumpBufferTime);
+        bool jumpBuffered = (Time.time - _lastJumpPressedTime <= _entity.jumpBufferTime);
 
         if (_jumpRequested && canJump && jumpBuffered)
         {
@@ -245,7 +243,7 @@ public class PlayerController : BaseController
         _view.RB.velocity = velocity;
 
         // 施加跳跃力
-        _view.RB.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        _view.RB.AddForce(Vector3.up * _entity.jumpForce, ForceMode.Impulse);
 
         // 重置缓冲时间
         _lastJumpPressedTime = 0;
@@ -262,7 +260,7 @@ public class PlayerController : BaseController
         if (!_isGrounded)
         {
             Vector3 velocity = _view.RB.velocity;
-            velocity.y -= gravity * Time.fixedDeltaTime;
+            velocity.y += _entity.gravity * Time.fixedDeltaTime;
             _view.RB.velocity = velocity;
         }
         else if (_view.RB.velocity.y < 0)
@@ -300,7 +298,7 @@ public class PlayerController : BaseController
         if (_view.GroundCheck != null)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(_view.GroundCheck.position, groundCheckRadius);
+            Gizmos.DrawWireSphere(_view.GroundCheck.position, _entity.groundCheckRadius);
         }
 
         Gizmos.color = Color.yellow;

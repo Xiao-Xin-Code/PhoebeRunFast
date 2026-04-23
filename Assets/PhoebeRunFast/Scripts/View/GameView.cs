@@ -2,5 +2,7 @@ using UnityEngine;
 
 public class GameView : MonoBehaviour
 {
-    [SerializeField] Transform[] Lanes;
+    [SerializeField] Transform[] lanes;
+
+    public Transform[] Lanes => lanes;
 }

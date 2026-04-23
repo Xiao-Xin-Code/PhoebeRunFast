@@ -1,5 +1,5 @@
 
-public class RoadController : BaseController
+public abstract class RoadController : BaseController
 {
     
 

@@ -1,0 +1,74 @@
+角色ID “00001”
+角色信息（名称，介绍）
+角色资源信息（图片资源，模型资源）
+角色解锁信息（解锁状态，解锁条件）
+角色基础属性（生命值）
+角色技能信息（技能ID，技能名称，技能描述）
+角色等级信息（等级，等级需要的经验）
+
+
+
+
+
+{
+    roleId,
+    RoleInfo roleInfo,
+    RoleAsset roleAsset,
+    RoleLock roleLock,
+    RoleProperty roleProperty,
+    RoleSkill roleSkill,
+    RoleLevel roleLevel,
+    RoleLevelCost roleLevelCost,
+    RoleLevelAttr roleLevelAttr
+}
+
+
+RoleInfo{
+    roleName,roleDesc;
+}
+
+RoleAsset{
+    roleImg,roleModel;
+}
+
+RoleProperty{
+    HP;
+}
+
+RoleLock{
+    isUnlock,
+    unlockCondition[]; // 条件类型（资源消耗/成就达成等），条件参数
+}
+
+Level{
+    Base,Current,Max
+}
+
+RoleLevel{
+    Level HP;
+}
+
+LevelCost{
+    Type[],Amount[];
+}
+
+RoleLevelCost{
+    LevelCost[] HP;
+}
+
+LevelAttr{
+    HP
+}
+
+RoleLevelAttr{
+    LevelAttr[] HP;
+}
+
+Skill{
+    skillName,skillDesc,coolDown;
+}
+
+RoleSkill{
+    Skill normalSkill;
+    Skill specialSkill;
+}
