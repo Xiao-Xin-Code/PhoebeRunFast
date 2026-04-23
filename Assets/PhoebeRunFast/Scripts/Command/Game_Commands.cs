@@ -7,8 +7,8 @@ public class PauseGameCommand : AbstractCommand
 {
 	protected override void OnExecute()
 	{
-		GameModel gameModel = this.GetModel<GameModel>();
-		gameModel.GameState.Value = GameState.Paused;
+		GlobalSystem globalSystem = this.GetSystem<GlobalSystem>();
+		globalSystem.GameSingleton.GameEntity.GameState.Value = GameState.Paused;
 		this.SendEvent<GameStateChangeEvent>(new GameStateChangeEvent(GameState.Paused));
 	}
 }
@@ -20,8 +20,8 @@ public class ResumeGameCommand : AbstractCommand
 {
 	protected override void OnExecute()
 	{
-		GameModel gameModel = this.GetModel<GameModel>();
-		gameModel.GameState.Value = GameState.Running;
+		GlobalSystem globalSystem = this.GetSystem<GlobalSystem>();
+		globalSystem.GameSingleton.GameEntity.GameState.Value = GameState.Running;
 		this.SendEvent<GameStateChangeEvent>(new GameStateChangeEvent(GameState.Running));
 	}
 }

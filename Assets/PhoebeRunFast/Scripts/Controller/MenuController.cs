@@ -13,7 +13,7 @@ public class MenuController : BaseController
 	/// </summary>
 	BindableProperty<Menu> Menu = new BindableProperty<Menu>(global::Menu.Battle);
 
-	BootModel _bootModel;
+	GlobalModel _globalModel;
 
 	/// <summary>
 	/// 初始化方法
@@ -22,7 +22,7 @@ public class MenuController : BaseController
 	{
 		base.OnInit();
 
-		_bootModel = this.GetModel<BootModel>();
+		_globalModel = this.GetModel<GlobalModel>();
 
 		// 注册视图事件
 		_view.RegisterRolePressed(OnRolePressed);
@@ -60,7 +60,7 @@ public class MenuController : BaseController
 		if(Menu.Value == global::Menu.Battle)
 		{
 			// 如果当前是战斗菜单，进入游戏场景
-			this.SendCommand(new OpenTransitionCommand(() => _bootModel.Stage.Value = Stage.Game));
+			this.SendCommand(new OpenTransitionCommand(() => _globalModel.Stage.Value = Stage.Game));
 		}
 		else
 		{

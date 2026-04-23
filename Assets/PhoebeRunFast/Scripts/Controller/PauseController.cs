@@ -8,13 +8,13 @@ public class PauseController : BaseController
 {
     [SerializeField] PauseView _view;
 
-    BootModel _bootModel;
+    GlobalModel _globalModel;
 
 	protected override void OnInit()
 	{
 		base.OnInit();
 
-        _bootModel = this.GetModel<BootModel>();
+		_globalModel = this.GetModel<GlobalModel>();
 
         _view.RegisterContinuePressed(OnContinuePressed);
         _view.RegisterResetPressed(OnResetPressed);
@@ -42,7 +42,7 @@ public class PauseController : BaseController
 
     private void OnExitPressed()
     {
-        this.SendCommand(new OpenTransitionCommand(() => _bootModel.Stage.Value = Stage.Main));
+        this.SendCommand(new OpenTransitionCommand(() => _globalModel.Stage.Value = Stage.Main));
     }
 
 

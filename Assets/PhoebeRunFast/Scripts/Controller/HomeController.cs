@@ -10,7 +10,7 @@ public class HomeController : BaseController
 {
     [SerializeField] HomeView _view;
 
-	BootModel _bootModel;
+	GlobalSystem _globalSystem;
 
 	/// <summary>
 	/// 初始化方法
@@ -19,7 +19,8 @@ public class HomeController : BaseController
 	{
 		base.OnInit();
 
-		_bootModel = this.GetModel<BootModel>();
+		_globalSystem = this.GetSystem<GlobalSystem>();
+		_globalSystem.SetHomeSingleton(this);
 
 		// 注册视图事件
 		_view.RegisterBeginPressed(OnBeginPressed);
@@ -55,8 +56,8 @@ public class HomeController : BaseController
 	/// </summary>
 	private void StageChanged()
 	{
-		Debug.Log("触发"); 
-		_bootModel.Stage.Value = Stage.Main;
+		Debug.Log("触发");
+		_globalSystem.GlobalModel.Stage.Value = Stage.Main;
 	}
 
 	/// <summary>

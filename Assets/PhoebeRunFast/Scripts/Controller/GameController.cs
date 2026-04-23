@@ -10,6 +10,10 @@ public class GameController : BaseController
 {
 	[SerializeField] GameView _view;
 
+	GameEntity _entity;
+
+
+	public GameEntity GameEntity => _entity;
 
 
 	public Transform[] GetLine()
@@ -32,6 +36,8 @@ public class GameController : BaseController
 		this.RegisterEvent<UnLoadGameEvent>(OnUnLoadGame);
 		this.RegisterEvent<GameInitByTransitionOverEvent>(OnGameInitByTransitionOver);
 		this.RegisterEvent<GameResetEvent>(OnGameReset);
+
+		_entity = new GameEntity();
 	}
 
 	/// <summary>

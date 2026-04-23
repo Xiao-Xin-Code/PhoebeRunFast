@@ -11,7 +11,7 @@ public class PlayerStatusController : BaseController
 
     PlayerStatusEntity _entity;
 
-    GameModel _gameModel;
+    GlobalSystem _globalSystem;
 
     /// <summary>
     /// 初始化方法
@@ -21,7 +21,8 @@ public class PlayerStatusController : BaseController
         base.OnInit();
 
         _entity = new PlayerStatusEntity();
-        _gameModel = this.GetModel<GameModel>();
+
+        _globalSystem = this.GetSystem<GlobalSystem>();
 
         _entity.Health.Register(OnHealthChanged);
         _entity.Mana.Register(OnManaChanged);

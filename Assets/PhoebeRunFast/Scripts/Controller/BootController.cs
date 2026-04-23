@@ -8,10 +8,15 @@ public class BootController : BaseController
 {
 	[SerializeField] BootView _view;
 
-	GameModel _gameModel;
+	GlobalSystem _globalSystem;
+
+
 	protected override void OnInit()
 	{
 		base.OnInit();
+
+		_globalSystem = this.GetSystem<GlobalSystem>();
+		_globalSystem.SetBootSingleton(this);
 
 		MonoService.Instance.RemoveAllUpdateListeners();
 	}
@@ -21,6 +26,12 @@ public class BootController : BaseController
 		//this.SendCommand(new OpenTransitionCommand(() => _gameModel.Stage.Value = Stage.Main));
 	}
 
+
+	protected override void OnDeInit()
+	{
+		base.OnDeInit();
+		_globalSystem.SetBootSingleton(null);
+	}
 
 
 

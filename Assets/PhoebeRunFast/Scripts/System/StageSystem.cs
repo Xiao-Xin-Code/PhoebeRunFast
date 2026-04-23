@@ -10,16 +10,16 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class StageSystem : AbstractSystem
 {
-	BootModel _bootModel;
+	GlobalModel _globalModel;
 
 	/// <summary>
 	/// 初始化方法
 	/// </summary>
 	protected override void OnInit()
 	{
-		_bootModel = this.GetModel<BootModel>();
+		_globalModel = this.GetModel<GlobalModel>();
 		// 注册阶段变化事件
-		_bootModel.Stage.RegisterWithOldValue(OnStageChanged);
+		_globalModel.Stage.RegisterWithOldValue(OnStageChanged);
 	}
 
 	/// <summary>

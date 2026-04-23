@@ -7,12 +7,18 @@ using UnityEngine;
 /// </summary>
 public class MainController : BaseController
 {
+
+	GlobalSystem _globalSystem;
+
 	/// <summary>
 	/// 初始化方法
 	/// </summary>
 	protected override void OnInit()
 	{
 		base.OnInit();
+
+		_globalSystem = this.GetSystem<GlobalSystem>();
+		_globalSystem.SetMainSingleton(this);
 
 		// 注册系统事件
 		this.RegisterEvent<LoadMainEvent>(OnLoadMain);
@@ -71,6 +77,7 @@ public class MainController : BaseController
 	protected override void OnDeInit()
 	{
 		base.OnDeInit();
+		_globalSystem.SetMainSingleton(null);
 
 		// 注销事件
 		this.UnRegisterEvent<LoadMainEvent>(OnLoadMain);

@@ -11,10 +11,10 @@ public class PhoebeRunFast : Architecture<PhoebeRunFast>
 	protected override void Init()
 	{
 		// 注册模型
-		RegisterModel(new BootModel());
-		RegisterModel(new GameModel());
+		RegisterModel(new GlobalModel());
 
 		// 注册系统
 		RegisterSystem(new StageSystem());
+		RegisterSystem(new GlobalSystem());
 	}
 }
