@@ -26,6 +26,11 @@ public class MainController : BaseController
 		this.RegisterEvent<MainInitByTransitionOverEvent>(OnMainInitByTransitionOver);
 	}
 
+
+	//TODO: 加载Roles文件
+
+
+
 	/// <summary>
 	/// 主界面初始化完成事件
 	/// </summary>

@@ -40,3 +40,21 @@ public enum GameState
 	Paused,  // 暂停
 	Over     // 结束
 }
+
+
+/// <summary>
+/// 物品类型枚举
+/// </summary>
+public enum Goods
+{
+	Resource,
+	Prop,
+	QuestItem
+}
+
+
+
+
+
+
+

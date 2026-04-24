@@ -10,15 +10,26 @@ public class GameController : BaseController
 {
 	[SerializeField] GameView _view;
 
+	GlobalSystem _globalSystem;
+
+
 	GameEntity _entity;
-
-
 	public GameEntity GameEntity => _entity;
 
 
-	public Transform[] GetLine()
+	public Transform[] GetLines()
 	{
 		return _view.Lanes;
+	}
+
+	public Transform GetLine(int line)
+	{
+		if(line < 0 || line >= _view.Lanes.Length)
+		{
+			Debug.LogError("line out of range");
+			return null;
+		}
+		return _view.Lanes[line];
 	}
 
 
@@ -30,6 +41,10 @@ public class GameController : BaseController
 	protected override void OnInit()
 	{
 		base.OnInit();
+
+		_globalSystem = this.GetSystem<GlobalSystem>();
+		_globalSystem.SetGameSingleton(this);
+
 
 		// 注册系统事件
 		this.RegisterEvent<LoadGameEvent>(OnLoadGame);
@@ -84,6 +99,8 @@ public class GameController : BaseController
 		//TODO: 加载资源
 		//TODO: 初始一段环境
 		//TODO: 初始Player
+		//TODO: 根据需要加载的角色获取角色数据
+		//TODO：根据获取的角色数据，计算角色属性 赋值RoleData
 
 		yield return new WaitForSeconds(5f);
 	}
@@ -113,6 +130,8 @@ public class GameController : BaseController
 	protected override void OnDeInit()
 	{
 		base.OnDeInit();
+
+		_globalSystem.SetGameSingleton(null);
 
 		// 注销事件
 		this.UnRegisterEvent<LoadGameEvent>(OnLoadGame);

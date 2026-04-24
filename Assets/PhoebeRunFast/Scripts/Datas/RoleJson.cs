@@ -1,35 +1,45 @@
-using UnityEngine;
-using System;
 
-[Serializable]
 public class RoleJson
 {
-    public IdentityJson identity;
-    public LevelJson level;
-    public PropertyJson baseProperty;
-    public PropertyLevelUpgradeJson[] rolePropertyUpgrades;
-    public StarUpgradeJson[] roleStarUpgrades;
-
-    public string ToJson()
-    {
-        return JsonUtility.ToJson(this);
-    }
-
-    public static RoleJson FromJson(string json)
-    {
-        return JsonUtility.FromJson<RoleJson>(json);
-    }
+    public string roleId;
+    public string roleInfo;
+    public string roleAsset;
+    public string roleLock;
+    public string roleProperty;
+    public string roleStarLevel;
+    public string rolePropertyLevel;
 }
 
-[Serializable]
-public class IdentityJson
+/// <summary>
+/// 角色信息
+/// </summary>
+public class InfoJson
 {
-    public int roleId;
     public string roleName;
-    public string roleDesc;//角色描述
+    public string roleDesc;
 }
 
-[Serializable]
+/// <summary>
+/// 角色资产
+/// </summary>
+public class AssetJson
+{
+    public string roleImg;
+    public string roleModel;
+}
+
+/// <summary>
+/// 角色锁定
+/// </summary>
+public class LockJson
+{
+    public bool isUnlock;
+    public string[] unlockCondition;
+}
+
+/// <summary>
+/// 角色属性
+/// </summary>
 public class PropertyJson
 {
     public float health;
@@ -38,44 +48,43 @@ public class PropertyJson
     public float defense;
     public float speed;
     public float cooldownReduction;
-    public float skillCooldown;
-    public float ultimateCooldown;
 }
 
-[Serializable]
-public class PropertyLevelJson
-{
-    public int healthLevel;
-    public int energyLevel;
-    public int defenseLevel;
-    public int cooldownReductionLevel;
-}
-
-[Serializable]
+/// <summary>
+/// 等级
+/// </summary>
 public class LevelJson
 {
-    public PropertyLevelJson propertyLevel;
-    public int starLevel;
+    public int baseLevel;
+    public int currentLevel;
+    public int maxLevel;
 }
 
-[Serializable]
-public class PropertyLevelUpgradeJson
+/// <summary>
+/// 属性等级
+/// </summary>
+public class PropertyLevelJson
 {
-    public int healthPerLevel;
-    public int energyPerLevel;
-    public int defensePerLevel;
-    public int cooldownReductionPerLevel;
+    public LevelJson healthLevel;
+    public LevelJson energyLevel;
+    public LevelJson defenseLevel;
+    public LevelJson cooldownReductionLevel;
 }
 
-[Serializable]
-public class StarUpgradeJson
+/// <summary>
+/// 星级等级
+/// </summary>
+public class StarLevelJson
 {
-    public float healthPerStar;
-    public float energyPerStar;
-    public float attackPerStar;
-    public float defensePerStar;
-    public float speedPerStar;
-    public float cooldownReductionPerStar;
-    public float skillCooldownPerStar;
-    public float ultimateCooldownPerStar;
+    public LevelJson starLevel;
+}
+
+
+/// <summary>
+/// 等级升级成本
+/// </summary>
+public class LevelCost
+{
+    public Goods[] types;
+    public int[] amounts;
 }

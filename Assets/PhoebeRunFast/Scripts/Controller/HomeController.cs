@@ -30,8 +30,8 @@ public class HomeController : BaseController
 
 	}
 
-
-
+	//TODO: 加载管道与Bird资源
+	//TODO: 加载界面资源
 	
 
 	/// <summary>

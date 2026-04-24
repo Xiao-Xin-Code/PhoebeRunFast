@@ -16,11 +16,6 @@ public abstract class RoleController : BaseController
     {
         base.OnInit();
         _entity = new RoleEntity();
-
-        for(int i = 0;i<_entity.roleData.level.starLevel;i++)
-        {
-            ApplyTalent(i);
-        }
     }
 
     public abstract void MoveForward();

@@ -16,14 +16,14 @@ public class RoleSystemController : BaseController
 	/// <summary>
 	/// 角色对象池
 	/// </summary>
-	MonoPool<CharacterController> characterPool;
+	MonoPool<RoleController> characterPool;
 
 	/// <summary>
 	/// 当前角色
 	/// </summary>
-	CharacterController character;
+	RoleController character;
 
-	[SerializeField] CharacterController prefab;
+	[SerializeField] RoleController prefab;
 
 	/// <summary>
 	/// 对象池父物体
@@ -38,7 +38,7 @@ public class RoleSystemController : BaseController
 		base.OnInit();
 		_entity = new RoleSystemEntity();
 		poolParent = new GameObject("Pool").transform;
-		characterPool = new MonoPool<CharacterController>(prefab, poolParent, 2);
+		characterPool = new MonoPool<RoleController>(prefab, poolParent, 2);
 
 		// 注册事件
 		this.RegisterEvent<RoleMenuActiveEvent>(OnRoleMenuActive);
@@ -60,7 +60,7 @@ public class RoleSystemController : BaseController
 	private void CharacterInit()
 	{
 		//初始显示
-		CharacterController character = characterPool.Get();
+		RoleController character = characterPool.Get();
 		character.transform.position = _view.Center.position;
 		this.character = character;
 	}
@@ -70,7 +70,7 @@ public class RoleSystemController : BaseController
 	/// </summary>
 	private void ToTarget()
 	{
-		CharacterController targetCharacter = characterPool.Get();
+		RoleController targetCharacter = characterPool.Get();
 		targetCharacter.transform.position = _view.Left.position;
 		Sequence mainSequence = DOTween.Sequence();
 		Sequence sequence1 = DOTween.Sequence();
@@ -98,9 +98,9 @@ public class RoleSystemController : BaseController
 	{
 		if (_entity.isBusy) return;
 		_entity.isBusy = true;
-		CharacterController leftCharacter = characterPool.Get();
+		RoleController leftCharacter = characterPool.Get();
 		leftCharacter.transform.position = _view.Left.position;
-		CharacterController temp = character;
+		RoleController temp = character;
 		character = leftCharacter;
 		Sequence mainSequence = DOTween.Sequence();
 		Sequence oldSequence = DOTween.Sequence();
@@ -131,9 +131,9 @@ public class RoleSystemController : BaseController
 	{
 		if (_entity.isBusy) return;
 		_entity.isBusy = true;
-		CharacterController rightCharacter = characterPool.Get();
+		RoleController rightCharacter = characterPool.Get();
 		rightCharacter.transform.position = _view.Right.position;
-		CharacterController temp = character;
+		RoleController temp = character;
 		character = rightCharacter;
 		Sequence mainSequence = DOTween.Sequence();
 		Sequence oldSequence = DOTween.Sequence();

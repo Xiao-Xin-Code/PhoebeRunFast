@@ -21,11 +21,9 @@ public class BootController : BaseController
 		MonoService.Instance.RemoveAllUpdateListeners();
 	}
 
-	private void Start()
-	{
-		//this.SendCommand(new OpenTransitionCommand(() => _gameModel.Stage.Value = Stage.Main));
-	}
 
+
+	//TODO: 加载出转场面板，设置面板
 
 	protected override void OnDeInit()
 	{
