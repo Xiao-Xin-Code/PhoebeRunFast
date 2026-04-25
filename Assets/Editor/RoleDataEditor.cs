@@ -7,7 +7,10 @@ using Unity.Plastic.Newtonsoft.Json;
 public class RoleDataEditor : EditorWindow
 {
     private string rootPath = "";
+    private string goodsTablePath = "";
     private List<RoleJson> roles = new List<RoleJson>();
+    private List<GoodsJson> goodsList = new List<GoodsJson>();
+    private Dictionary<string, GoodsJson> goodsDict = new Dictionary<string, GoodsJson>();
     private Vector2 scrollPosition;
     private Vector2 dataScrollPosition;
     private int selectedRoleIndex = -1;
@@ -68,6 +71,28 @@ public class RoleDataEditor : EditorWindow
                     rootPath = path;
                     // 当选择新路径时，尝试加载数据
                     LoadDataFromPath();
+                }
+            }
+            GUILayout.EndHorizontal();
+
+            // 选择物品列表路径
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Goods Table Path:", GUILayout.Width(120));
+            string newGoodsPath = EditorGUILayout.TextField(goodsTablePath);
+            if (newGoodsPath != goodsTablePath)
+            {
+                goodsTablePath = newGoodsPath;
+                // 当路径改变时，尝试加载物品数据
+                LoadGoodsData();
+            }
+            if (GUILayout.Button("Browse", GUILayout.Width(70)))
+            {
+                string path = EditorUtility.OpenFolderPanel("Select Goods Table Folder", goodsTablePath, "");
+                if (!string.IsNullOrEmpty(path))
+                {
+                    goodsTablePath = path;
+                    // 当选择新路径时，尝试加载物品数据
+                    LoadGoodsData();
                 }
             }
             GUILayout.EndHorizontal();
@@ -462,21 +487,21 @@ public class RoleDataEditor : EditorWindow
             GUILayout.BeginHorizontal();
             GUILayout.Label($"Level {i + 1}:");
             
-            // 编辑 Goods 数组
+            // 编辑 goodsIds 数组
             if (costs[i].goodsIds == null)
                 costs[i].goodsIds = new string[0];
             if (costs[i].amounts == null)
                 costs[i].amounts = new int[0];
             
-            // 确保 types 和 amounts 数组长度一致
+            // 确保 goodsIds 和 amounts 数组长度一致
             if (costs[i].goodsIds.Length != costs[i].amounts.Length)
             {
                 int minLength = Mathf.Min(costs[i].goodsIds.Length, costs[i].amounts.Length);
-                string[] newTypes = new string[minLength];
+                string[] newGoodsIds = new string[minLength];
                 int[] newAmounts = new int[minLength];
-                System.Array.Copy(costs[i].goodsIds, newTypes, minLength);
+                System.Array.Copy(costs[i].goodsIds, newGoodsIds, minLength);
                 System.Array.Copy(costs[i].amounts, newAmounts, minLength);
-                costs[i].goodsIds = newTypes;
+                costs[i].goodsIds = newGoodsIds;
                 costs[i].amounts = newAmounts;
             }
             
@@ -485,28 +510,42 @@ public class RoleDataEditor : EditorWindow
                 GUILayout.BeginVertical();
                 costs[i].goodsIds[j] = EditorGUILayout.TextField("Goods ID", costs[i].goodsIds[j]);
                 costs[i].amounts[j] = EditorGUILayout.IntField("Amount", costs[i].amounts[j]);
+                
+                // 显示物品名称（如果有）
+                if (goodsDict.Count > 0 && !string.IsNullOrEmpty(costs[i].goodsIds[j]))
+                {
+                    if (goodsDict.TryGetValue(costs[i].goodsIds[j], out GoodsJson goods))
+                    {
+                        GUILayout.Label($"Goods: {goods.goodsName}");
+                    }
+                    else
+                    {
+                        GUILayout.Label("Goods not found");
+                    }
+                }
+                
                 GUILayout.EndVertical();
             }
             
             if (GUILayout.Button("Add Good", GUILayout.Width(100)))
             {
-                string[] newTypes = new string[costs[i].goodsIds.Length + 1];
+                string[] newGoodsIds = new string[costs[i].goodsIds.Length + 1];
                 int[] newAmounts = new int[costs[i].amounts.Length + 1];
-                System.Array.Copy(costs[i].goodsIds, newTypes, costs[i].goodsIds.Length);
+                System.Array.Copy(costs[i].goodsIds, newGoodsIds, costs[i].goodsIds.Length);
                 System.Array.Copy(costs[i].amounts, newAmounts, costs[i].amounts.Length);
-                newTypes[newTypes.Length - 1] = null;
+                newGoodsIds[newGoodsIds.Length - 1] = "";
                 newAmounts[newAmounts.Length - 1] = 0;
-                costs[i].goodsIds = newTypes;
+                costs[i].goodsIds = newGoodsIds;
                 costs[i].amounts = newAmounts;
             }
             
             if (costs[i].goodsIds.Length > 0 && GUILayout.Button("Remove Good", GUILayout.Width(100)))
             {
-                string[] newTypes = new string[costs[i].goodsIds.Length - 1];
+                string[] newGoodsIds = new string[costs[i].goodsIds.Length - 1];
                 int[] newAmounts = new int[costs[i].amounts.Length - 1];
-                System.Array.Copy(costs[i].goodsIds, 0, newTypes, 0, newTypes.Length);
+                System.Array.Copy(costs[i].goodsIds, 0, newGoodsIds, 0, newGoodsIds.Length);
                 System.Array.Copy(costs[i].amounts, 0, newAmounts, 0, newAmounts.Length);
-                costs[i].goodsIds = newTypes;
+                costs[i].goodsIds = newGoodsIds;
                 costs[i].amounts = newAmounts;
             }
             
@@ -772,6 +811,46 @@ public class RoleDataEditor : EditorWindow
         {
             selectedRoleIndex = 0;
             ResetFoldoutStates();
+        }
+    }
+
+    private void LoadGoodsData()
+    {
+        if (string.IsNullOrEmpty(goodsTablePath))
+        {
+            goodsList.Clear();
+            goodsDict.Clear();
+            return;
+        }
+
+        string goodsTableFilePath = Path.Combine(goodsTablePath, "GoodsTable.json");
+        if (File.Exists(goodsTableFilePath))
+        {
+            // 读取 GoodsTable.json
+            string goodsJson = File.ReadAllText(goodsTableFilePath);
+            GoodsJson[] goodsJsons = JsonConvert.DeserializeObject<GoodsJson[]>(goodsJson);
+
+            // 清空现有数据并加载新数据
+            goodsList.Clear();
+            goodsDict.Clear();
+            
+            if (goodsJsons != null)
+            {
+                goodsList.AddRange(goodsJsons);
+                foreach (var goods in goodsJsons)
+                {
+                    if (!string.IsNullOrEmpty(goods.goodsId))
+                    {
+                        goodsDict[goods.goodsId] = goods;
+                    }
+                }
+            }
+        }
+        else
+        {
+            // 如果文件不存在，清空数据
+            goodsList.Clear();
+            goodsDict.Clear();
         }
     }
 
