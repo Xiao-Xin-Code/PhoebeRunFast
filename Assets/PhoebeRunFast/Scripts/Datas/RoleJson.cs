@@ -8,6 +8,10 @@ public class RoleJson
     public string roleProperty;
     public string roleStarLevel;
     public string rolePropertyLevel;
+    public string rolePropertyLevelCost;
+    public string roleStarLevelCost;
+    public string rolePropertyUpgrade;
+    public string roleStarUpgrade;
 }
 
 /// <summary>
@@ -83,8 +87,54 @@ public class StarLevelJson
 /// <summary>
 /// 等级升级成本
 /// </summary>
-public class LevelCost
+public class LevelCostJson
 {
-    public Goods[] types;
+    public string[] goodsIds;
     public int[] amounts;
 }
+
+
+/// <summary>
+/// 属性提升代价
+/// </summary>
+public class PropertyLevelCostJson
+{
+    public LevelCostJson[] healthLevelCosts;
+    public LevelCostJson[] energyLevelCosts;
+    public LevelCostJson[] defenseLevelCosts;
+    public LevelCostJson[] cooldownReductionLevelCosts;
+}
+
+/// <summary>
+/// 星级提升代价
+/// </summary>
+public class StarLevelCostJson
+{
+    public LevelCostJson[] starLevelCosts;
+}
+
+//提升
+public class UpgradeJson
+{
+    public float healthUpgrade;
+    public float energyUpgrade;
+    public float attackUpgrade;
+    public float defenseUpgrade;
+    public float speedUpgrade;
+    public float cooldownReductionUpgrade;
+}
+
+public class PropertyUpgradeJson
+{
+    public float[] healthUpgrade;
+    public float[] energyUpgrade;
+    public float[] defenseUpgrade;
+    public float[] cooldownReductionUpgrade;
+}
+
+public class StarUpgradeJson
+{
+    public UpgradeJson[] upgradeJsons;
+}
+
+

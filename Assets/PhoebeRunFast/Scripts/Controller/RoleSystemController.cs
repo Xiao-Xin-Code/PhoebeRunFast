@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DG.Tweening;
+using Frame;
 using QMVC;
 using UnityEngine;
 
@@ -12,6 +14,9 @@ public class RoleSystemController : BaseController
     [SerializeField] RoleSystemView _view;
 
     RoleSystemEntity _entity;
+
+	GlobalSystem _globalSystem;
+	RoleSystem _roleSystem;
 
 	/// <summary>
 	/// 角色对象池
@@ -36,6 +41,9 @@ public class RoleSystemController : BaseController
 	protected override void OnInit()
 	{
 		base.OnInit();
+		_globalSystem = this.GetSystem<GlobalSystem>();
+		_roleSystem = this.GetSystem<RoleSystem>();
+
 		_entity = new RoleSystemEntity();
 		poolParent = new GameObject("Pool").transform;
 		characterPool = new MonoPool<RoleController>(prefab, poolParent, 2);
@@ -44,6 +52,7 @@ public class RoleSystemController : BaseController
 		this.RegisterEvent<RoleMenuActiveEvent>(OnRoleMenuActive);
 		this.RegisterEvent<ToLeftRoleEvent>(OnToLeftRole);
 		this.RegisterEvent<ToRightRoleEvent>(OnToRightRole);
+		this.RegisterEvent<InitCharacterEvent>(OnInitCharacter);
 	}
 
 	/// <summary>
@@ -51,7 +60,7 @@ public class RoleSystemController : BaseController
 	/// </summary>
 	private void Start()
 	{
-		CharacterInit();
+		//CharacterInit();
 	}
 
 	/// <summary>
@@ -98,29 +107,30 @@ public class RoleSystemController : BaseController
 	{
 		if (_entity.isBusy) return;
 		_entity.isBusy = true;
-		RoleController leftCharacter = characterPool.Get();
-		leftCharacter.transform.position = _view.Left.position;
-		RoleController temp = character;
-		character = leftCharacter;
-		Sequence mainSequence = DOTween.Sequence();
-		Sequence oldSequence = DOTween.Sequence();
-		oldSequence.Append(temp.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
-		oldSequence.Join(RoleMenuSequence(false));
-		oldSequence.Append(temp.transform.DOMoveX(_view.Right.position.x, 1f));
-		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
-		Sequence newSequence = DOTween.Sequence();
-		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
-		newSequence.Append(leftCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
-		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
-		newSequence.Join(RoleMenuSequence(true));
-		mainSequence.Join(oldSequence);
-		mainSequence.Join(newSequence);
-		mainSequence.OnComplete(() =>
-		{
-			characterPool.Recycle(temp);
-			_entity.isBusy = false;
-		});
-		mainSequence.Play();
+		MonoService.Instance.StartCoroutine(ToLeftAsync());
+		//RoleController leftCharacter = characterPool.Get();
+		//leftCharacter.transform.position = _view.Left.position;
+		//RoleController temp = character;
+		//character = leftCharacter;
+		//Sequence mainSequence = DOTween.Sequence();
+		//Sequence oldSequence = DOTween.Sequence();
+		//oldSequence.Append(temp.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
+		//oldSequence.Join(RoleMenuSequence(false));
+		//oldSequence.Append(temp.transform.DOMoveX(_view.Right.position.x, 1f));
+		//oldSequence.Append(temp.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		//Sequence newSequence = DOTween.Sequence();
+		//newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
+		//newSequence.Append(leftCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
+		//newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		//newSequence.Join(RoleMenuSequence(true));
+		//mainSequence.Join(oldSequence);
+		//mainSequence.Join(newSequence);
+		//mainSequence.OnComplete(() =>
+		//{
+		//	characterPool.Recycle(temp);
+		//	_entity.isBusy = false;
+		//});
+		//mainSequence.Play();
 	}
 
 	/// <summary>
@@ -131,29 +141,30 @@ public class RoleSystemController : BaseController
 	{
 		if (_entity.isBusy) return;
 		_entity.isBusy = true;
-		RoleController rightCharacter = characterPool.Get();
-		rightCharacter.transform.position = _view.Right.position;
-		RoleController temp = character;
-		character = rightCharacter;
-		Sequence mainSequence = DOTween.Sequence();
-		Sequence oldSequence = DOTween.Sequence();
-		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
-		oldSequence.Join(RoleMenuSequence(false));
-		oldSequence.Append(temp.transform.DOMoveX(_view.Left.position.x, 1f));
-		oldSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
-		Sequence newSequence = DOTween.Sequence();
-		newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
-		newSequence.Append(rightCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
-		newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
-		newSequence.Join(RoleMenuSequence(true));
-		mainSequence.Join(oldSequence);
-		mainSequence.Join(newSequence);
-		mainSequence.OnComplete(() =>
-		{
-			characterPool.Recycle(temp);
-			_entity.isBusy = false;
-		});
-		mainSequence.Play();
+		MonoService.Instance.StartCoroutine(ToRightAsync());
+		//RoleController rightCharacter = characterPool.Get();
+		//rightCharacter.transform.position = _view.Right.position;
+		//RoleController temp = character;
+		//character = rightCharacter;
+		//Sequence mainSequence = DOTween.Sequence();
+		//Sequence oldSequence = DOTween.Sequence();
+		//oldSequence.Append(temp.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
+		//oldSequence.Join(RoleMenuSequence(false));
+		//oldSequence.Append(temp.transform.DOMoveX(_view.Left.position.x, 1f));
+		//oldSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		//Sequence newSequence = DOTween.Sequence();
+		//newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
+		//newSequence.Append(rightCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
+		//newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		//newSequence.Join(RoleMenuSequence(true));
+		//mainSequence.Join(oldSequence);
+		//mainSequence.Join(newSequence);
+		//mainSequence.OnComplete(() =>
+		//{
+		//	characterPool.Recycle(temp);
+		//	_entity.isBusy = false;
+		//});
+		//mainSequence.Play();
 	}
 
 	/// <summary>
@@ -179,6 +190,125 @@ public class RoleSystemController : BaseController
 	{
 		_view.SetSwitchActive(evt.isActive);
 		_view.SetPropertyActive(evt.isActive);
+		tableId = _globalSystem.GlobalModel.OutRoleTableId.Value;
+		MonoService.Instance.StartCoroutine(ToTargetAsync(tableId));
+	}
+
+	int tableId = 0;
+
+
+	private void OnInitCharacter(InitCharacterEvent evt)
+	{
+		MonoService.Instance.StartCoroutine(ToTargetAsync(evt.tableId));
+		this.tableId = evt.tableId;
+	}
+
+
+	IEnumerator ToTargetAsync(int index)
+	{
+		if (character)
+		{
+			_roleSystem.RecycleRole(character);
+			character = null;
+		}
+		Task<RoleController> task = _roleSystem.GetRole(_roleSystem.RoleArray[index].roleId);
+		yield return new WaitUntil(() => task.IsCompleted);
+		RoleController controller = task.Result;
+		character = controller;
+		character.transform.position = _view.Center.position;
+	}
+
+	IEnumerator ToLeftAsync()
+	{
+		if (tableId == 0) tableId = _roleSystem.RoleArray.Length - 1;
+		else
+		{
+			tableId--;
+		}
+		Task<RoleController> task = _roleSystem.GetRole(_roleSystem.RoleArray[tableId].roleId);
+		yield return new WaitUntil(() => task.IsCompleted);
+		RoleController leftCharacter = task.Result;
+		leftCharacter.gameObject.SetActive(true);
+		leftCharacter.transform.position = _view.Left.position;
+		RoleController temp = character;
+		character = leftCharacter;
+		Sequence mainSequence = DOTween.Sequence();
+		Sequence oldSequence = DOTween.Sequence();
+		oldSequence.Append(temp.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
+		oldSequence.Join(_view.SwitchSequence(false));
+		oldSequence.Join(_view.PropertySequence(false));
+		oldSequence.Append(temp.transform.DOMoveX(_view.Right.position.x, 1f));
+		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		Sequence newSequence = DOTween.Sequence();
+		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
+		newSequence.Append(leftCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
+		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		newSequence.Join(_view.SwitchSequence(true));
+		newSequence.Join(_view.PropertySequence(true));
+		mainSequence.Join(oldSequence);
+		mainSequence.Join(newSequence);
+		mainSequence.OnComplete(() =>
+		{
+			_roleSystem.RecycleRole(temp);
+			_entity.isBusy = false;
+		});
+		mainSequence.Play();
+	}
+
+	IEnumerator ToRightAsync()
+	{
+		if (tableId == _roleSystem.RoleArray.Length - 1) tableId = 0;
+		else tableId++;
+		Task<RoleController> task = _roleSystem.GetRole(_roleSystem.RoleArray[tableId].roleId);
+		Task<LockJson> lockTask = _roleSystem.GetLock(_roleSystem.RoleArray[tableId].roleId);
+
+		Task total = Task.WhenAll(task, lockTask);
+		yield return new WaitUntil(() => total.IsCompleted);
+		Debug.Log($"{_roleSystem.RoleArray[tableId].roleId},{lockTask.Result.isUnlock}");
+		bool isUnLock = lockTask.Result.isUnlock;
+
+		if (isUnLock)
+		{
+			//TODO: 获取属性信息
+			Task<PropertyJson> propertyTask = _roleSystem.GetProperty(_roleSystem.RoleArray[tableId].roleId);
+			Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(_roleSystem.RoleArray[tableId].roleId);
+			Task<StarLevelJson> starLevelTask = _roleSystem.GetStarLevel(_roleSystem.RoleArray[tableId].roleId);
+
+			//TODO: 判断等级，如果还可以提升，就需要读取升级代价信息
+		}
+		else
+		{
+			//TODO: 获取解锁条件
+		}
+
+		RoleController rightCharacter = task.Result;
+		rightCharacter.transform.position = _view.Right.position;
+		RoleController temp = character;
+		character = rightCharacter;
+		_view.SetRoleLockActive(false);
+		Sequence mainSequence = DOTween.Sequence();
+		Sequence oldSequence = DOTween.Sequence();
+		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
+		oldSequence.Join(RoleMenuSequence(false));
+		oldSequence.Join(_view.SwitchSequence(false));
+		oldSequence.Join(_view.PropertySequence(false));
+		oldSequence.Append(temp.transform.DOMoveX(_view.Left.position.x, 1f));
+		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		Sequence newSequence = DOTween.Sequence();
+		newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
+		newSequence.Append(rightCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
+		newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
+		newSequence.Join(_view.SwitchSequence(true));
+		if (isUnLock) newSequence.Join(_view.PropertySequence(true));
+		else newSequence.AppendCallback(() => { _view.SetRoleLockActive(true); });
+		mainSequence.Join(oldSequence);
+		mainSequence.Join(newSequence);
+		mainSequence.OnComplete(() =>
+		{
+			_roleSystem.RecycleRole(temp);
+			_entity.isBusy = false;
+		});
+		mainSequence.Play();
 	}
 
 }

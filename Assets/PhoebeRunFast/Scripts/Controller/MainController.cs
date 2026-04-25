@@ -1,6 +1,10 @@
 using System.Collections;
+using System.IO;
+using System.Threading.Tasks;
 using QMVC;
+using Unity.Plastic.Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 /// <summary>
 /// 主控制器
@@ -9,6 +13,7 @@ public class MainController : BaseController
 {
 
 	GlobalSystem _globalSystem;
+	RoleSystem _roleSystem;
 
 	/// <summary>
 	/// 初始化方法
@@ -19,6 +24,7 @@ public class MainController : BaseController
 
 		_globalSystem = this.GetSystem<GlobalSystem>();
 		_globalSystem.SetMainSingleton(this);
+		_roleSystem = this.GetSystem<RoleSystem>();
 
 		// 注册系统事件
 		this.RegisterEvent<LoadMainEvent>(OnLoadMain);
@@ -37,7 +43,7 @@ public class MainController : BaseController
 	/// <param name="evt">事件参数</param>
 	private void OnMainInitByTransitionOver(MainInitByTransitionOverEvent evt)
 	{
-
+		
 	}
 
 	/// <summary>
@@ -64,7 +70,14 @@ public class MainController : BaseController
 	/// <returns>协程</returns>
 	IEnumerator MainAssetLoad()
 	{
+		string path = Path.Combine(Application.streamingAssetsPath, "RoleTable/RoleTable.json");
+		Task<string> content = File.ReadAllTextAsync(path);
+		yield return new WaitUntil(() => content.IsCompleted);
+		RoleJson[] roles = JsonConvert.DeserializeObject<RoleJson[]>(content.Result);
+		_roleSystem.SetRoleArray(roles);
+		Debug.Log(roles.Length);
 		yield return new WaitForSeconds(1f);
+		this.SendCommand(new InitCharacterCommand(_globalSystem.GlobalModel.OutRoleTableId.Value));
 	}
 
 	/// <summary>

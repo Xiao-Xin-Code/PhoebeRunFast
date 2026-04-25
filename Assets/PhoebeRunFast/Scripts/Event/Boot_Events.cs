@@ -68,3 +68,14 @@ public class UpdateProgressDeltaEvent
 }
 
 #endregion
+
+
+public class InitCharacterEvent
+{
+	public int tableId;
+
+	public InitCharacterEvent(int tableId)
+	{
+		this.tableId = tableId;
+	}
+}

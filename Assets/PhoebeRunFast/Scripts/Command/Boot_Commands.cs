@@ -94,3 +94,19 @@ public class UpdateProgressDeltaCommand : AbstractCommand
 }
 
 #endregion
+
+
+public class InitCharacterCommand : AbstractCommand
+{
+	int tableId;
+
+	public InitCharacterCommand(int tableId)
+	{
+		this.tableId = tableId;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new InitCharacterEvent(tableId));
+	}
+}

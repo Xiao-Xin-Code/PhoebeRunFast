@@ -27,6 +27,7 @@ public class RoleSystemView : MonoBehaviour
 
 	[SerializeField] PropertyView propertyView;
 	[SerializeField] SwitchView switchView;
+	[SerializeField] RoleLockView roleLockView;
 
 	/// <summary>
 	/// 切换动画序列
@@ -60,6 +61,12 @@ public class RoleSystemView : MonoBehaviour
 	{
 		switchView.StateInit();
 		switchView.gameObject.SetActive(isActive);
+	}
+
+	public void SetRoleLockActive(bool isActive)
+	{
+		roleLockView.StateInit();
+		roleLockView.gameObject.SetActive(isActive);
 	}
 
 }

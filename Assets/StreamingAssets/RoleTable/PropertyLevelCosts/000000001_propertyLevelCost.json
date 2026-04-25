@@ -1,0 +1,87 @@
+{
+  "healthLevelCosts": [
+    {
+      "types": [
+        0
+      ],
+      "amounts": [
+        100
+      ]
+    },
+    {
+      "types": [
+        0
+      ],
+      "amounts": [
+        200
+      ]
+    },
+    {
+      "types": [
+        0
+      ],
+      "amounts": [
+        300
+      ]
+    },
+    {
+      "types": [
+        0
+      ],
+      "amounts": [
+        400
+      ]
+    },
+    {
+      "types": [
+        0
+      ],
+      "amounts": [
+        500
+      ]
+    },
+    {
+      "types": [
+        0
+      ],
+      "amounts": [
+        600
+      ]
+    },
+    {
+      "types": [
+        0
+      ],
+      "amounts": [
+        700
+      ]
+    },
+    {
+      "types": [
+        0
+      ],
+      "amounts": [
+        800
+      ]
+    },
+    {
+      "types": [
+        0
+      ],
+      "amounts": [
+        900
+      ]
+    },
+    {
+      "types": [
+        0
+      ],
+      "amounts": [
+        1000
+      ]
+    }
+  ],
+  "energyLevelCosts": [],
+  "defenseLevelCosts": [],
+  "cooldownReductionLevelCosts": []
+}

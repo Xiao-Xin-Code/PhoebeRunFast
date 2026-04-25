@@ -1,0 +1,8 @@
+{
+  "health": 100.0,
+  "energy": 50.0,
+  "attack": 20.0,
+  "defense": 10.0,
+  "speed": 5.0,
+  "cooldownReduction": 0.0
+}
