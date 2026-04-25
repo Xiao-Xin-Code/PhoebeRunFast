@@ -1,0 +1,14 @@
+[
+  {
+    "goodsId": "00000001",
+    "goodsType": 0,
+    "goodsName": "StarSound",
+    "goodsDesc": "Goods description"
+  },
+  {
+    "goodsId": "00000002",
+    "goodsType": 0,
+    "goodsName": "Glod",
+    "goodsDesc": "Goods description"
+  }
+]
