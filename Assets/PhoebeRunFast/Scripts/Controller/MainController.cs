@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using QMVC;
 using Unity.Plastic.Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 /// <summary>
 /// 主控制器
@@ -70,12 +69,17 @@ public class MainController : BaseController
 	/// <returns>协程</returns>
 	IEnumerator MainAssetLoad()
 	{
-		string path = Path.Combine(Application.streamingAssetsPath, "RoleTable/RoleTable.json");
-		Task<string> content = File.ReadAllTextAsync(path);
-		yield return new WaitUntil(() => content.IsCompleted);
-		RoleJson[] roles = JsonConvert.DeserializeObject<RoleJson[]>(content.Result);
-		_roleSystem.SetRoleArray(roles);
-		Debug.Log(roles.Length);
+		string rolesPath = Path.Combine(Application.streamingAssetsPath, "RoleTable/RoleTable.json");
+		string goodsPath = Path.Combine(Application.streamingAssetsPath, "GoodsTable/GoodsTable.json");
+		Task<string> rolesContent = File.ReadAllTextAsync(rolesPath);
+		Task<string> goodsContent = File.ReadAllTextAsync(goodsPath);
+		Task total = Task.WhenAll(rolesContent, goodsContent);
+		yield return new WaitUntil(() => total.IsCompleted);
+		RoleJson[] roles = JsonConvert.DeserializeObject<RoleJson[]>(rolesContent.Result);
+		GoodsJson[] goods = JsonConvert.DeserializeObject<GoodsJson[]>(goodsContent.Result);
+		_globalSystem.GlobalModel.SetRoleJsons(roles);
+		_globalSystem.GlobalModel.SetGoodsJsons(goods);
+		_roleSystem.SetRoleJsons(roles);
 		yield return new WaitForSeconds(1f);
 		this.SendCommand(new InitCharacterCommand(_globalSystem.GlobalModel.OutRoleTableId.Value));
 	}

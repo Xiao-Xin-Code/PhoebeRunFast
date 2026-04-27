@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using QMVC;
 using UnityEngine;
 
 public class PropertyController : BaseController
@@ -10,6 +11,23 @@ public class PropertyController : BaseController
 	{
 		base.OnInit();
 		_view.StateInit();
+
+		this.RegisterEvent<SetRoleStarEvent>(OnSetRoleStar);
+		this.RegisterEvent<SetRolePropertyEvent>(OnSetRoleProperty);
+
 		gameObject.SetActive(false);
+	}
+
+
+
+
+	private void OnSetRoleStar(SetRoleStarEvent evt)
+	{
+
+	}
+
+	private void OnSetRoleProperty(SetRolePropertyEvent evt)
+	{
+
 	}
 }

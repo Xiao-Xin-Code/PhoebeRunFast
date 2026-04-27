@@ -80,3 +80,26 @@ public class ToRightRoleEvent
 {
 
 }
+
+
+public class SetRoleStarEvent
+{
+	public int starLevel;
+
+	public SetRoleStarEvent(int starLevel)
+	{
+		this.starLevel = starLevel;
+	}
+}
+
+public class SetRolePropertyEvent
+{
+	public int[] levles;
+
+	public SetRolePropertyEvent(params int[] levels)
+	{
+		this.levles = levels;
+	}
+}
+
+

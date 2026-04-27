@@ -42,6 +42,8 @@ public class GlobalSystem : AbstractSystem
     #endregion
 
 
+
+
     protected override void OnInit()
     {
         _globalModel = this.GetModel<GlobalModel>();

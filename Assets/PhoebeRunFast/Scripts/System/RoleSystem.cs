@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 public class RoleSystem : AbstractSystem
 {
-	RoleJson[] roleArray = new RoleJson[] { };
     Dictionary<string, RoleJson> roleJsons = new Dictionary<string, RoleJson>();
 
 	Dictionary<string, InfoJson> infoJsons = new Dictionary<string, InfoJson>();
@@ -27,12 +26,8 @@ public class RoleSystem : AbstractSystem
 
 	Transform rolesParent;
 
-
-	public RoleJson[] RoleArray => roleArray;
-
-	public void SetRoleArray(RoleJson[] jsons)
+	public void SetRoleJsons(RoleJson[] jsons)
 	{
-		roleArray = jsons;
 		roleJsons = new Dictionary<string, RoleJson>();
 		foreach (var item in jsons)
 		{
