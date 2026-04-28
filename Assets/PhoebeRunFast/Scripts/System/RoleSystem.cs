@@ -41,6 +41,15 @@ public class RoleSystem : AbstractSystem
 		roleController.transform.SetParent(rolesParent);
 	}
 
+	public void RecycleAllRole()
+	{
+		foreach (var item in roles) 
+		{
+			item.Value.gameObject.SetActive(false);
+			item.Value.transform.SetParent(rolesParent);
+		}
+	}
+
 	public async Task<RoleController> GetRole(string roleId)
     {
         if (roles.ContainsKey(roleId))

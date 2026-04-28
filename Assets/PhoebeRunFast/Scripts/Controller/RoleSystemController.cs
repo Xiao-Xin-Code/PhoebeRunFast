@@ -239,6 +239,7 @@ public class RoleSystemController : BaseController
 		yield return new WaitUntil(() => task.IsCompleted);
 		RoleController controller = task.Result;
 		character = controller;
+		Debug.Log(_view);
 		character.transform.position = _view.Center.position;
 
 		//TODO: 确定状态
@@ -374,6 +375,21 @@ public class RoleSystemController : BaseController
 	#endregion
 
 
+
+	protected override void OnDeInit()
+	{
+		base.OnDeInit();
+
+		MonoService.Instance.StopCoroutine(targetCoroutine);
+		MonoService.Instance.StopCoroutine(leftCoroutine);
+		MonoService.Instance.StopCoroutine(rightCoroutine);
+
+		this.UnRegisterEvent<RoleMenuActiveEvent>(OnRoleMenuActive);
+		this.UnRegisterEvent<ToLeftRoleEvent>(OnToLeftRole);
+		this.UnRegisterEvent<ToRightRoleEvent>(OnToRightRole);
+		this.UnRegisterEvent<InitCharacterEvent>(OnInitCharacter);
+		this.UnRegisterEvent<UpGradeLevelEvent>(OnUpGradeLevel);
+	}
 
 }
 

@@ -1,3 +1,44 @@
 {
-  "upgradeJsons": []
+  "upgradeJsons": [
+    {
+      "healthUpgrade": 10.0,
+      "energyUpgrade": 5.0,
+      "attackUpgrade": 2.0,
+      "defenseUpgrade": 1.0,
+      "speedUpgrade": 0.5,
+      "cooldownReductionUpgrade": 0.01
+    },
+    {
+      "healthUpgrade": 10.0,
+      "energyUpgrade": 5.0,
+      "attackUpgrade": 2.0,
+      "defenseUpgrade": 1.0,
+      "speedUpgrade": 0.5,
+      "cooldownReductionUpgrade": 0.01
+    },
+    {
+      "healthUpgrade": 10.0,
+      "energyUpgrade": 5.0,
+      "attackUpgrade": 2.0,
+      "defenseUpgrade": 1.0,
+      "speedUpgrade": 0.5,
+      "cooldownReductionUpgrade": 0.01
+    },
+    {
+      "healthUpgrade": 10.0,
+      "energyUpgrade": 5.0,
+      "attackUpgrade": 2.0,
+      "defenseUpgrade": 1.0,
+      "speedUpgrade": 0.5,
+      "cooldownReductionUpgrade": 0.01
+    },
+    {
+      "healthUpgrade": 10.0,
+      "energyUpgrade": 5.0,
+      "attackUpgrade": 2.0,
+      "defenseUpgrade": 1.0,
+      "speedUpgrade": 0.5,
+      "cooldownReductionUpgrade": 0.01
+    }
+  ]
 }

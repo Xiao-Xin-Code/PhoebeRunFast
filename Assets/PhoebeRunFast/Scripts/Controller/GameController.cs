@@ -158,8 +158,6 @@ public class GameController : BaseController
 		Debug.Log("天赋效果");
 
 		//TODO: 初始化界面
-
-		yield return new WaitForSeconds(5f);
 	}
 
 	/// <summary>

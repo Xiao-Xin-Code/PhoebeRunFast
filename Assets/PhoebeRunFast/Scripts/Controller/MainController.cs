@@ -90,7 +90,8 @@ public class MainController : BaseController
 	/// <returns>协程</returns>
 	IEnumerator MainAssetUnLoad()
 	{
-		yield return new WaitForSeconds(1f);
+		_roleSystem.RecycleAllRole();
+		yield return null;
 	}
 
 	/// <summary>
