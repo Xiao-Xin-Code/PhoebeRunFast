@@ -116,34 +116,35 @@ public class ToRightRoleCommand : AbstractCommand
 }
 
 
-public class SetRoleStarCommand : AbstractCommand
+public class ShowLevelCommand : AbstractCommand
 {
-	int starLevel;
-
-	public SetRoleStarCommand(int starLevel)
-	{
-		this.starLevel = starLevel;
-	}
-
-	protected override void OnExecute()
-	{
-		this.SendEvent(new SetRoleStarEvent(starLevel));
-	}
-}
-
-public class SetRolePropertyCommand : AbstractCommand
-{
+	string levelType;
 	int[] levels;
 
-	public SetRolePropertyCommand(params int[] levels)
+	public ShowLevelCommand(string levelType, params int[] levels)
 	{
+		this.levelType = levelType;
 		this.levels = levels;
 	}
 
 	protected override void OnExecute()
 	{
-		this.SendEvent(new SetRolePropertyEvent(levels));
+		this.SendEvent(new ShowLevelEvent(levelType, levels));
 	}
 }
 
+public class UpGradeLevelCommand : AbstractCommand
+{
+	string level;
+
+	public UpGradeLevelCommand(string level)
+	{
+		this.level = level;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new UpGradeLevelEvent(level));
+	}
+}
 

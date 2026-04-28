@@ -82,24 +82,27 @@ public class ToRightRoleEvent
 }
 
 
-public class SetRoleStarEvent
+public class ShowLevelEvent
 {
-	public int starLevel;
-
-	public SetRoleStarEvent(int starLevel)
+	public string levelType;
+	public int[] levels;
+	
+	public ShowLevelEvent(string levelType, params int[] levels)
 	{
-		this.starLevel = starLevel;
+		this.levelType = levelType;
+		this.levels = levels;
 	}
+
 }
 
-public class SetRolePropertyEvent
+public class UpGradeLevelEvent
 {
-	public int[] levles;
+	public string level;
 
-	public SetRolePropertyEvent(params int[] levels)
+	public UpGradeLevelEvent(string level)
 	{
-		this.levles = levels;
+		this.level = level;
 	}
-}
 
+}
 

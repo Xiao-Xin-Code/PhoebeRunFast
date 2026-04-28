@@ -256,6 +256,28 @@ public class RoleSystem : AbstractSystem
 	}
 
 
+	public async Task UpdateStarLevel(string roleId)
+	{
+		if (roleJsons.TryGetValue(roleId, out RoleJson json))
+		{
+			string path = Path.Combine(Application.streamingAssetsPath, "RoleTable", json.roleStarLevel);
+		    StarLevelJson data = await GetStarLevel(roleId);
+			string content = JsonConvert.SerializeObject(data);
+			await File.WriteAllTextAsync(path, content);
+		}
+	}
+
+	public async Task UpdatePropertyLevel(string roleId)
+	{
+		if (roleJsons.TryGetValue(roleId, out RoleJson json))
+		{
+			string path = Path.Combine(Application.streamingAssetsPath, "RoleTable", json.rolePropertyLevel);
+			PropertyLevelJson data = await GetPropertyLevel(roleId);
+			string content = JsonConvert.SerializeObject(data);
+			await File.WriteAllTextAsync(path, content);
+		}
+	}
+
 
 
 	protected override void OnInit()

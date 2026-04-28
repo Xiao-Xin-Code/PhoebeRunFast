@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -38,6 +39,7 @@ public class RoleSystemController : BaseController
 		this.RegisterEvent<ToLeftRoleEvent>(OnToLeftRole);
 		this.RegisterEvent<ToRightRoleEvent>(OnToRightRole);
 		this.RegisterEvent<InitCharacterEvent>(OnInitCharacter);
+		this.RegisterEvent<UpGradeLevelEvent>(OnUpGradeLevel);
 	}
 
 	Coroutine targetCoroutine;
@@ -112,8 +114,118 @@ public class RoleSystemController : BaseController
 	int tableId = 0;
 
 
-	
+	private void OnUpGradeLevel(UpGradeLevelEvent evt)
+	{
+		switch (evt.level)
+		{
+			case Consts.Star:
+				MonoService.Instance.StartCoroutine(StarUpgradeAsync());
+				break;
+			case Consts.Health:
+				MonoService.Instance.StartCoroutine(HealthUpgradeAsync());
+				break;
+			case Consts.Energy:
+				MonoService.Instance.StartCoroutine(EnergyUpgradeAsync());
+				break;
+			case Consts.Defense:
+				MonoService.Instance.StartCoroutine(DefenseUpgradeAsync());
+				break;
+			case Consts.CooldownReduction:
+				MonoService.Instance.StartCoroutine(CooldownReductionUpgradeAsync());
+				break;
+			default:
+				break;
+		}
+	}
 
+	#region 等级提升协程
+
+	IEnumerator StarUpgradeAsync()
+	{
+		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
+		Task<StarLevelJson> starTask = _roleSystem.GetStarLevel(roleId);
+		yield return new WaitUntil(() => starTask.IsCompleted);
+		if (starTask.Result.starLevel.currentLevel < starTask.Result.starLevel.maxLevel)
+		{
+			starTask.Result.starLevel.currentLevel++;
+			this.SendCommand(new ShowLevelCommand(Consts.Star, starTask.Result.starLevel.baseLevel, starTask.Result.starLevel.currentLevel, starTask.Result.starLevel.maxLevel));
+			Task task = _roleSystem.UpdateStarLevel(roleId);
+			yield return new WaitUntil(() => task.IsCompleted);
+
+			//TODO: 处理当前状态
+		}
+	}
+
+	IEnumerator HealthUpgradeAsync()
+	{
+		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
+		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
+		yield return new WaitUntil(() => propertyLevelTask.IsCompleted);
+		if (propertyLevelTask.Result.healthLevel.currentLevel < propertyLevelTask.Result.healthLevel.maxLevel)
+		{
+			propertyLevelTask.Result.healthLevel.currentLevel++;
+			this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, propertyLevelTask.Result.healthLevel.currentLevel, propertyLevelTask.Result.healthLevel.maxLevel));
+
+			Task task = _roleSystem.UpdatePropertyLevel(roleId);
+			yield return new WaitUntil(() => task.IsCompleted);
+
+			//TODO: 处理当前状态
+		}
+	}
+
+	IEnumerator EnergyUpgradeAsync()
+	{
+		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
+		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
+		yield return new WaitUntil(() => propertyLevelTask.IsCompleted);
+		if (propertyLevelTask.Result.energyLevel.currentLevel < propertyLevelTask.Result.energyLevel.maxLevel)
+		{
+			propertyLevelTask.Result.energyLevel.currentLevel++;
+			this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, propertyLevelTask.Result.energyLevel.currentLevel, propertyLevelTask.Result.energyLevel.maxLevel));
+
+			Task task = _roleSystem.UpdatePropertyLevel(roleId);
+			yield return new WaitUntil(() => task.IsCompleted);
+
+			//TODO: 处理当前状态
+
+		}
+	}
+
+	IEnumerator DefenseUpgradeAsync()
+	{
+		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
+		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
+		yield return new WaitUntil(() => propertyLevelTask.IsCompleted);
+		if (propertyLevelTask.Result.defenseLevel.currentLevel < propertyLevelTask.Result.defenseLevel.maxLevel)
+		{
+			propertyLevelTask.Result.defenseLevel.currentLevel++;
+			this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, propertyLevelTask.Result.defenseLevel.currentLevel, propertyLevelTask.Result.defenseLevel.maxLevel));
+			Task task = _roleSystem.UpdatePropertyLevel(roleId);
+			yield return new WaitUntil(() => task.IsCompleted);
+
+			//TODO: 处理当前状态
+		}
+	}
+
+	IEnumerator CooldownReductionUpgradeAsync()
+	{
+		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
+		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
+		yield return new WaitUntil(() => propertyLevelTask.IsCompleted);
+		if (propertyLevelTask.Result.cooldownReductionLevel.currentLevel < propertyLevelTask.Result.cooldownReductionLevel.maxLevel)
+		{
+			propertyLevelTask.Result.cooldownReductionLevel.currentLevel++;
+			this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, propertyLevelTask.Result.cooldownReductionLevel.currentLevel, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
+			Task task = _roleSystem.UpdatePropertyLevel(roleId);
+			yield return new WaitUntil(() => task.IsCompleted);
+
+			//TODO: 处理当前状态
+		}
+	}
+
+	#endregion
+
+	#region 协程
 
 	IEnumerator ToTargetAsync(int index)
 	{
@@ -128,6 +240,9 @@ public class RoleSystemController : BaseController
 		RoleController controller = task.Result;
 		character = controller;
 		character.transform.position = _view.Center.position;
+
+		//TODO: 确定状态
+
 	}
 
 	IEnumerator ToLeftAsync()
@@ -151,24 +266,25 @@ public class RoleSystemController : BaseController
 		character = leftCharacter;
 
 		bool isUnLock = lockTask.Result.isUnlock;
-		if (isUnLock) 
+		if (isUnLock)
 		{
 			Task<StarLevelJson> starLevelTask = _roleSystem.GetStarLevel(roleId);
 			Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
 			Task levelTask = Task.WhenAll(starLevelTask, propertyLevelTask);
 			yield return new WaitUntil(() => levelTask.IsCompleted);
 
-			//TODO: 设置星级属性
-			this.SendCommand(new SetRoleStarCommand(starLevelTask.Result.starLevel.currentLevel));
-			this.SendCommand(new SetRolePropertyCommand(propertyLevelTask.Result.healthLevel.currentLevel, propertyLevelTask.Result.energyLevel.currentLevel, propertyLevelTask.Result.defenseLevel.currentLevel, propertyLevelTask.Result.cooldownReductionLevel.currentLevel));
-			
+			this.SendCommand(new ShowLevelCommand(Consts.Star, starLevelTask.Result.starLevel.baseLevel, starLevelTask.Result.starLevel.currentLevel, starLevelTask.Result.starLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, propertyLevelTask.Result.healthLevel.currentLevel, propertyLevelTask.Result.healthLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, propertyLevelTask.Result.energyLevel.currentLevel, propertyLevelTask.Result.energyLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, propertyLevelTask.Result.defenseLevel.currentLevel, propertyLevelTask.Result.defenseLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, propertyLevelTask.Result.cooldownReductionLevel.currentLevel, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
 		}
 		else
 		{
 
 		}
 
-
+		_view.SetRoleLockActive(false);
 
 		Sequence mainSequence = DOTween.Sequence();
 		Sequence oldSequence = DOTween.Sequence();
@@ -182,7 +298,8 @@ public class RoleSystemController : BaseController
 		newSequence.Append(leftCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
 		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
 		newSequence.Join(_view.SwitchSequence(true));
-		newSequence.Join(_view.PropertySequence(true));
+		if (isUnLock) newSequence.Join(_view.PropertySequence(true));
+		else newSequence.AppendCallback(() => { _view.SetRoleLockActive(true); });
 		mainSequence.Join(oldSequence);
 		mainSequence.Join(newSequence);
 		mainSequence.OnComplete(() =>
@@ -207,44 +324,16 @@ public class RoleSystemController : BaseController
 
 		if (isUnLock)
 		{
-			//TODO: 获取属性信息
-			Task<PropertyJson> propertyTask = _roleSystem.GetProperty(roleId);
-			Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
 			Task<StarLevelJson> starLevelTask = _roleSystem.GetStarLevel(roleId);
-
-			//TODO: 判断等级，如果还可以提升，就需要读取升级代价信息
-
-			Task levelTask = Task.WhenAll(propertyTask, starLevelTask, propertyLevelTask);
+			Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
+			Task levelTask = Task.WhenAll(starLevelTask, propertyLevelTask);
 			yield return new WaitUntil(() => levelTask.IsCompleted);
 
-			//TODO: 设置等级状态
-
-			if(starLevelTask.Result.starLevel.currentLevel == starLevelTask.Result.starLevel.maxLevel)
-			{
-
-			}
-
-			#region 属性设置
-
-			if (propertyLevelTask.Result.healthLevel.currentLevel == propertyLevelTask.Result.healthLevel.maxLevel)
-			{
-
-			}
-			if (propertyLevelTask.Result.energyLevel.currentLevel == propertyLevelTask.Result.energyLevel.maxLevel)
-			{
-
-			}
-			if (propertyLevelTask.Result.defenseLevel.currentLevel == propertyLevelTask.Result.defenseLevel.maxLevel)
-			{
-
-			}
-			if (propertyLevelTask.Result.cooldownReductionLevel.currentLevel == propertyLevelTask.Result.cooldownReductionLevel.maxLevel)
-			{
-
-			}
-
-			#endregion
-
+			this.SendCommand(new ShowLevelCommand(Consts.Star, starLevelTask.Result.starLevel.baseLevel, starLevelTask.Result.starLevel.currentLevel, starLevelTask.Result.starLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, propertyLevelTask.Result.healthLevel.currentLevel, propertyLevelTask.Result.healthLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, propertyLevelTask.Result.energyLevel.currentLevel, propertyLevelTask.Result.energyLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, propertyLevelTask.Result.defenseLevel.currentLevel, propertyLevelTask.Result.defenseLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, propertyLevelTask.Result.cooldownReductionLevel.currentLevel, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
 		}
 		else
 		{
@@ -281,6 +370,10 @@ public class RoleSystemController : BaseController
 		});
 		mainSequence.Play();
 	}
+
+	#endregion
+
+
 
 }
 

@@ -16,6 +16,11 @@ public class PlayerController : BaseController
 
     PlayerEntity _entity;
 
+
+    float currentSpeed;
+
+
+
     protected override void OnInit()
     {
         base.OnInit();
@@ -27,7 +32,7 @@ public class PlayerController : BaseController
     private void MoveForward()
     {
         Vector3 velocity = _view.RB.velocity;
-        velocity.z = 0;//currentSpeed;
+        velocity.z = currentSpeed;
         _view.RB.velocity = velocity;
     }
 
