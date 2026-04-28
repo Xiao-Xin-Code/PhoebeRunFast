@@ -157,6 +157,8 @@ public class GameController : BaseController
 		//TODO: 应用天赋效果
 		Debug.Log("天赋效果");
 
+		//TODO: 初始化界面
+
 		yield return new WaitForSeconds(5f);
 	}
 
