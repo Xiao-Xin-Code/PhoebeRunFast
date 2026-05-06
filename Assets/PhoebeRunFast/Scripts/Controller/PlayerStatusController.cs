@@ -29,7 +29,6 @@ public class PlayerStatusController : BaseController
 
 	private void Start()
 	{
-		Debug.Log($"{_globalSystem},{_globalSystem.GameSingleton}");
 		_globalSystem.GameSingleton.GameEntity.Health.Register(OnHealthChanged);
 		_globalSystem.GameSingleton.GameEntity.Energy.Register(OnManaChanged);
 	}
@@ -55,8 +54,8 @@ public class PlayerStatusController : BaseController
     {
         base.OnDeInit();
 
-        // 注销事件
-        _entity.Health.UnRegister(OnHealthChanged);
-        _entity.Mana.UnRegister(OnManaChanged);
-    }
+		// 注销事件
+		_globalSystem.GameSingleton.GameEntity.Health.UnRegister(OnHealthChanged);
+		_globalSystem.GameSingleton.GameEntity.Energy.UnRegister(OnManaChanged);
+	}
 }

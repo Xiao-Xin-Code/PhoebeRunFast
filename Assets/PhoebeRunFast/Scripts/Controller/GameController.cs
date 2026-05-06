@@ -67,6 +67,8 @@ public class GameController : BaseController
 		//TODO: 初始可以是一个开场动画（实时）
 		//播放
 		Debug.Log("开场动画");
+
+		_globalSystem.GameSingleton.GameEntity.GameState.Value = GameState.Running;
 	}
 
 	private void OnGameReset(GameResetEvent evt)

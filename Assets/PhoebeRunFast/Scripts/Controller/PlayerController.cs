@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Frame;
 using QMVC;
 using UnityEngine;
@@ -17,7 +16,7 @@ public class PlayerController : BaseController
     PlayerEntity _entity;
 
 
-    float currentSpeed;
+    float currentSpeed = 5;
 
 
 
@@ -29,7 +28,34 @@ public class PlayerController : BaseController
 
         Debug.Log("注册");
         this.RegisterEvent<SetPlayerRoleEvent>(OnSetPlayerRole);
+
+        MonoService.Instance.AddFixedUpdateListener(OnFixedFixedUpdate);
     }
+
+
+    private void OnFixedFixedUpdate()
+    {
+        switch (_globalSystem.GameSingleton.GameEntity.GameState.Value)
+        {
+            case GameState.Ready:
+                break;
+            case GameState.Running:
+                MoveForward();
+                break;
+            case GameState.Paused:
+				Vector3 velocity = _view.RB.velocity;
+				velocity.z = 0;
+				_view.RB.velocity = velocity;
+				break;
+            case GameState.Over:
+                break;
+            default:
+                break;
+        }
+    }
+
+
+
 
     //MoveForward
     private void MoveForward()

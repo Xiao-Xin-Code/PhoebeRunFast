@@ -18,7 +18,7 @@ public class BootController : BaseController
 		_globalSystem = this.GetSystem<GlobalSystem>();
 		_globalSystem.SetBootSingleton(this);
 
-		MonoService.Instance.RemoveAllUpdateListeners();
+		MonoService.Instance.Init();
 	}
 
 

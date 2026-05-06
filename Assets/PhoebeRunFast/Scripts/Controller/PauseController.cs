@@ -8,12 +8,13 @@ public class PauseController : BaseController
 {
     [SerializeField] PauseView _view;
 
+    GlobalSystem _globalSystem;
     GlobalModel _globalModel;
 
 	protected override void OnInit()
 	{
 		base.OnInit();
-
+        _globalSystem = this.GetSystem<GlobalSystem>();
 		_globalModel = this.GetModel<GlobalModel>();
 
         _view.RegisterContinuePressed(OnContinuePressed);
@@ -30,8 +31,13 @@ public class PauseController : BaseController
     private void OnContinuePressed()
     {
 		Sequence sequence = _view.ActiveSequence(false);
+        sequence.AppendInterval(3f);
         //关闭-启动倒计时-结束后开启
-        sequence.OnComplete(()=>gameObject.SetActive(false));
+        sequence.OnComplete(() =>
+        {
+            gameObject.SetActive(false);
+            _globalSystem.GameSingleton.GameEntity.GameState.Value = GameState.Running;
+        });
         sequence.Play();
 	}
 
@@ -49,6 +55,7 @@ public class PauseController : BaseController
 
     private void OnGamePause(GamePauseEvent evt)
     {
+        _globalSystem.GameSingleton.GameEntity.GameState.Value = GameState.Paused;
         _view.StateInit();
         gameObject.SetActive(true);
         _view.ActiveSequence(true).Play();

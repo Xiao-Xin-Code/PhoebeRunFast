@@ -3,7 +3,6 @@ namespace Frame
     using System.Collections;
     using UnityEngine;
     using UnityEngine.Events;
-    using UnityEngine.UI;
 
     /// <summary>
     /// Mono服务
@@ -12,8 +11,11 @@ namespace Frame
     {
         public MonoService() { }
 
-        #region 协程
-        public Coroutine StartCoroutine(IEnumerator routine)
+
+        public void Init() => MonoRuntime.Instance.GetInstanceID();
+
+		#region 协程
+		public Coroutine StartCoroutine(IEnumerator routine)
         {
             if (routine != null)
             {
