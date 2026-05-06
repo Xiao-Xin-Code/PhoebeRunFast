@@ -30,6 +30,13 @@ public class PlayerController : BaseController
         this.RegisterEvent<SetPlayerRoleEvent>(OnSetPlayerRole);
 
         MonoService.Instance.AddFixedUpdateListener(OnFixedFixedUpdate);
+
+
+        //绑定Inputs触发
+        _globalSystem.Inputs.Player.Left.performed += callback => { Debug.Log("Left"); };
+        _globalSystem.Inputs.Player.Right.performed += callback => { Debug.Log("Right"); };
+        _globalSystem.Inputs.Player.Jump.performed += callback => { Debug.Log("Jump"); };
+        _globalSystem.Inputs.Player.Slow.performed += callback => { Debug.Log("Slow"); };
     }
 
 
@@ -69,6 +76,11 @@ public class PlayerController : BaseController
     private void SwitchLine(int targetLane)
     {
         float targetX = _globalSystem.GameSingleton.GetLine(targetLane).position.x;
+
+        //如果当前Line不相同，执行运行动作
+        //移动到指定位置，需要平滑移动
+        Vector3 targetPosition = new Vector3(targetX, _view.transform.position.y, _view.transform.position.z);
+        _view.transform.position = Vector3.Lerp(_view.transform.position, targetPosition, 0.1f);
     }
     
     //Jump
@@ -89,7 +101,6 @@ public class PlayerController : BaseController
 
     private void OnSetPlayerRole(SetPlayerRoleEvent evt)
     {
-        Debug.Log("设置：" + evt.role);
         _roleController = evt.role;
 		_roleController.transform.SetParent(transform);
 		_roleController.transform.localPosition = Vector3.zero;

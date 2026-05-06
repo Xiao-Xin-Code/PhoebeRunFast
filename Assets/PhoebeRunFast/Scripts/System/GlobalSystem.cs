@@ -8,6 +8,11 @@ public class GlobalSystem : AbstractSystem
     public GlobalModel GlobalModel => _globalModel;
 
 
+    InputActions inputActions;
+
+    public InputActions Inputs => inputActions;
+
+
     #region 伪单例，方便在全局访问其它阶段总控
     BootController bootSingleton;
     HomeController homeSingleton;
@@ -47,5 +52,7 @@ public class GlobalSystem : AbstractSystem
     protected override void OnInit()
     {
         _globalModel = this.GetModel<GlobalModel>();
+        inputActions = new InputActions();
+        inputActions.Enable();  // 启用输入系统
     }
 }
