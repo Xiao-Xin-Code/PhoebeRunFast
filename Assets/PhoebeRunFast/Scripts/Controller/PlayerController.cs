@@ -1,6 +1,7 @@
 using Frame;
 using QMVC;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// 玩家控制器
@@ -18,6 +19,9 @@ public class PlayerController : BaseController
 
     float currentSpeed = 5;
 
+    bool _isLeftPressed = false;
+    bool _isRightPressed = false;
+
 
 
     protected override void OnInit()
@@ -33,10 +37,10 @@ public class PlayerController : BaseController
 
 
         //绑定Inputs触发
-        _globalSystem.Inputs.Player.Left.performed += callback => { Debug.Log("Left"); };
-        _globalSystem.Inputs.Player.Right.performed += callback => { Debug.Log("Right"); };
-        _globalSystem.Inputs.Player.Jump.performed += callback => { Debug.Log("Jump"); };
-        _globalSystem.Inputs.Player.Slow.performed += callback => { Debug.Log("Slow"); };
+        _globalSystem.Inputs.Player.Left.performed += OnLeftPressed;
+        _globalSystem.Inputs.Player.Right.performed += OnRightPressed;
+        _globalSystem.Inputs.Player.Jump.performed += OnJumpPressed;
+        _globalSystem.Inputs.Player.Slow.performed += OnSlowPressed;
     }
 
 
@@ -60,6 +64,29 @@ public class PlayerController : BaseController
                 break;
         }
     }
+
+
+
+    private void OnLeftPressed(InputAction.CallbackContext context)
+    {
+
+    }
+
+    private void OnRightPressed(InputAction.CallbackContext context)
+    {
+
+    }
+
+    private void OnJumpPressed(InputAction.CallbackContext context)
+    {
+
+    }
+
+    private void OnSlowPressed(InputAction.CallbackContext context)
+    {
+
+    }
+
 
 
 
