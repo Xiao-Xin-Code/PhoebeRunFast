@@ -62,3 +62,16 @@ public class GameOverEvent
 }
 
 
+
+public class SetPlayerRoleEvent
+{
+	public RoleController role;
+
+	public SetPlayerRoleEvent(RoleController role)
+	{
+		this.role = role;
+	}
+}
+
+
+

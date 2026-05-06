@@ -87,3 +87,23 @@ public class GameOverCommand : AbstractCommand
 		this.SendEvent<GameOverEvent>();
 	}
 }
+
+
+
+public class SetPlayerRoleCommand : AbstractCommand
+{
+	RoleController role;
+
+	public SetPlayerRoleCommand(RoleController role)
+	{
+		this.role = role;
+	}
+
+	protected override void OnExecute()
+	{
+		UnityEngine.Debug.Log("设置：" + role);
+		this.SendEvent(new SetPlayerRoleEvent(role));
+	}
+}
+
+

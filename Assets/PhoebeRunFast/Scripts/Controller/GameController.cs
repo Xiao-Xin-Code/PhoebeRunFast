@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Frame;
@@ -43,19 +44,18 @@ public class GameController : BaseController
 	protected override void OnInit()
 	{
 		base.OnInit();
-
+		_entity = new GameEntity();
 		_globalSystem = this.GetSystem<GlobalSystem>();
 		_globalSystem.SetGameSingleton(this);
-
 		_roleSystem = this.GetSystem<RoleSystem>();
-
+		Debug.Log("GameInit");
 		// 注册系统事件
 		this.RegisterEvent<LoadGameEvent>(OnLoadGame);
 		this.RegisterEvent<UnLoadGameEvent>(OnUnLoadGame);
 		this.RegisterEvent<GameInitByTransitionOverEvent>(OnGameInitByTransitionOver);
 		this.RegisterEvent<GameResetEvent>(OnGameReset);
 
-		_entity = new GameEntity();
+		
 	}
 
 	/// <summary>
@@ -121,43 +121,60 @@ public class GameController : BaseController
 
 		//TODO: 设置到PlayerController上
 		Debug.Log("TODO:将模型设置到Player上");
+		Task<RoleController> task = _roleSystem.GetRole(roleId);
+		yield return new WaitUntil(() => task.IsCompleted);
+		RoleController controller = task.Result;
+		//设置到Player上
+		this.SendCommand(new SetPlayerRoleCommand(controller));
 
-		Debug.Log($"{_globalSystem.GameSingleton},{_globalSystem.GameSingleton.GameEntity},{_globalSystem.GameSingleton.GameEntity.roleData}");
-		_globalSystem.GameSingleton.GameEntity.roleData.property.health = propertyTask.Result.health;
-		_globalSystem.GameSingleton.GameEntity.roleData.property.energy = propertyTask.Result.energy;
-		_globalSystem.GameSingleton.GameEntity.roleData.property.defense = propertyTask.Result.defense;
-		_globalSystem.GameSingleton.GameEntity.roleData.property.cooldownReduction = propertyTask.Result.cooldownReduction;
+		Debug.Log($"{_globalSystem.GameSingleton},{_globalSystem.GameSingleton.GameEntity}");
+
+		float health = 0, energy = 0, attack = 0, defense = 0, speed = 0, cooldownReduction = 0;
+
+		health = propertyTask.Result.health;
+		energy = propertyTask.Result.energy;
+		defense = propertyTask.Result.defense;
+		cooldownReduction = propertyTask.Result.cooldownReduction;
 		for (int i = 0; i < propertyLevelTask.Result.healthLevel.currentLevel; i++)
 		{
-			_globalSystem.GameSingleton.GameEntity.roleData.property.health += propertyUpgradeTask.Result.healthUpgrade[i];
+			health += propertyUpgradeTask.Result.healthUpgrade[i];
 		}
 		for (int i = 0; i < propertyLevelTask.Result.energyLevel.currentLevel; i++)
 		{
-			_globalSystem.GameSingleton.GameEntity.roleData.property.energy += propertyUpgradeTask.Result.energyUpgrade[i];
+			energy += propertyUpgradeTask.Result.energyUpgrade[i];
 		}
 		for (int i = 0; i < propertyLevelTask.Result.defenseLevel.currentLevel; i++)
 		{
-			_globalSystem.GameSingleton.GameEntity.roleData.property.defense += propertyUpgradeTask.Result.defenseUpgrade[i];
+			defense += propertyUpgradeTask.Result.defenseUpgrade[i];
 		}
 		for (int i = 0; i < propertyLevelTask.Result.cooldownReductionLevel.currentLevel; i++)
 		{
-			_globalSystem.GameSingleton.GameEntity.roleData.property.cooldownReduction += propertyUpgradeTask.Result.cooldownReductionUpgrade[i];
+			cooldownReduction += propertyUpgradeTask.Result.cooldownReductionUpgrade[i];
 		}
 
 		for(int i = 0; i < starLevelTask.Result.starLevel.currentLevel; i++)
 		{
-			_globalSystem.GameSingleton.GameEntity.roleData.property.health += starUpgradeTask.Result.upgradeJsons[i].healthUpgrade;
-			_globalSystem.GameSingleton.GameEntity.roleData.property.energy += starUpgradeTask.Result.upgradeJsons[i].energyUpgrade;
-			_globalSystem.GameSingleton.GameEntity.roleData.property.attack += starUpgradeTask.Result.upgradeJsons[i].attackUpgrade;
-			_globalSystem.GameSingleton.GameEntity.roleData.property.defense += starUpgradeTask.Result.upgradeJsons[i].defenseUpgrade;
-			_globalSystem.GameSingleton.GameEntity.roleData.property.speed += starUpgradeTask.Result.upgradeJsons[i].speedUpgrade;
-			_globalSystem.GameSingleton.GameEntity.roleData.property.cooldownReduction += starUpgradeTask.Result.upgradeJsons[i].cooldownReductionUpgrade;
+			health += starUpgradeTask.Result.upgradeJsons[i].healthUpgrade;
+			energy += starUpgradeTask.Result.upgradeJsons[i].energyUpgrade;
+			attack += starUpgradeTask.Result.upgradeJsons[i].attackUpgrade;
+			defense += starUpgradeTask.Result.upgradeJsons[i].defenseUpgrade;
+			speed += starUpgradeTask.Result.upgradeJsons[i].speedUpgrade;
+			cooldownReduction += starUpgradeTask.Result.upgradeJsons[i].cooldownReductionUpgrade;
 		}
 
 		//TODO: 应用天赋效果
 		Debug.Log("天赋效果");
 
 		//TODO: 初始化界面
+
+		_globalSystem.GameSingleton.GameEntity.RoleId.Value = roleId;
+		_globalSystem.GameSingleton.GameEntity.Health.Value = health;
+		_globalSystem.GameSingleton.GameEntity.Energy.Value = energy;
+		_globalSystem.GameSingleton.GameEntity.Attack.Value = attack;
+		_globalSystem.GameSingleton.GameEntity.Defense.Value = defense;
+		_globalSystem.GameSingleton.GameEntity.Speed.Value = speed;
+		_globalSystem.GameSingleton.GameEntity.CoolDownReduction.Value = cooldownReduction;
+
 	}
 
 	/// <summary>

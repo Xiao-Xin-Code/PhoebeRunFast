@@ -3,6 +3,10 @@ public class RoleData
 {
     public string roleId;
     public Property property = new Property();
+
+
+   
+
 }
 
 public class Property

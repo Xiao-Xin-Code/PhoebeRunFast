@@ -380,6 +380,12 @@ public class RoleSystemController : BaseController
 	{
 		base.OnDeInit();
 
+		if (character != null) 
+		{
+			_roleSystem.RecycleRole(character);
+			character = null;
+		}
+
 		MonoService.Instance.StopCoroutine(targetCoroutine);
 		MonoService.Instance.StopCoroutine(leftCoroutine);
 		MonoService.Instance.StopCoroutine(rightCoroutine);

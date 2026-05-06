@@ -26,6 +26,9 @@ public class PlayerController : BaseController
         base.OnInit();
         _globalSystem = this.GetSystem<GlobalSystem>();
         _entity = new PlayerEntity();
+
+        Debug.Log("注册");
+        this.RegisterEvent<SetPlayerRoleEvent>(OnSetPlayerRole);
     }
 
     //MoveForward
@@ -55,5 +58,16 @@ public class PlayerController : BaseController
     }
 
 
+
+
+
+    private void OnSetPlayerRole(SetPlayerRoleEvent evt)
+    {
+        Debug.Log("设置：" + evt.role);
+        _roleController = evt.role;
+		_roleController.transform.SetParent(transform);
+		_roleController.transform.localPosition = Vector3.zero;
+        _roleController.transform.eulerAngles = new Vector3(0, 180, 0); 
+    }
 
 }

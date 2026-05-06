@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,8 +7,12 @@ using UnityEngine.UI;
 /// </summary>
 public class PlayerStatusView : MonoBehaviour
 {
+    [SerializeField] Image healthBg;
     [SerializeField] Image healthBar;
+    [SerializeField] TMP_Text healthValue;
+    [SerializeField] Image manaBg;
     [SerializeField] Image manaBar;
+    [SerializeField] TMP_Text manaValue;
 
 
     /// <summary>
@@ -27,4 +32,18 @@ public class PlayerStatusView : MonoBehaviour
     {
         manaBar.fillAmount = currentMana;
     }
+
+
+
+    public void UpdateHealthValue(float value)
+    {
+        healthValue.text = value.ToString();
+    }
+
+    public void UpdateManaValue(float value)
+    {
+        manaValue.text = value.ToString();
+    }
+
+
 }
