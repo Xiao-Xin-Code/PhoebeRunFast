@@ -17,11 +17,15 @@ public class PlayerController : BaseController
     PlayerEntity _entity;
 
 
-    float currentSpeed = 5;
+    float forwardSpeed = 0;
+    float sideSpeed = 10;
+    float jumpSpeed = 7;
+    float gravity = 25;
+    float maxFallSpeed = 20;
 
-    bool _isLeftPressed = false;
-    bool _isRightPressed = false;
-
+    int currentLine = 1;
+    bool _isGrounded = true;
+    bool isJumping = false;
 
 
     protected override void OnInit()
@@ -51,12 +55,13 @@ public class PlayerController : BaseController
             case GameState.Ready:
                 break;
             case GameState.Running:
+                GroundCheck();
                 MoveForward();
+                SwitchLine();
+                ApplyGravity();
+                Debug.Log(_isGrounded);
                 break;
             case GameState.Paused:
-				Vector3 velocity = _view.RB.velocity;
-				velocity.z = 0;
-				_view.RB.velocity = velocity;
 				break;
             case GameState.Over:
                 break;
@@ -67,19 +72,28 @@ public class PlayerController : BaseController
 
 
 
+
+
     private void OnLeftPressed(InputAction.CallbackContext context)
     {
-
+        if (currentLine > 0) currentLine--;
     }
 
     private void OnRightPressed(InputAction.CallbackContext context)
     {
-
+        if (currentLine < _globalSystem.GameSingleton.GetLines().Length - 1) currentLine++;
     }
 
     private void OnJumpPressed(InputAction.CallbackContext context)
     {
-
+        if (_isGrounded && !isJumping)  
+        {
+            Vector3 velocity = _view.RB.velocity;
+            velocity.y = jumpSpeed;
+            _view.RB.velocity = velocity;
+            isJumping = true;
+            _isGrounded = false;
+        }
     }
 
     private void OnSlowPressed(InputAction.CallbackContext context)
@@ -95,25 +109,17 @@ public class PlayerController : BaseController
     private void MoveForward()
     {
         Vector3 velocity = _view.RB.velocity;
-        velocity.z = currentSpeed;
+        velocity.x = forwardSpeed;
         _view.RB.velocity = velocity;
     }
 
     //SwitchLine
-    private void SwitchLine(int targetLane)
+    private void SwitchLine()
     {
-        float targetX = _globalSystem.GameSingleton.GetLine(targetLane).position.x;
-
-        //如果当前Line不相同，执行运行动作
-        //移动到指定位置，需要平滑移动
-        Vector3 targetPosition = new Vector3(targetX, _view.transform.position.y, _view.transform.position.z);
-        _view.transform.position = Vector3.Lerp(_view.transform.position, targetPosition, 0.1f);
-    }
-    
-    //Jump
-    private void Jump()
-    {
-        
+        float targetX = _globalSystem.GameSingleton.GetLine(currentLine).position.x;
+        Vector3 currentPosition = transform.position;
+		currentPosition.x = Mathf.Lerp(currentPosition.x, targetX, sideSpeed * Time.fixedDeltaTime);
+        _view.RB.MovePosition(currentPosition);
     }
 
     //Slow
@@ -123,6 +129,32 @@ public class PlayerController : BaseController
     }
 
 
+    private void ApplyGravity()
+    {
+        Vector3 velocity = _view.RB.velocity;
+        if (!_isGrounded)
+        {
+            velocity.y -= gravity * Time.fixedDeltaTime;
+            velocity.y = Mathf.Max(velocity.y, -maxFallSpeed);
+        }
+        else if (velocity.y < 0) 
+        {
+            velocity.y = 0;
+        }
+		_view.RB.velocity = velocity;
+	}
+
+
+
+    private void GroundCheck()
+    {
+        bool wasGrounded = _isGrounded;
+		_isGrounded = Physics.CheckSphere(_view.GroundCheck.position, 0.1f, _view.GroundLayer);
+        if (_isGrounded && !wasGrounded)
+        {
+            isJumping = false;
+        }
+	}
 
 
 
