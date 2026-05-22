@@ -17,5 +17,6 @@ public class PhoebeRunFast : Architecture<PhoebeRunFast>
 		RegisterSystem(new StageSystem());
 		RegisterSystem(new GlobalSystem());
 		RegisterSystem(new RoleSystem());
+		RegisterSystem(new RoadSystem());
 	}
 }

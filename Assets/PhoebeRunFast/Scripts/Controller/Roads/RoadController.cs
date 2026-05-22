@@ -1,7 +1,7 @@
 
-public abstract class RoadController : BaseController
+public class RoadController : BaseController
 {
-    
+    public float distance = 20;
 
     protected override void OnInit()
     {

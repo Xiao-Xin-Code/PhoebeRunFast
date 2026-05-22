@@ -17,7 +17,7 @@ public class PlayerController : BaseController
     PlayerEntity _entity;
 
 
-    float forwardSpeed = 0;
+    float forwardSpeed = 5;
     float sideSpeed = 10;
     float jumpSpeed = 7;
     float gravity = 25;
@@ -59,9 +59,9 @@ public class PlayerController : BaseController
                 MoveForward();
                 SwitchLine();
                 ApplyGravity();
-                Debug.Log(_isGrounded);
                 break;
             case GameState.Paused:
+                _view.RB.velocity = Vector3.zero;
 				break;
             case GameState.Over:
                 break;
@@ -98,7 +98,7 @@ public class PlayerController : BaseController
 
     private void OnSlowPressed(InputAction.CallbackContext context)
     {
-
+        Slow();
     }
 
 
@@ -109,7 +109,7 @@ public class PlayerController : BaseController
     private void MoveForward()
     {
         Vector3 velocity = _view.RB.velocity;
-        velocity.x = forwardSpeed;
+        velocity.z = forwardSpeed;
         _view.RB.velocity = velocity;
     }
 
@@ -125,7 +125,8 @@ public class PlayerController : BaseController
     //Slow
     private void Slow()
     {
-        
+        _roleController.Roll();
+        Debug.Log("Slow");
     }
 
 

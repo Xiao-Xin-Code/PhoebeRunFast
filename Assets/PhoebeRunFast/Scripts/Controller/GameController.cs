@@ -12,8 +12,13 @@ public class GameController : BaseController
 {
 	[SerializeField] GameView _view;
 
+	[SerializeField] PlayerController _playerController;
+
+	public PlayerController PlayerController => _playerController;
+
 	GlobalSystem _globalSystem;
 	RoleSystem _roleSystem;
+	RoadSystem _roadSystem;
 
 
 	GameEntity _entity;
@@ -48,6 +53,7 @@ public class GameController : BaseController
 		_globalSystem = this.GetSystem<GlobalSystem>();
 		_globalSystem.SetGameSingleton(this);
 		_roleSystem = this.GetSystem<RoleSystem>();
+		_roadSystem = this.GetSystem<RoadSystem>();
 		Debug.Log("GameInit");
 		// 注册系统事件
 		this.RegisterEvent<LoadGameEvent>(OnLoadGame);
@@ -177,6 +183,8 @@ public class GameController : BaseController
 		_globalSystem.GameSingleton.GameEntity.Speed.Value = speed;
 		_globalSystem.GameSingleton.GameEntity.CoolDownReduction.Value = cooldownReduction;
 
+		_roadSystem.StartRoad();
+
 	}
 
 	/// <summary>
@@ -185,6 +193,7 @@ public class GameController : BaseController
 	/// <returns>协程</returns>
 	IEnumerator GameAssetUnLoad()
 	{
+		//主动回收RoleController
 		yield return new WaitForSeconds(5f);
 	}
 
