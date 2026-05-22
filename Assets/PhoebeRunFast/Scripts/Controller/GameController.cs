@@ -194,6 +194,8 @@ public class GameController : BaseController
 	IEnumerator GameAssetUnLoad()
 	{
 		//主动回收RoleController
+		_roleSystem.RecycleAllRole();
+		//主动回收RoadController对象池
 		yield return new WaitForSeconds(5f);
 	}
 
