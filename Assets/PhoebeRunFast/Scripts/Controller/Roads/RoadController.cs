@@ -1,3 +1,4 @@
+using UnityEngine;
 
 public class RoadController : BaseController
 {
@@ -8,5 +9,11 @@ public class RoadController : BaseController
         base.OnInit();
     }
 
+
+    public void Spawn()
+    {
+        //生成障碍物
+        Debug.Log("生成障碍物");
+    }
 
 }

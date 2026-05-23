@@ -32,6 +32,7 @@ public class RoadSystem : AbstractSystem
 		RoadController road = roadPools["Road"].Get();
 		road.transform.position = roads.Count > 0 ? roads[roads.Count - 1].transform.position + Vector3.forward * road.distance : Vector3.zero;
 		roads.Add(road);
+		road.Spawn();
 	}
 
 	public void StartRoad()
