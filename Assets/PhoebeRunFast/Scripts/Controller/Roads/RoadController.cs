@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RoadController : BaseController
+public abstract class RoadController : BaseController
 {
     public float distance = 20;
 
@@ -10,10 +10,11 @@ public class RoadController : BaseController
     }
 
 
-    public void Spawn()
+    public abstract void Spawn()
     {
         //生成障碍物
         Debug.Log("生成障碍物");
+        Debug.Log("生成收集物");
     }
 
 }
