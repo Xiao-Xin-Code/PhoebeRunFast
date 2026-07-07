@@ -4,6 +4,9 @@ public class GlobalModel : AbstractModel
 {
     public BindableProperty<Stage> Stage = new BindableProperty<Stage>(global::Stage.Home);
 
+    /// <summary>
+    /// 出战角色TableId 表格ID
+    /// </summary>
     public BindableProperty<int> OutRoleTableId = new BindableProperty<int>();
 
 

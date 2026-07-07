@@ -75,7 +75,7 @@ public class RoleSystemController : BaseController
 			MonoService.Instance.StopCoroutine(targetCoroutine);
 			targetCoroutine = null;
 		}
-		targetCoroutine = MonoService.Instance.StartCoroutine(ToTargetAsync(evt.tableId));
+		targetCoroutine = MonoService.Instance.StartCoroutine(ToTargetAsyncWithoutData(evt.tableId));
 		this.tableId = evt.tableId;
 	}
 
@@ -227,6 +227,28 @@ public class RoleSystemController : BaseController
 
 	#region 协程
 
+	/// <summary>
+	/// 转移到目标角色，但是不获取与设置角色详细数据
+	/// </summary>
+	/// <param name="index"></param>
+	/// <returns></returns>
+	IEnumerator ToTargetAsyncWithoutData(int index)
+	{
+		if (character)
+		{
+			_roleSystem.RecycleRole(character);
+			character = null;
+		}
+		string roleId = _globalSystem.GlobalModel.RoleJsons[index].roleId;
+		Task<RoleController> task = _roleSystem.GetRole(roleId);
+		yield return new WaitUntil(() => task.IsCompleted);
+		RoleController controller = task.Result;
+		character = controller;
+		Debug.Log(_view);
+		character.transform.position = _view.Center.position;
+	}
+
+
 	IEnumerator ToTargetAsync(int index)
 	{
 		if (character)
@@ -243,6 +265,17 @@ public class RoleSystemController : BaseController
 		character.transform.position = _view.Center.position;
 
 		//TODO: 确定状态
+
+		Task<StarLevelJson> starLevelTask = _roleSystem.GetStarLevel(roleId);
+		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
+		Task levelTask = Task.WhenAll(starLevelTask, propertyLevelTask);
+		yield return new WaitUntil(() => levelTask.IsCompleted);
+
+		this.SendCommand(new ShowLevelCommand(Consts.Star, starLevelTask.Result.starLevel.baseLevel, starLevelTask.Result.starLevel.currentLevel, starLevelTask.Result.starLevel.maxLevel));
+		this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, propertyLevelTask.Result.healthLevel.currentLevel, propertyLevelTask.Result.healthLevel.maxLevel));
+		this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, propertyLevelTask.Result.energyLevel.currentLevel, propertyLevelTask.Result.energyLevel.maxLevel));
+		this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, propertyLevelTask.Result.defenseLevel.currentLevel, propertyLevelTask.Result.defenseLevel.maxLevel));
+		this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, propertyLevelTask.Result.cooldownReductionLevel.currentLevel, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
 
 	}
 

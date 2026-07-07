@@ -19,5 +19,5 @@ public abstract class CollectibleController : BaseController
     //道具：
     //效果：加速，减速
     //特殊：
-    public CollectibleType type { get; private set; }
+    public CollectibleType type;
 }

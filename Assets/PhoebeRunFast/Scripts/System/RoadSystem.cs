@@ -20,8 +20,6 @@ public class RoadSystem : AbstractSystem
 	{
 		_globalSystem = this.GetSystem<GlobalSystem>();
 		roadParent = new GameObject("RoadsParent").transform;
-		RoadController road = Resources.Load<RoadController>("Road");
-		roadPools.Add("Road", new MonoPool<RoadController>(road, roadParent));
 	}
 
 
@@ -29,7 +27,7 @@ public class RoadSystem : AbstractSystem
 	private void Spawn()
 	{
 		//对象池生成
-		RoadController road = roadPools["Road"].Get();
+		RoadController road = GetRoad(GetRandomRoadType());
 		road.transform.position = roads.Count > 0 ? roads[roads.Count - 1].transform.position + Vector3.forward * road.distance : Vector3.zero;
 		roads.Add(road);
 		road.Spawn();
@@ -65,12 +63,35 @@ public class RoadSystem : AbstractSystem
 						break;
 					}
 					roads.RemoveAt(0);
-					roadPools["Road"].Recycle(road);
+					roadPools[road.roadType].Recycle(road);
 					yield return null;
 				}
 			}
 			yield return null;
 		}
 	}
+
+
+
+	private RoadController GetRoad(string roadType)
+	{
+		if(!roadPools.ContainsKey(roadType))
+		{
+			MonoPool<RoadController> pool = new MonoPool<RoadController>(Resources.Load<RoadController>("Road_Empty"), roadParent);
+			roadPools.Add(roadType, pool);
+		}
+		return roadPools[roadType].Get();	
+	}
+
+	//随机获取道路的规则
+	private string GetRandomRoadType()
+	{
+		string[] roadTypes = {"Road_Empty"};
+		int index = Random.Range(0, roadTypes.Length);
+		return roadTypes[index];
+	}
+
+
+
 
 }

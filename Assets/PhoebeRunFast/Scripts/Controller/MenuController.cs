@@ -118,6 +118,9 @@ public class MenuController : BaseController
 		switch (newmenu)
 		{
 			case global::Menu.Role:
+				//初始化菜单状态
+
+				//打开角色菜单
 				this.SendCommand(new RoleMenuActiveCommand(true));
 				break;
 			case global::Menu.BackPack:
