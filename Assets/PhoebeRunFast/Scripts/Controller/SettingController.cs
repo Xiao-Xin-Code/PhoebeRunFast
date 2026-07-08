@@ -33,5 +33,10 @@ public class SettingController : BaseController
 	}
 
 
+	protected override void OnDeInit()
+	{
+		base.OnDeInit();
+		this.UnRegisterEvent<SettingActiveEvent>(OnSettingActive);
+	}
 
 }

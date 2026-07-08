@@ -25,6 +25,11 @@ public class LevelUpgradeView : MonoBehaviour
 		upgradeBtn.onClick.RemoveListener(action);
 	}
 
+	public void UnRegisterUpGradePressedAllEvent()
+	{
+		upgradeBtn.onClick.RemoveAllListeners();
+	}
+
 	#endregion
 
 }

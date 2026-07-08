@@ -54,4 +54,15 @@ public class PropertyController : BaseController
 		}
 	}
 
+
+	protected override void OnDeInit()
+	{
+		base.OnDeInit();
+		starLevel.UnRegisterUpgradePressedAllEvent();
+		healthLevel.UnRegisterUpgradePressedAllEvent();
+		energyLevel.UnRegisterUpgradePressedAllEvent();
+		defenseLevel.UnRegisterUpgradePressedAllEvent();
+		cooldownReductionLevel.UnRegisterUpgradePressedAllEvent();
+		this.UnRegisterEvent<ShowLevelEvent>(OnShowLevel);
+	}
 }

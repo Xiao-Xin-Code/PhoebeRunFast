@@ -41,4 +41,9 @@ public class LevelUpgradeController : BaseController
 	{
 		_view.UnRegisterUpGradePressed(action);
 	}
+
+	public void UnRegisterUpGradePressedAllEvent()
+	{
+		_view.UnRegisterUpGradePressedAllEvent();
+	}
 }

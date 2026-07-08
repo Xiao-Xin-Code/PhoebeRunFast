@@ -83,10 +83,6 @@ public class PlayerController : BaseController
         }
     }
 
-
-
-
-
     private void OnLeftPressed(InputAction.CallbackContext context)
     {
         if (currentLine > 0) currentLine--;
@@ -118,9 +114,6 @@ public class PlayerController : BaseController
     }
 
 
-
-
-
     //MoveForward
     private void MoveForward()  
     {
@@ -145,7 +138,6 @@ public class PlayerController : BaseController
         Debug.Log("Slow");
     }
 
-
     private void ApplyGravity()
     {
         if (_isGrounded) return;
@@ -156,8 +148,6 @@ public class PlayerController : BaseController
         pos.y += verticalSpeed * Time.fixedDeltaTime;
         transform.position = pos;
     }
-
-
 
     private void GroundCheck()
     {
@@ -185,5 +175,10 @@ public class PlayerController : BaseController
 		base.OnDeInit();
 		this.UnRegisterEvent<SetPlayerRoleEvent>(OnSetPlayerRole);
 		MonoService.Instance.RemoveFixedUpdateListener(OnFixedUpdate);
+
+         _globalSystem.Inputs.Player.Left.performed -= OnLeftPressed;
+        _globalSystem.Inputs.Player.Right.performed -= OnRightPressed;
+        _globalSystem.Inputs.Player.Jump.performed -= OnJumpPressed;
+        _globalSystem.Inputs.Player.Slow.performed -= OnSlowPressed;
 	}
 }

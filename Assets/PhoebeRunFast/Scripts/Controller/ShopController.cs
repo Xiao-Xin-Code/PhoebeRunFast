@@ -20,4 +20,11 @@ public class ShopController : BaseController
     {
         gameObject.SetActive(evt.isActive);
     }
+
+	protected override void OnDeInit()
+	{
+		base.OnDeInit();
+		this.UnRegisterEvent<ShopActiveEvent>(OnShopActive);
+	}
+
 }
