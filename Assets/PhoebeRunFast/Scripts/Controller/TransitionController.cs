@@ -90,13 +90,4 @@ public class TransitionController : BaseController
 		mainSequence.Play();
 	}
 
-	protected override void OnDeInit()
-	{
-		base.OnDeInit();
-		this.UnRegisterEvent<OpenTransitionEvent>(OnOpenTransition);
-		this.UnRegisterEvent<CloseTransitionEvent>(OnCloseTransition);
-		this.UnRegisterEvent<UpdateProgressEvent>(OnUpdateProgress);
-		this.UnRegisterEvent<UpdateProgressDeltaEvent>(OnUpdateProgressDelta);
-	}
-
 }

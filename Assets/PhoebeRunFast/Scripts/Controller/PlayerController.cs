@@ -185,10 +185,5 @@ public class PlayerController : BaseController
 		base.OnDeInit();
 		this.UnRegisterEvent<SetPlayerRoleEvent>(OnSetPlayerRole);
 		MonoService.Instance.RemoveFixedUpdateListener(OnFixedUpdate);
-		
-		_globalSystem.Inputs.Player.Left.performed -= OnLeftPressed;
-		_globalSystem.Inputs.Player.Right.performed -= OnRightPressed;
-		_globalSystem.Inputs.Player.Jump.performed -= OnJumpPressed;
-		_globalSystem.Inputs.Player.Slow.performed -= OnSlowPressed;
 	}
 }
