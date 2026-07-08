@@ -53,6 +53,8 @@ public class GameOverController : BaseController
 
 		_view.UnRegisterTryAgainPressed(OnTryAgainPressed);
 		_view.UnRegisterExitPressed(OnExitPressed);
+
+		this.UnRegisterEvent<GameOverEvent>(OnGameOverActive);
 	}
 
 
