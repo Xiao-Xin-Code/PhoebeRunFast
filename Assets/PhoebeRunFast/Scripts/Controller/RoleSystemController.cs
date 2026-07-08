@@ -322,13 +322,13 @@ public class RoleSystemController : BaseController
 
 		Sequence mainSequence = DOTween.Sequence();
 		Sequence oldSequence = DOTween.Sequence();
-		oldSequence.Append(temp.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
+		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
 		oldSequence.Join(_view.SwitchSequence(false));
 		oldSequence.Join(_view.PropertySequence(false));
 		oldSequence.Append(temp.transform.DOMoveX(_view.Right.position.x, 1f));
 		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
 		Sequence newSequence = DOTween.Sequence();
-		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
+		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
 		newSequence.Append(leftCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
 		newSequence.Append(leftCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
 		newSequence.Join(_view.SwitchSequence(true));
@@ -383,13 +383,13 @@ public class RoleSystemController : BaseController
 		_view.SetRoleLockActive(false);
 		Sequence mainSequence = DOTween.Sequence();
 		Sequence oldSequence = DOTween.Sequence();
-		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
+		oldSequence.Append(temp.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
 		oldSequence.Join(_view.SwitchSequence(false));
 		oldSequence.Join(_view.PropertySequence(false));
 		oldSequence.Append(temp.transform.DOMoveX(_view.Left.position.x, 1f));
 		oldSequence.Append(temp.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
 		Sequence newSequence = DOTween.Sequence();
-		newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 90, 0), 0.5f));
+		newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, -90, 0), 0.5f));
 		newSequence.Append(rightCharacter.transform.DOMoveX(_view.Center.position.x, 1f));
 		newSequence.Append(rightCharacter.transform.DORotate(new Vector3(0, 0, 0), 0.5f));
 		newSequence.Join(_view.SwitchSequence(true));

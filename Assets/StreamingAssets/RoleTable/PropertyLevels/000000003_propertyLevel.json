@@ -1,0 +1,22 @@
+{
+  "healthLevel": {
+    "baseLevel": 0,
+    "currentLevel": 0,
+    "maxLevel": 10
+  },
+  "energyLevel": {
+    "baseLevel": 0,
+    "currentLevel": 0,
+    "maxLevel": 10
+  },
+  "defenseLevel": {
+    "baseLevel": 0,
+    "currentLevel": 0,
+    "maxLevel": 10
+  },
+  "cooldownReductionLevel": {
+    "baseLevel": 0,
+    "currentLevel": 0,
+    "maxLevel": 10
+  }
+}

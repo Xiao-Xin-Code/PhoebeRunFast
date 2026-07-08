@@ -32,6 +32,11 @@ public class SettingController : BaseController
 		_view.ActiveSequence(evt.isActive).Play();
 	}
 
+	protected override void OnDeInit()
+	{
+		base.OnDeInit();
+		this.UnRegisterEvent<SettingActiveEvent>(OnSettingActive);
+	}
 
 
 }

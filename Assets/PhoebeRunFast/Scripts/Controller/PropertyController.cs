@@ -54,4 +54,10 @@ public class PropertyController : BaseController
 		}
 	}
 
+	protected override void OnDeInit()
+	{
+		base.OnDeInit();
+		this.UnRegisterEvent<ShowLevelEvent>(OnShowLevel);
+	}
+
 }

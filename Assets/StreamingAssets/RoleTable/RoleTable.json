@@ -24,5 +24,18 @@
     "roleStarLevelCost": "StarLevelCosts\\00000002_starLevelCost.json",
     "rolePropertyUpgrade": "PropertyUpgrades\\00000002_propertyUpgrade.json",
     "roleStarUpgrade": "StarUpgrades\\00000002_starUpgrade.json"
+  },
+  {
+    "roleId": "000000003",
+    "roleInfo": "Infos\\000000003_info.json",
+    "roleAsset": "Assets\\000000003_asset.json",
+    "roleLock": "Locks\\000000003_lock.json",
+    "roleProperty": "Properties\\000000003_property.json",
+    "roleStarLevel": "StarLevels\\000000003_starLevel.json",
+    "rolePropertyLevel": "PropertyLevels\\000000003_propertyLevel.json",
+    "rolePropertyLevelCost": "PropertyLevelCosts\\000000003_propertyLevelCost.json",
+    "roleStarLevelCost": "StarLevelCosts\\000000003_starLevelCost.json",
+    "rolePropertyUpgrade": "PropertyUpgrades\\000000003_propertyUpgrade.json",
+    "roleStarUpgrade": "StarUpgrades\\000000003_starUpgrade.json"
   }
 ]

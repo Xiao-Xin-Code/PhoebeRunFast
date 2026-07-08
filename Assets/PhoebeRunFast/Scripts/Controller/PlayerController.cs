@@ -19,9 +19,22 @@ public class PlayerController : BaseController
 
     float forwardSpeed = 5;
     float sideSpeed = 10;
-    float jumpSpeed = 7;
-    float gravity = 25;
-    float maxFallSpeed = 20;
+    /// <summary>
+    /// 跳跃速度
+    /// </summary>
+    float jumpSpeed = 10;
+    /// <summary>
+    /// 重力加速度
+    /// </summary>
+    float gravity = -30;
+    /// <summary>
+    /// 最大下落速度
+    /// </summary>
+    float maxFallSpeed = 45;
+    /// <summary>
+    /// 当前垂直速度
+    /// </summary>
+    float verticalSpeed = 0;
 
     int currentLine = 1;
     bool _isGrounded = true;
@@ -37,7 +50,7 @@ public class PlayerController : BaseController
         Debug.Log("注册");
         this.RegisterEvent<SetPlayerRoleEvent>(OnSetPlayerRole);
 
-        MonoService.Instance.AddFixedUpdateListener(OnFixedFixedUpdate);
+        MonoService.Instance.AddFixedUpdateListener(OnFixedUpdate);
 
 
         //绑定Inputs触发
@@ -48,7 +61,7 @@ public class PlayerController : BaseController
     }
 
 
-    private void OnFixedFixedUpdate()
+    private void OnFixedUpdate()
     {
         switch (_globalSystem.GameSingleton.GameEntity.GameState.Value)
         {
@@ -61,7 +74,7 @@ public class PlayerController : BaseController
                 ApplyGravity();
                 break;
             case GameState.Paused:
-                _view.RB.velocity = Vector3.zero;
+                
 				break;
             case GameState.Over:
                 break;
@@ -88,11 +101,14 @@ public class PlayerController : BaseController
     {
         if (_isGrounded && !isJumping)  
         {
-            Vector3 velocity = _view.RB.velocity;
-            velocity.y = jumpSpeed;
-            _view.RB.velocity = velocity;
+            verticalSpeed = jumpSpeed;
             isJumping = true;
             _isGrounded = false;
+
+            //即刻应用效果
+            Vector3 pos = transform.position;
+            pos.y += verticalSpeed * Time.fixedDeltaTime;
+            transform.position = pos;
         }
     }
 
@@ -106,11 +122,11 @@ public class PlayerController : BaseController
 
 
     //MoveForward
-    private void MoveForward()
+    private void MoveForward()  
     {
-        Vector3 velocity = _view.RB.velocity;
-        velocity.z = forwardSpeed;
-        _view.RB.velocity = velocity;
+        Vector3 pos = transform.position;
+        pos.z += forwardSpeed * Time.fixedDeltaTime;
+        transform.position = pos;
     }
 
     //SwitchLine
@@ -119,7 +135,7 @@ public class PlayerController : BaseController
         float targetX = _globalSystem.GameSingleton.GetLine(currentLine).position.x;
         Vector3 currentPosition = transform.position;
 		currentPosition.x = Mathf.Lerp(currentPosition.x, targetX, sideSpeed * Time.fixedDeltaTime);
-        _view.RB.MovePosition(currentPosition);
+        transform.position = currentPosition;
     }
 
     //Slow
@@ -132,25 +148,21 @@ public class PlayerController : BaseController
 
     private void ApplyGravity()
     {
-        Vector3 velocity = _view.RB.velocity;
-        if (!_isGrounded)
-        {
-            velocity.y -= gravity * Time.fixedDeltaTime;
-            velocity.y = Mathf.Max(velocity.y, -maxFallSpeed);
-        }
-        else if (velocity.y < 0) 
-        {
-            velocity.y = 0;
-        }
-		_view.RB.velocity = velocity;
-	}
+        if (_isGrounded) return;
+
+        verticalSpeed += gravity * Time.fixedDeltaTime;
+        verticalSpeed = Mathf.Max(verticalSpeed, -maxFallSpeed);
+        Vector3 pos = transform.position;
+        pos.y += verticalSpeed * Time.fixedDeltaTime;
+        transform.position = pos;
+    }
 
 
 
     private void GroundCheck()
     {
         bool wasGrounded = _isGrounded;
-		_isGrounded = Physics.CheckSphere(_view.GroundCheck.position, 0.1f, _view.GroundLayer);
+		_isGrounded = Physics.CheckSphere(_view.GroundCheck.position, 0.05f, _view.GroundLayer);
         if (_isGrounded && !wasGrounded)
         {
             isJumping = false;
@@ -167,4 +179,16 @@ public class PlayerController : BaseController
         _roleController.transform.eulerAngles = new Vector3(0, 180, 0); 
     }
 
+
+	protected override void OnDeInit()
+	{
+		base.OnDeInit();
+		this.UnRegisterEvent<SetPlayerRoleEvent>(OnSetPlayerRole);
+		MonoService.Instance.RemoveFixedUpdateListener(OnFixedUpdate);
+		
+		_globalSystem.Inputs.Player.Left.performed -= OnLeftPressed;
+		_globalSystem.Inputs.Player.Right.performed -= OnRightPressed;
+		_globalSystem.Inputs.Player.Jump.performed -= OnJumpPressed;
+		_globalSystem.Inputs.Player.Slow.performed -= OnSlowPressed;
+	}
 }

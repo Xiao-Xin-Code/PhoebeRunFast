@@ -55,6 +55,8 @@ public class GameController : BaseController
 		_roleSystem = this.GetSystem<RoleSystem>();
 		_roadSystem = this.GetSystem<RoadSystem>();
 		Debug.Log("GameInit");
+
+		_entity.GameState.RegisterWithInitValue(OnGameStateChanged);
 		// 注册系统事件
 		this.RegisterEvent<LoadGameEvent>(OnLoadGame);
 		this.RegisterEvent<UnLoadGameEvent>(OnUnLoadGame);
@@ -63,6 +65,30 @@ public class GameController : BaseController
 
 		
 	}
+
+
+	private void OnGameStateChanged(GameState state)
+	{
+		switch (state)
+		{
+			case GameState.Ready:
+				_globalSystem.Inputs.Disable();
+				break;
+			case GameState.Running:
+				_globalSystem.Inputs.Enable();
+				break;
+			case GameState.Paused:
+				_globalSystem.Inputs.Disable();
+				break;
+			case GameState.Over:
+				_globalSystem.Inputs.Disable();
+				break;
+			default:
+				break;
+		}
+	}
+
+
 
 	/// <summary>
 	/// 游戏初始化完成事件
@@ -126,6 +152,8 @@ public class GameController : BaseController
 		Task<PropertyUpgradeJson> propertyUpgradeTask = _roleSystem.GetPropertyUpgrade(roleId);
 		Task total = Task.WhenAll(roleTask,propertyTask, starLevelTask, propertyLevelTask, starUpgradeTask, propertyUpgradeTask);
 		yield return new WaitUntil(() => total.IsCompleted);
+		
+		yield return _roadSystem.InitRoad();
 
 		//TODO: 设置到PlayerController上
 		Debug.Log("TODO:将模型设置到Player上");
@@ -183,6 +211,7 @@ public class GameController : BaseController
 		_globalSystem.GameSingleton.GameEntity.Speed.Value = speed;
 		_globalSystem.GameSingleton.GameEntity.CoolDownReduction.Value = cooldownReduction;
 
+		
 		_roadSystem.StartRoad();
 
 	}
@@ -193,8 +222,10 @@ public class GameController : BaseController
 	/// <returns>协程</returns>
 	IEnumerator GameAssetUnLoad()
 	{
+		_roadSystem.StopRoad();
 		//主动回收RoleController
 		_roleSystem.RecycleAllRole();
+		_roadSystem.RecycleAllRoad();
 		//主动回收RoadController对象池
 		yield return new WaitForSeconds(5f);
 	}

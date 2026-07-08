@@ -80,6 +80,7 @@ public class PauseController : BaseController
         _view.UnRegisterContinuePressed(OnContinuePressed);
         _view.UnRegisterResetPressed(OnResetPressed);
         _view.UnRegisterExitPressed(OnExitPressed);
+        this.UnRegisterEvent<GamePauseEvent>(OnGamePause);
 	}
 
 }

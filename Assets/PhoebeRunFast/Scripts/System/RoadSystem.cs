@@ -22,7 +22,7 @@ public class RoadSystem : AbstractSystem
 		roadParent = new GameObject("RoadsParent").transform;
 	}
 
-
+	Coroutine roadCoroutine;
 
 	private void Spawn()
 	{
@@ -35,7 +35,11 @@ public class RoadSystem : AbstractSystem
 
 	public void StartRoad()
 	{
-		MonoService.Instance.StartCoroutine(RoadAsync());
+		if(roadCoroutine != null)
+		{
+			MonoService.Instance.StopCoroutine(roadCoroutine);
+		}
+		roadCoroutine = MonoService.Instance.StartCoroutine(RoadAsync());
 	}
 
 
@@ -71,6 +75,32 @@ public class RoadSystem : AbstractSystem
 		}
 	}
 
+	public void StopRoad()
+	{
+		if(roadCoroutine != null)
+		{
+			MonoService.Instance.StopCoroutine(roadCoroutine);
+		}
+	}
+
+	public Coroutine InitRoad()
+	{
+		return MonoService.Instance.StartCoroutine(InitRoadAsync());
+	}
+
+	/// <summary>
+	/// 加载最初始道路，或是一个固定的开始道路场景
+	/// </summary>
+	IEnumerator InitRoadAsync()
+	{
+		float lastDistance = roads.Count > 0 ? Vector3.Distance(roads[roads.Count - 1].transform.position, _globalSystem.GameSingleton.PlayerController.transform.position) : 0;
+		while(lastDistance < 50)
+		{
+			Spawn();
+			lastDistance = roads.Count > 0 ? Vector3.Distance(roads[roads.Count - 1].transform.position, _globalSystem.GameSingleton.PlayerController.transform.position) : 0;
+			yield return null;
+		}
+	}
 
 
 	private RoadController GetRoad(string roadType)
@@ -92,6 +122,14 @@ public class RoadSystem : AbstractSystem
 	}
 
 
+	public void RecycleAllRoad()
+	{
+		foreach (var road in roads)
+		{
+			roadPools[road.roadType].Recycle(road);
+		}
+		roads.Clear();
+	}
 
 
 }

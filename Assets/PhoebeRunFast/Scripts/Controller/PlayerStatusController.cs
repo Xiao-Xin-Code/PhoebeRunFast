@@ -54,8 +54,8 @@ public class PlayerStatusController : BaseController
     {
         base.OnDeInit();
 
-		// 注销事件
-		_globalSystem.GameSingleton.GameEntity.Health.UnRegister(OnHealthChanged);
-		_globalSystem.GameSingleton.GameEntity.Energy.UnRegister(OnManaChanged);
+		// 注销事件，对象会直接消失，可以不用注销
+		//_globalSystem.GameSingleton.GameEntity.Health.UnRegister(OnHealthChanged);
+		//_globalSystem.GameSingleton.GameEntity.Energy.UnRegister(OnManaChanged);
 	}
 }
