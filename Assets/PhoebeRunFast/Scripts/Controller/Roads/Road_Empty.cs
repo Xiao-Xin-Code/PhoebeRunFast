@@ -10,8 +10,9 @@ public class Road_Empty : RoadController
 
     public override void Spawn()
     {
-        Debug.Log("生成障碍物");
-        Debug.Log("生成收集物");
-        Debug.Log("但是我是空的，我就不生成了");
+        //Debug.Log("生成障碍物");
+        //Debug.Log("生成收集物");
+        //Debug.Log("但是我是空的，我就不生成了");
+        //目前使用直接预制方式生成道路
     }
 }

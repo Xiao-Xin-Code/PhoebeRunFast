@@ -69,9 +69,14 @@ public class FlyBirdController : BaseController
 			Debug.Log("创建");
 			PipeController pipe = pipePool.Get();
 			pipe.transform.SetParent(_view.PipeParent);
-			pipe.transform.position = _view.PipPoint.position;
+			//随机管道高度位置
+			float y = Random.Range(-200, 200);
+			Vector3 anchoredPosition = _view.PipPoint.anchoredPosition;
+			anchoredPosition.y = y;
+			pipe.GetComponent<RectTransform>().anchoredPosition = anchoredPosition;	
+			pipe.SetPipeGap(Random.Range(300, 800));
 			MonoService.Instance.AddUpdateListener(pipe.OnPipeMove);
-			yield return new WaitForSeconds(1f);
+			yield return new WaitForSeconds(2f);
 		}
 	}
 

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +10,9 @@ public class PipeView : MonoBehaviour
 
     [SerializeField] Image top;
     [SerializeField] Image bottom;
+
+    public Image Top => top;
+    public Image Bottom => bottom;
 
 
 }

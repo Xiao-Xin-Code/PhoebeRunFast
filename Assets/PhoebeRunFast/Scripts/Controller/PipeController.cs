@@ -23,6 +23,14 @@ public class PipeController : BaseController
 		_flyBird = flyBird;
 	}
 
+	//设置上下开口
+	public void SetPipeGap(float gap)
+	{
+		float halfGap = gap / 2;
+		_view.Top.rectTransform.anchoredPosition = new Vector2(0, halfGap);
+		_view.Bottom.rectTransform.anchoredPosition = new Vector2(0, -halfGap);
+	}
+
 
 	public void OnPipeMove()
 	{

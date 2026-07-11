@@ -17,7 +17,7 @@ public class PlayerController : BaseController
     PlayerEntity _entity;
 
 
-    float forwardSpeed = 5;
+    float forwardSpeed = 10;
     float sideSpeed = 10;
     /// <summary>
     /// 跳跃速度
@@ -52,6 +52,7 @@ public class PlayerController : BaseController
 
         MonoService.Instance.AddFixedUpdateListener(OnFixedUpdate);
 
+        _view.RB.WakeUp();
 
         //绑定Inputs触发
         _globalSystem.Inputs.Player.Left.performed += OnLeftPressed;
@@ -134,8 +135,12 @@ public class PlayerController : BaseController
     //Slow
     private void Slow()
     {
-        _roleController.Roll();
+        //先确定是否已经在翻滚状态
+		_view.HighCollider.enabled = false;
+		_roleController.Roll();
         Debug.Log("Slow");
+        //等待反转完成，恢复状态
+       
     }
 
     private void ApplyGravity()

@@ -31,6 +31,7 @@ public class RoadSystem : AbstractSystem
 		road.transform.position = roads.Count > 0 ? roads[roads.Count - 1].transform.position + Vector3.forward * road.distance : Vector3.zero;
 		roads.Add(road);
 		road.Spawn();
+		Debug.Log($"生成道路{road.roadType},当前道路数量：{roads.Count}");
 	}
 
 	public void StartRoad()
@@ -51,23 +52,27 @@ public class RoadSystem : AbstractSystem
 			{
 				//获取距离最后的距离
 				float lastDistance = roads.Count > 0 ? Vector3.Distance(roads[roads.Count - 1].transform.position, _globalSystem.GameSingleton.PlayerController.transform.position) : 0;
+				yield return null;
 				//等待生成
 				if (lastDistance < 50)
 				{
 					Spawn();
 					yield return null;
 				}
+				Debug.Log($"道路数量：{roads.Count}");
 				//等待回收
 				while (roads.Count > 0)
 				{
 					RoadController road = roads[0];
-					float firstDistance = Vector3.Distance(_globalSystem.GameSingleton.PlayerController.transform.position, roads[0].transform.position);
+					float firstDistance = Mathf.Abs(_globalSystem.GameSingleton.PlayerController.transform.position.z - roads[0].transform.position.z);
 					if (firstDistance < 50)
 					{
 						break;
 					}
+					Debug.Log($"回收道路{road.roadType}");
 					roads.RemoveAt(0);
 					roadPools[road.roadType].Recycle(road);
+					Debug.Log($"回收后道路数量：{roads.Count}");
 					yield return null;
 				}
 			}
@@ -93,11 +98,11 @@ public class RoadSystem : AbstractSystem
 	/// </summary>
 	IEnumerator InitRoadAsync()
 	{
-		float lastDistance = roads.Count > 0 ? Vector3.Distance(roads[roads.Count - 1].transform.position, _globalSystem.GameSingleton.PlayerController.transform.position) : 0;
+		float lastDistance = roads.Count > 0 ? Mathf.Abs(_globalSystem.GameSingleton.PlayerController.transform.position.z - roads[roads.Count - 1].transform.position.z) : 0;
 		while(lastDistance < 50)
 		{
 			Spawn();
-			lastDistance = roads.Count > 0 ? Vector3.Distance(roads[roads.Count - 1].transform.position, _globalSystem.GameSingleton.PlayerController.transform.position) : 0;
+			lastDistance = roads.Count > 0 ? Mathf.Abs(_globalSystem.GameSingleton.PlayerController.transform.position.z - roads[roads.Count - 1].transform.position.z) : 0;
 			yield return null;
 		}
 	}
@@ -107,7 +112,7 @@ public class RoadSystem : AbstractSystem
 	{
 		if(!roadPools.ContainsKey(roadType))
 		{
-			MonoPool<RoadController> pool = new MonoPool<RoadController>(Resources.Load<RoadController>("Road_Empty"), roadParent);
+			MonoPool<RoadController> pool = new MonoPool<RoadController>(Resources.Load<RoadController>(roadType), roadParent);
 			roadPools.Add(roadType, pool);
 		}
 		return roadPools[roadType].Get();	
@@ -116,7 +121,7 @@ public class RoadSystem : AbstractSystem
 	//随机获取道路的规则
 	private string GetRandomRoadType()
 	{
-		string[] roadTypes = {"Road_Empty"};
+		string[] roadTypes = {"Road_Empty","Road_001"};
 		int index = Random.Range(0, roadTypes.Length);
 		return roadTypes[index];
 	}

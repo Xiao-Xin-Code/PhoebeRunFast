@@ -2,9 +2,10 @@ using UnityEngine;
 
 public abstract class ObstacleController : BaseController
 {
+    //障碍物类型，更偏向于是那个障碍物，即唯一id 标记，不代表障碍物的分类
     public string obstacleType;
 
-    [SerializeField] private CollisionArea collisionArea;
+    [SerializeField] private TriggerArea collisionArea;
     [SerializeField] private TriggerArea triggerArea;
 
 

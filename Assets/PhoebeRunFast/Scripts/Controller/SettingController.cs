@@ -14,7 +14,7 @@ public class SettingController : BaseController
 	protected override void OnInit()
 	{
 		base.OnInit();
-
+		_view.RegisterClosePressed(OnClosePressed);
 
 		this.RegisterEvent<SettingActiveEvent>(OnSettingActive);
 
@@ -24,11 +24,15 @@ public class SettingController : BaseController
 
 	
 
+	private void OnClosePressed()
+	{
+		_view.ActiveSequence(false).Play();
+	}
+
 
 	private void OnSettingActive(SettingActiveEvent evt)
 	{
 		_view.StateInit();
-		_view.gameObject.SetActive(true);
 		_view.ActiveSequence(evt.isActive).Play();
 	}
 
@@ -36,6 +40,7 @@ public class SettingController : BaseController
 	protected override void OnDeInit()
 	{
 		base.OnDeInit();
+		_view.UnRegisterClosePressed(OnClosePressed);
 		this.UnRegisterEvent<SettingActiveEvent>(OnSettingActive);
 	}
 
