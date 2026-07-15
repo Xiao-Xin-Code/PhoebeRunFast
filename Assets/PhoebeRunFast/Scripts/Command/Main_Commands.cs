@@ -73,7 +73,7 @@ public class ShopActiveCommand : AbstractCommand
 }
 
 /// <summary>
-/// 抽奖激活命令
+/// 抽奖界面激活命令
 /// </summary>
 public class LotteryActiveCommand : AbstractCommand
 {
@@ -92,6 +92,37 @@ public class LotteryActiveCommand : AbstractCommand
 		this.SendEvent(new LotteryActiveEvent(isActive));
 	}
 }
+
+/// <summary>
+/// 奖池界面激活命令
+/// </summary>
+public class JackpotActiveCommand : AbstractCommand
+{
+	bool isActive;
+
+	public JackpotActiveCommand(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new JackpotActiveEvent(isActive));
+	}
+}
+
+/// <summary>
+/// 展示抽奖结果命令
+/// </summary>
+public class ToShowLotteryResultCommand : AbstractCommand
+{
+	protected override void OnExecute()
+	{
+		this.SendEvent<ToShowLotteryResultEvent>();
+	}
+}
+
+
 
 /// <summary>
 /// 切换到左侧角色命令

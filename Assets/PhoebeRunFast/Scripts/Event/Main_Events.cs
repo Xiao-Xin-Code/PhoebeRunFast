@@ -53,7 +53,7 @@ public class ShopActiveEvent
 }
 
 /// <summary>
-/// 抽奖激活事件
+/// 抽奖界面激活事件
 /// </summary>
 public class LotteryActiveEvent
 {
@@ -64,6 +64,29 @@ public class LotteryActiveEvent
 		this.isActive = isActive;
 	}
 }
+
+/// <summary>
+/// 奖池界面激活事件
+/// </summary>
+public class JackpotActiveEvent
+{
+	public bool isActive;
+
+	public JackpotActiveEvent(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+}
+
+/// <summary>
+/// 展示抽奖结果事件
+/// </summary>
+public class ToShowLotteryResultEvent
+{
+
+}
+
+
 
 /// <summary>
 /// 切换到左侧角色事件

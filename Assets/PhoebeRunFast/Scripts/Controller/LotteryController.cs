@@ -32,6 +32,8 @@ public class LotteryController : BaseController
 	private void OnLotteryActive(LotteryActiveEvent evt)
 	{
 		gameObject.SetActive(evt.isActive);
+
+		
 	}
 
 

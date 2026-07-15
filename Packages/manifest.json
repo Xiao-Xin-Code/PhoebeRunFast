@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.aerro2.ide.trae": "https://github.com/aerror2/com.unity.ide.trae.git",
     "com.unity.cinemachine": "2.10.7",
     "com.unity.collab-proxy": "2.12.4",
     "com.unity.feature.development": "1.0.1",
