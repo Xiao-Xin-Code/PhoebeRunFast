@@ -47,6 +47,9 @@ public class LotteryResultController : BaseController
 
         //先进行卡片移动动画，结束后再开启可点击
         
+        //只有1个，目标位置设置为start-> anchorposition (0,0,0)
+
+
 
         int count = 10;
 
