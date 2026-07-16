@@ -7,7 +7,7 @@ public class PropertyController : BaseController
 {
 	[SerializeField] PropertyView _view;
 
-	[SerializeField] LevelUpgradeController starLevel;
+	[SerializeField] LevelUpgradeController chainLevel;
 	[SerializeField] LevelUpgradeController healthLevel;
 	[SerializeField] LevelUpgradeController energyLevel;
 	[SerializeField] LevelUpgradeController defenseLevel;
@@ -20,7 +20,7 @@ public class PropertyController : BaseController
 		base.OnInit();
 		_view.StateInit();
 
-		starLevel.RegisterUpgradePressed(() => this.SendCommand(new UpGradeLevelCommand(Consts.Star)));
+		chainLevel.RegisterUpgradePressed(() => this.SendCommand(new UpGradeLevelCommand(Consts.Chain)));
 		healthLevel.RegisterUpgradePressed(() => this.SendCommand(new UpGradeLevelCommand(Consts.Health)));
 		energyLevel.RegisterUpgradePressed(() => this.SendCommand(new UpGradeLevelCommand(Consts.Energy)));
 		defenseLevel.RegisterUpgradePressed(() => this.SendCommand(new UpGradeLevelCommand(Consts.Defense)));
@@ -36,8 +36,8 @@ public class PropertyController : BaseController
 	{
 		switch (evt.levelType)
 		{
-			case Consts.Star:
-				starLevel.SetLevel(evt.levels[1], evt.levels[2]);
+			case Consts.Chain:
+				chainLevel.SetLevel(evt.levels[1], evt.levels[2]);
 				break;
 			case Consts.Health:
 				healthLevel.SetLevel(evt.levels[1], evt.levels[2]);
@@ -58,7 +58,7 @@ public class PropertyController : BaseController
 	protected override void OnDeInit()
 	{
 		base.OnDeInit();
-		starLevel.UnRegisterUpGradePressedAllEvent();
+		chainLevel.UnRegisterUpGradePressedAllEvent();
 		healthLevel.UnRegisterUpGradePressedAllEvent();
 		energyLevel.UnRegisterUpGradePressedAllEvent();
 		defenseLevel.UnRegisterUpGradePressedAllEvent();

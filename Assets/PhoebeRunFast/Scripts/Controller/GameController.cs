@@ -19,6 +19,7 @@ public class GameController : BaseController
 	GlobalSystem _globalSystem;
 	RoleSystem _roleSystem;
 	RoadSystem _roadSystem;
+	AccountSystem _accountSystem;
 
 
 	GameEntity _entity;
@@ -52,6 +53,7 @@ public class GameController : BaseController
 		_entity = new GameEntity();
 		_globalSystem = this.GetSystem<GlobalSystem>();
 		_globalSystem.SetGameSingleton(this);
+		_accountSystem = this.GetSystem<AccountSystem>();
 		_roleSystem = this.GetSystem<RoleSystem>();
 		_roadSystem = this.GetSystem<RoadSystem>();
 		Debug.Log("GameInit");
@@ -141,16 +143,21 @@ public class GameController : BaseController
 
 		
 
-		string roleId = _globalSystem.GlobalModel.RoleJsons[_globalSystem.GlobalModel.OutRoleTableId.Value].roleId;
+		string roleId = _globalSystem.GlobalModel.UserJson.outRoleId;
 
 		Task<RoleController> roleTask = _roleSystem.GetRole(roleId);
 
 		Task<PropertyJson> propertyTask = _roleSystem.GetProperty(roleId);
-		Task<StarLevelJson> starLevelTask = _roleSystem.GetStarLevel(roleId);
+		Task<ChainLevelJson> starLevelTask = _roleSystem.GetChainLevel(roleId);
 		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
-		Task<StarUpgradeJson> starUpgradeTask = _roleSystem.GetStarUpgrade(roleId);
+		Task<ChainUpgradeJson> starUpgradeTask = _roleSystem.GetChainUpgrade(roleId);
 		Task<PropertyUpgradeJson> propertyUpgradeTask = _roleSystem.GetPropertyUpgrade(roleId);
-		Task total = Task.WhenAll(roleTask,propertyTask, starLevelTask, propertyLevelTask, starUpgradeTask, propertyUpgradeTask);
+
+		Task<AccountRole> accountRoleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleId);
+
+
+
+		Task total = Task.WhenAll(roleTask,propertyTask, starLevelTask, propertyLevelTask, starUpgradeTask, propertyUpgradeTask, accountRoleTask);
 		yield return new WaitUntil(() => total.IsCompleted);
 		
 		yield return _roadSystem.InitRoad();
@@ -171,31 +178,32 @@ public class GameController : BaseController
 		energy = propertyTask.Result.energy;
 		defense = propertyTask.Result.defense;
 		cooldownReduction = propertyTask.Result.cooldownReduction;
-		for (int i = 0; i < propertyLevelTask.Result.healthLevel.currentLevel; i++)
+		;
+		for (int i = 0; i < accountRoleTask.Result.rolePropertyLevel.health; i++)
 		{
 			health += propertyUpgradeTask.Result.healthUpgrade[i];
 		}
-		for (int i = 0; i < propertyLevelTask.Result.energyLevel.currentLevel; i++)
+		for (int i = 0; i < accountRoleTask.Result.rolePropertyLevel.energy; i++)
 		{
 			energy += propertyUpgradeTask.Result.energyUpgrade[i];
 		}
-		for (int i = 0; i < propertyLevelTask.Result.defenseLevel.currentLevel; i++)
+		for (int i = 0; i < accountRoleTask.Result.rolePropertyLevel.defense; i++)
 		{
 			defense += propertyUpgradeTask.Result.defenseUpgrade[i];
 		}
-		for (int i = 0; i < propertyLevelTask.Result.cooldownReductionLevel.currentLevel; i++)
+		for (int i = 0; i < accountRoleTask.Result.rolePropertyLevel.cooldownReduction; i++)
 		{
 			cooldownReduction += propertyUpgradeTask.Result.cooldownReductionUpgrade[i];
 		}
 
-		for(int i = 0; i < starLevelTask.Result.starLevel.currentLevel; i++)
+		for(int i = 0; i < accountRoleTask.Result.chainLevel; i++)
 		{
-			health += starUpgradeTask.Result.upgradeJsons[i].healthUpgrade;
-			energy += starUpgradeTask.Result.upgradeJsons[i].energyUpgrade;
-			attack += starUpgradeTask.Result.upgradeJsons[i].attackUpgrade;
-			defense += starUpgradeTask.Result.upgradeJsons[i].defenseUpgrade;
-			speed += starUpgradeTask.Result.upgradeJsons[i].speedUpgrade;
-			cooldownReduction += starUpgradeTask.Result.upgradeJsons[i].cooldownReductionUpgrade;
+			health += starUpgradeTask.Result.upgradeJsons[i].health;
+			energy += starUpgradeTask.Result.upgradeJsons[i].energy;
+			attack += starUpgradeTask.Result.upgradeJsons[i].attack;
+			defense += starUpgradeTask.Result.upgradeJsons[i].defense;
+			speed += starUpgradeTask.Result.upgradeJsons[i].speed;
+			cooldownReduction += starUpgradeTask.Result.upgradeJsons[i].cooldownReduction;
 		}
 
 		//TODO: 应用天赋效果

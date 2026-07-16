@@ -65,6 +65,11 @@ public class StageSystem : AbstractSystem
 	{
 		switch (stage)
 		{
+			case Stage.Boot:
+				//不卸载启动场景，启动场景是第一个加载的场景，不能卸载启动场景
+				yield return null;
+				//直接结束协程
+				yield break; 
 			case Stage.Home:
 				UnLoadHomeEvent unLoadHomeEvent = new UnLoadHomeEvent();
 				this.SendEvent(unLoadHomeEvent);
@@ -93,9 +98,15 @@ public class StageSystem : AbstractSystem
 	/// <returns>协程</returns>
 	IEnumerator Load(Stage stage)
 	{
+		Debug.Log("加载场景" + stage);
 		yield return SceneManager.LoadSceneAsync((int)stage, LoadSceneMode.Additive);
 		switch (stage)
 		{
+			case Stage.Boot:
+				//不加载启动场景，启动场景是第一个加载的场景，不能加载启动场景
+				yield return null;
+				//直接结束协程
+				yield break; 
 			case Stage.Home:
 				LoadHomeEvent loadHomeEvent = new LoadHomeEvent();
 				this.SendEvent(loadHomeEvent);

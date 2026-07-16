@@ -17,6 +17,7 @@ public class RoleSystemController : BaseController
 
 	GlobalSystem _globalSystem;
 	RoleSystem _roleSystem;
+	AccountSystem _accountSystem;
 
 	/// <summary>
 	/// 当前角色
@@ -31,7 +32,8 @@ public class RoleSystemController : BaseController
 		base.OnInit();
 		_globalSystem = this.GetSystem<GlobalSystem>();
 		_roleSystem = this.GetSystem<RoleSystem>();
-
+		_accountSystem = this.GetSystem<AccountSystem>();
+		
 		_entity = new RoleSystemEntity();
 
 		// 注册事件
@@ -55,13 +57,12 @@ public class RoleSystemController : BaseController
 	{
 		_view.SetSwitchActive(evt.isActive);
 		_view.SetPropertyActive(evt.isActive);
-		tableId = _globalSystem.GlobalModel.OutRoleTableId.Value;
 		if (targetCoroutine != null)
 		{
 			MonoService.Instance.StopCoroutine(targetCoroutine);
 			targetCoroutine = null;
 		}
-		targetCoroutine = MonoService.Instance.StartCoroutine(ToTargetAsync(tableId));
+		targetCoroutine = MonoService.Instance.StartCoroutine(ToTargetAsync(_entity.outRoleIndex));
 	}
 
 	/// <summary>
@@ -76,7 +77,7 @@ public class RoleSystemController : BaseController
 			targetCoroutine = null;
 		}
 		targetCoroutine = MonoService.Instance.StartCoroutine(ToTargetAsyncWithoutData(evt.tableId));
-		this.tableId = evt.tableId;
+		_entity.outRoleIndex = evt.tableId;		
 	}
 
 	/// <summary>
@@ -111,15 +112,13 @@ public class RoleSystemController : BaseController
 		rightCoroutine = MonoService.Instance.StartCoroutine(ToRightAsync());
 	}
 
-	int tableId = 0;
-
 
 	private void OnUpGradeLevel(UpGradeLevelEvent evt)
 	{
 		switch (evt.level)
 		{
-			case Consts.Star:
-				MonoService.Instance.StartCoroutine(StarUpgradeAsync());
+			case Consts.Chain:
+				MonoService.Instance.StartCoroutine(ChainUpgradeAsync());
 				break;
 			case Consts.Health:
 				MonoService.Instance.StartCoroutine(HealthUpgradeAsync());
@@ -140,16 +139,18 @@ public class RoleSystemController : BaseController
 
 	#region 等级提升协程
 
-	IEnumerator StarUpgradeAsync()
+	IEnumerator ChainUpgradeAsync()
 	{
-		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
-		Task<StarLevelJson> starTask = _roleSystem.GetStarLevel(roleId);
-		yield return new WaitUntil(() => starTask.IsCompleted);
-		if (starTask.Result.starLevel.currentLevel < starTask.Result.starLevel.maxLevel)
+		string roleId = _entity.roleIds[_entity.outRoleIndex];
+		Task<ChainLevelJson> chainTask = _roleSystem.GetChainLevel(roleId);
+		Task<AccountRole> roleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleId);
+		Task total = Task.WhenAll(chainTask, roleTask);
+		yield return new WaitUntil(() => total.IsCompleted);
+		if (roleTask.Result.chainLevel < chainTask.Result.chainLevel.maxLevel)
 		{
-			starTask.Result.starLevel.currentLevel++;
-			this.SendCommand(new ShowLevelCommand(Consts.Star, starTask.Result.starLevel.baseLevel, starTask.Result.starLevel.currentLevel, starTask.Result.starLevel.maxLevel));
-			Task task = _roleSystem.UpdateStarLevel(roleId);
+			roleTask.Result.chainLevel++;
+			this.SendCommand(new ShowLevelCommand(Consts.Chain, chainTask.Result.chainLevel.baseLevel, roleTask.Result.chainLevel, chainTask.Result.chainLevel.maxLevel));
+			Task task = _roleSystem.UpdateChainLevel(roleId);
 			yield return new WaitUntil(() => task.IsCompleted);
 
 			//TODO: 处理当前状态
@@ -158,13 +159,15 @@ public class RoleSystemController : BaseController
 
 	IEnumerator HealthUpgradeAsync()
 	{
-		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
+		string roleId = _entity.roleIds[_entity.outRoleIndex];
 		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
-		yield return new WaitUntil(() => propertyLevelTask.IsCompleted);
-		if (propertyLevelTask.Result.healthLevel.currentLevel < propertyLevelTask.Result.healthLevel.maxLevel)
+		Task<AccountRole> roleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleId);
+		Task total = Task.WhenAll(propertyLevelTask, roleTask);
+		yield return new WaitUntil(() => total.IsCompleted);
+		if (roleTask.Result.rolePropertyLevel.health < propertyLevelTask.Result.healthLevel.maxLevel)
 		{
-			propertyLevelTask.Result.healthLevel.currentLevel++;
-			this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, propertyLevelTask.Result.healthLevel.currentLevel, propertyLevelTask.Result.healthLevel.maxLevel));
+			roleTask.Result.rolePropertyLevel.health++;
+			this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, roleTask.Result.rolePropertyLevel.health, propertyLevelTask.Result.healthLevel.maxLevel));
 
 			Task task = _roleSystem.UpdatePropertyLevel(roleId);
 			yield return new WaitUntil(() => task.IsCompleted);
@@ -175,14 +178,16 @@ public class RoleSystemController : BaseController
 
 	IEnumerator EnergyUpgradeAsync()
 	{
-		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
+		string roleId = _entity.roleIds[_entity.outRoleIndex];
 		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
-		yield return new WaitUntil(() => propertyLevelTask.IsCompleted);
-		if (propertyLevelTask.Result.energyLevel.currentLevel < propertyLevelTask.Result.energyLevel.maxLevel)
+		Task<AccountRole> roleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleId);
+		Task total = Task.WhenAll(propertyLevelTask, roleTask);
+		yield return new WaitUntil(() => total.IsCompleted);
+		if (roleTask.Result.rolePropertyLevel.energy < propertyLevelTask.Result.energyLevel.maxLevel)
 		{
-			propertyLevelTask.Result.energyLevel.currentLevel++;
-			this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, propertyLevelTask.Result.energyLevel.currentLevel, propertyLevelTask.Result.energyLevel.maxLevel));
-
+			roleTask.Result.rolePropertyLevel.energy++;
+			this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, roleTask.Result.rolePropertyLevel.energy, propertyLevelTask.Result.energyLevel.maxLevel));
+			
 			Task task = _roleSystem.UpdatePropertyLevel(roleId);
 			yield return new WaitUntil(() => task.IsCompleted);
 
@@ -193,13 +198,15 @@ public class RoleSystemController : BaseController
 
 	IEnumerator DefenseUpgradeAsync()
 	{
-		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
+		string roleId = _entity.roleIds[_entity.outRoleIndex];
 		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
-		yield return new WaitUntil(() => propertyLevelTask.IsCompleted);
-		if (propertyLevelTask.Result.defenseLevel.currentLevel < propertyLevelTask.Result.defenseLevel.maxLevel)
+		Task<AccountRole> roleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleId);
+		Task total = Task.WhenAll(propertyLevelTask, roleTask);
+		yield return new WaitUntil(() => total.IsCompleted);
+		if (roleTask.Result.rolePropertyLevel.defense < propertyLevelTask.Result.defenseLevel.maxLevel)
 		{
-			propertyLevelTask.Result.defenseLevel.currentLevel++;
-			this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, propertyLevelTask.Result.defenseLevel.currentLevel, propertyLevelTask.Result.defenseLevel.maxLevel));
+			roleTask.Result.rolePropertyLevel.defense++;
+			this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, roleTask.Result.rolePropertyLevel.defense, propertyLevelTask.Result.defenseLevel.maxLevel));
 			Task task = _roleSystem.UpdatePropertyLevel(roleId);
 			yield return new WaitUntil(() => task.IsCompleted);
 
@@ -209,13 +216,15 @@ public class RoleSystemController : BaseController
 
 	IEnumerator CooldownReductionUpgradeAsync()
 	{
-		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
+		string roleId = _entity.roleIds[_entity.outRoleIndex];
 		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
-		yield return new WaitUntil(() => propertyLevelTask.IsCompleted);
-		if (propertyLevelTask.Result.cooldownReductionLevel.currentLevel < propertyLevelTask.Result.cooldownReductionLevel.maxLevel)
+		Task<AccountRole> roleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleId);
+		Task total = Task.WhenAll(propertyLevelTask, roleTask);
+		yield return new WaitUntil(() => total.IsCompleted);
+		if (roleTask.Result.rolePropertyLevel.cooldownReduction < propertyLevelTask.Result.cooldownReductionLevel.maxLevel)
 		{
-			propertyLevelTask.Result.cooldownReductionLevel.currentLevel++;
-			this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, propertyLevelTask.Result.cooldownReductionLevel.currentLevel, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
+			roleTask.Result.rolePropertyLevel.cooldownReduction++;
+			this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, roleTask.Result.rolePropertyLevel.cooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
 			Task task = _roleSystem.UpdatePropertyLevel(roleId);
 			yield return new WaitUntil(() => task.IsCompleted);
 
@@ -266,32 +275,34 @@ public class RoleSystemController : BaseController
 
 		//TODO: 确定状态
 
-		Task<StarLevelJson> starLevelTask = _roleSystem.GetStarLevel(roleId);
+		Task<ChainLevelJson> chainLevelTask = _roleSystem.GetChainLevel(roleId);
 		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
-		Task levelTask = Task.WhenAll(starLevelTask, propertyLevelTask);
+
+		Task<AccountRole> roleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleId);
+
+		Task levelTask = Task.WhenAll(chainLevelTask, propertyLevelTask, roleTask);
 		yield return new WaitUntil(() => levelTask.IsCompleted);
 
-		this.SendCommand(new ShowLevelCommand(Consts.Star, starLevelTask.Result.starLevel.baseLevel, starLevelTask.Result.starLevel.currentLevel, starLevelTask.Result.starLevel.maxLevel));
-		this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, propertyLevelTask.Result.healthLevel.currentLevel, propertyLevelTask.Result.healthLevel.maxLevel));
-		this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, propertyLevelTask.Result.energyLevel.currentLevel, propertyLevelTask.Result.energyLevel.maxLevel));
-		this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, propertyLevelTask.Result.defenseLevel.currentLevel, propertyLevelTask.Result.defenseLevel.maxLevel));
-		this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, propertyLevelTask.Result.cooldownReductionLevel.currentLevel, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
+		this.SendCommand(new ShowLevelCommand(Consts.Chain, chainLevelTask.Result.chainLevel.baseLevel, roleTask.Result.chainLevel, chainLevelTask.Result.chainLevel.maxLevel));
+		this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, roleTask.Result.rolePropertyLevel.health, propertyLevelTask.Result.healthLevel.maxLevel));
+		this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, roleTask.Result.rolePropertyLevel.energy, propertyLevelTask.Result.energyLevel.maxLevel));
+		this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, roleTask.Result.rolePropertyLevel.defense, propertyLevelTask.Result.defenseLevel.maxLevel));
+		this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, roleTask.Result.rolePropertyLevel.cooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
 
 	}
 
 	IEnumerator ToLeftAsync()
 	{
-		if (tableId == 0) tableId = _globalSystem.GlobalModel.RoleJsons.Length - 1;
-		else
-		{
-			tableId--;
-		}
+		GetPreviousRoleId();
 
-		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
+		string roleId = _entity.roleIds[_entity.outRoleIndex];
 		Task<RoleController> roleTask = _roleSystem.GetRole(roleId);
 		Task<InfoJson> infoTask = _roleSystem.GetInfo(roleId);
 		Task<LockJson> lockTask = _roleSystem.GetLock(roleId);
-		Task total = Task.WhenAll(roleTask, infoTask, lockTask);
+
+		Task<AccountRole> accountRoleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleId);
+
+		Task total = Task.WhenAll(roleTask, infoTask, lockTask, accountRoleTask);
 		yield return new WaitUntil(() => total.IsCompleted);
 
 		RoleController leftCharacter = roleTask.Result;
@@ -299,19 +310,19 @@ public class RoleSystemController : BaseController
 		RoleController temp = character;
 		character = leftCharacter;
 
-		bool isUnLock = lockTask.Result.isUnlock;
+		bool isUnLock = accountRoleTask.Result != null;
 		if (isUnLock)
 		{
-			Task<StarLevelJson> starLevelTask = _roleSystem.GetStarLevel(roleId);
+			Task<ChainLevelJson> chainLevelTask = _roleSystem.GetChainLevel(roleId);
 			Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
-			Task levelTask = Task.WhenAll(starLevelTask, propertyLevelTask);
+			Task levelTask = Task.WhenAll(chainLevelTask, propertyLevelTask);
 			yield return new WaitUntil(() => levelTask.IsCompleted);
 
-			this.SendCommand(new ShowLevelCommand(Consts.Star, starLevelTask.Result.starLevel.baseLevel, starLevelTask.Result.starLevel.currentLevel, starLevelTask.Result.starLevel.maxLevel));
-			this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, propertyLevelTask.Result.healthLevel.currentLevel, propertyLevelTask.Result.healthLevel.maxLevel));
-			this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, propertyLevelTask.Result.energyLevel.currentLevel, propertyLevelTask.Result.energyLevel.maxLevel));
-			this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, propertyLevelTask.Result.defenseLevel.currentLevel, propertyLevelTask.Result.defenseLevel.maxLevel));
-			this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, propertyLevelTask.Result.cooldownReductionLevel.currentLevel, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Chain, chainLevelTask.Result.chainLevel.baseLevel, accountRoleTask.Result.chainLevel, chainLevelTask.Result.chainLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.health, propertyLevelTask.Result.healthLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.energy, propertyLevelTask.Result.energyLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.defense, propertyLevelTask.Result.defenseLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.cooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
 		}
 		else
 		{
@@ -346,28 +357,29 @@ public class RoleSystemController : BaseController
 
 	IEnumerator ToRightAsync()
 	{
-		if (tableId == _globalSystem.GlobalModel.RoleJsons.Length - 1) tableId = 0;
-		else tableId++;
-		string roleId = _globalSystem.GlobalModel.RoleJsons[tableId].roleId;
+		GetNextRoleId();
+		string roleId = _entity.roleIds[_entity.outRoleIndex];
 		Task<RoleController> task = _roleSystem.GetRole(roleId);
 		Task<LockJson> lockTask = _roleSystem.GetLock(roleId);
 
-		Task total = Task.WhenAll(task, lockTask);
+		Task<AccountRole> accountRoleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleId);
+
+		Task total = Task.WhenAll(task, lockTask, accountRoleTask);
 		yield return new WaitUntil(() => total.IsCompleted);
-		bool isUnLock = lockTask.Result.isUnlock;
+		bool isUnLock = accountRoleTask.Result != null;
 
 		if (isUnLock)
 		{
-			Task<StarLevelJson> starLevelTask = _roleSystem.GetStarLevel(roleId);
+			Task<ChainLevelJson> chainLevelTask = _roleSystem.GetChainLevel(roleId);
 			Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
-			Task levelTask = Task.WhenAll(starLevelTask, propertyLevelTask);
+			Task levelTask = Task.WhenAll(chainLevelTask, propertyLevelTask);
 			yield return new WaitUntil(() => levelTask.IsCompleted);
 
-			this.SendCommand(new ShowLevelCommand(Consts.Star, starLevelTask.Result.starLevel.baseLevel, starLevelTask.Result.starLevel.currentLevel, starLevelTask.Result.starLevel.maxLevel));
-			this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, propertyLevelTask.Result.healthLevel.currentLevel, propertyLevelTask.Result.healthLevel.maxLevel));
-			this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, propertyLevelTask.Result.energyLevel.currentLevel, propertyLevelTask.Result.energyLevel.maxLevel));
-			this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, propertyLevelTask.Result.defenseLevel.currentLevel, propertyLevelTask.Result.defenseLevel.maxLevel));
-			this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, propertyLevelTask.Result.cooldownReductionLevel.currentLevel, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Chain, chainLevelTask.Result.chainLevel.baseLevel, accountRoleTask.Result.chainLevel, chainLevelTask.Result.chainLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Health, propertyLevelTask.Result.healthLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.health, propertyLevelTask.Result.healthLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.energy, propertyLevelTask.Result.energyLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.defense, propertyLevelTask.Result.defenseLevel.maxLevel));
+			this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.cooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
 		}
 		else
 		{
@@ -408,12 +420,41 @@ public class RoleSystemController : BaseController
 	#endregion
 
 
+	//处理初始化角色列表排序问题
+	private void InitRoleList()
+	{
+
+		//先获取账户持有角色数据
+
+
+		if (_entity.outRoleIndex == -1)
+		{
+			_entity.outRoleIndex = 0;
+		}
+	}
+
+	private void GetNextRoleId()
+	{
+		if (_entity.outRoleIndex == _globalSystem.GlobalModel.RoleJsons.Length - 1) _entity.outRoleIndex = 0;
+		else _entity.outRoleIndex++;
+	}
+
+	private void GetPreviousRoleId()
+	{
+		if (_entity.outRoleIndex == 0) _entity.outRoleIndex = _globalSystem.GlobalModel.RoleJsons.Length - 1;
+		else _entity.outRoleIndex--;
+	}
+
+
+
+
+
 
 	protected override void OnDeInit()
 	{
 		base.OnDeInit();
 
-		if (character != null) 
+		if (character != null)
 		{
 			_roleSystem.RecycleRole(character);
 			character = null;

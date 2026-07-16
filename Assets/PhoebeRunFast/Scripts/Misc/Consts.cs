@@ -2,7 +2,7 @@
 
 public static class Consts
 {
-	public const string Star = "Star";
+	public const string Chain = "Chain";
 	public const string Health = "HP";
 	public const string Energy = "ENG";
 	public const string Defense = "DEF";

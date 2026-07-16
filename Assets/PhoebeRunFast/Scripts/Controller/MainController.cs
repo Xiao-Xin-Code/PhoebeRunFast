@@ -2,7 +2,7 @@ using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
 using QMVC;
-using Unity.Plastic.Newtonsoft.Json;
+using Newtonsoft.Json;
 using UnityEngine;
 
 /// <summary>
@@ -81,7 +81,7 @@ public class MainController : BaseController
 		_globalSystem.GlobalModel.SetGoodsJsons(goods);
 		_roleSystem.SetRoleJsons(roles);
 		yield return new WaitForSeconds(1f);
-		this.SendCommand(new InitCharacterCommand(_globalSystem.GlobalModel.OutRoleTableId.Value));
+		this.SendCommand(new InitCharacterCommand(0));
 	}
 
 	/// <summary>

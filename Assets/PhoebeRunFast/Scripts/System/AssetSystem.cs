@@ -9,9 +9,19 @@ public class AssetSystem : AbstractSystem
     Dictionary<string,RoleJson> rolesTable = new Dictionary<string,RoleJson>();
 
 
+
+
+
+
+
+
+
+
+
+
     protected override void OnInit()
     {
-        
+
 
     }
 }

@@ -1,5 +1,8 @@
 using System.Collections;
+using System.IO;
+using System.Threading.Tasks;
 using QMVC;
+using Newtonsoft.Json;
 using UnityEngine;
 
 /// <summary>
@@ -40,7 +43,7 @@ public class HomeController : BaseController
 	/// <param name="evt">事件参数</param>
 	private void OnHomeInitByTransitionOver(HomeInitByTransitionOverEvent evt)
 	{
-
+		
 	}
 
 	/// <summary>
@@ -67,6 +70,35 @@ public class HomeController : BaseController
 	/// <returns>协程</returns>
 	IEnumerator HomeAssetLoad()
 	{
+		_globalSystem.BootSingleton.SetMaskVisible(false);
+		string accountPath = Path.Combine(Application.streamingAssetsPath, "AccountTable/AccountTable.json");
+		string userPath = Path.Combine(Application.streamingAssetsPath, "User/UserJson.json");
+
+		if (!File.Exists(userPath))
+		{
+			//无用户信息， 自动跳转到登陆
+		}
+		else
+		{
+			Task<string> userContent = File.ReadAllTextAsync(userPath);
+			yield return new WaitUntil(() => userContent.IsCompleted);
+			UserJson userJson = JsonConvert.DeserializeObject<UserJson>(userContent.Result);
+			//userjson的用户ID数据合法
+
+			Task<string> accountContent = File.ReadAllTextAsync(accountPath);
+			yield return new WaitUntil(() => accountContent.IsCompleted);
+			AccountJson accountJson = JsonConvert.DeserializeObject<AccountJson>(accountContent.Result);
+			//accounttable的账户数据数据合法
+
+			//判断是否用户数据在账户数据中
+			//存在即可使用可直接进入游戏，如果不存在仍需要登陆
+
+
+		}
+
+		
+		
+
 		yield return new WaitForSeconds(1f);
 	}
 

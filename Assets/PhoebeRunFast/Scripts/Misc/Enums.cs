@@ -3,6 +3,7 @@
 /// </summary>
 public enum Stage
 {
+	Boot = 0,  // 启动
 	Home = 1,  // 主页
 	Main = 2,  // 主界面
 	Game = 3   // 游戏
@@ -45,14 +46,46 @@ public enum GameState
 /// <summary>
 /// 物品类型枚举
 /// </summary>
-public enum Goods
+public enum GoodsType
 {
+	/// <summary>
+	/// 资源
+	/// </summary>
 	Resource,
+	/// <summary>
+	/// 道具
+	/// </summary>
 	Prop,
-	QuestItem
+	/// <summary>
+	/// 特殊物品
+	/// </summary>
+	Special
 }
 
 
+public enum Rarity
+{
+	/// <summary>
+	/// 1星
+	/// </summary>
+	OneStar,
+	/// <summary>
+	/// 2星
+	/// </summary>	
+	TwoStar,
+	/// <summary>
+	/// 3星
+	/// </summary>	
+	ThreeStar,
+	/// <summary>
+	/// 4星
+	/// </summary>	
+	FourStar,
+	/// <summary>
+	/// 5星
+	/// </summary>	
+	FiveStar
+}
 
 
 

@@ -2,23 +2,57 @@ using UnityEngine;
 using QMVC;
 using System.Collections.Generic;
 using System.IO;
-using Unity.Plastic.Newtonsoft.Json;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 public class RoleSystem : AbstractSystem
 {
+	/// <summary>
+	/// 角色数据
+	/// </summary>
     Dictionary<string, RoleJson> roleJsons = new Dictionary<string, RoleJson>();
 
+	/// <summary>
+	/// 角色信息
+	/// </summary>
 	Dictionary<string, InfoJson> infoJsons = new Dictionary<string, InfoJson>();
+	/// <summary>
+	/// 角色资产
+	/// </summary>
 	Dictionary<string, AssetJson> assetJsons = new Dictionary<string, AssetJson>();
+	/// <summary>
+	/// 角色解锁信息
+	/// </summary>
 	Dictionary<string, LockJson> lockJsons = new Dictionary<string, LockJson>();
+	/// <summary>
+	/// 角色基础属性
+	/// </summary>
 	Dictionary<string, PropertyJson> propertyJsons = new Dictionary<string, PropertyJson>();
-	Dictionary<string, StarLevelJson> starLevelJsons = new Dictionary<string, StarLevelJson>();
+	/// <summary>
+	/// 角色共鸣链
+	/// </summary>
+	Dictionary<string, ChainLevelJson> chainLevelJsons = new Dictionary<string, ChainLevelJson>();
+	/// <summary>
+	/// 角色属性等级
+	/// </summary>
 	Dictionary<string, PropertyLevelJson> propertyLevelJsons = new Dictionary<string, PropertyLevelJson>();
+	/// <summary>
+	/// 角色共鸣链等级升级成本
+	/// </summary>
+	Dictionary<string, ChainLevelCostJson> chainLevelCostJsons = new Dictionary<string, ChainLevelCostJson>();
+	/// <summary>
+	/// 角色属性等级升级成本
+	/// </summary>
 	Dictionary<string, PropertyLevelCostJson> propertyLevelCostJsons = new Dictionary<string, PropertyLevelCostJson>();
-	Dictionary<string, StarLevelCostJson> starLevelCostJsons = new Dictionary<string, StarLevelCostJson>();
+	/// <summary>
+	/// 角色共鸣链等级升级带来的属性提升
+	/// </summary>
+	Dictionary<string, ChainUpgradeJson> chainUpgradeJsons = new Dictionary<string, ChainUpgradeJson>();
+	/// <summary>
+	/// 角色属性等级升级带来的属性提升
+	/// </summary>
 	Dictionary<string, PropertyUpgradeJson> propertyUpgradeJsons = new Dictionary<string, PropertyUpgradeJson>();
-	Dictionary<string, StarUpgradeJson> starUpgradeJsons = new Dictionary<string, StarUpgradeJson>();
+	
 
 	Dictionary<string, RoleController> roles = new Dictionary<string, RoleController>();
 
@@ -150,18 +184,18 @@ public class RoleSystem : AbstractSystem
 		return null;
 	}
 
-	public async Task<StarLevelJson> GetStarLevel(string roleId)
+	public async Task<ChainLevelJson> GetChainLevel(string roleId)
 	{
-		if (starLevelJsons.ContainsKey(roleId)) return starLevelJsons[roleId];
+		if (chainLevelJsons.ContainsKey(roleId)) return chainLevelJsons[roleId];
 		if (roleJsons.TryGetValue(roleId, out RoleJson json))
 		{
-			string path = Path.Combine(Application.streamingAssetsPath, "RoleTable", json.roleStarLevel);
+			string path = Path.Combine(Application.streamingAssetsPath, "RoleTable", json.roleChainLevel);
 			if (File.Exists(path))
 			{
 				string content = await File.ReadAllTextAsync(path);
-				StarLevelJson starLevel = JsonConvert.DeserializeObject<StarLevelJson>(content);
-				if (starLevel != null) starLevelJsons.Add(roleId, starLevel);
-				return starLevel;
+				ChainLevelJson chainLevel = JsonConvert.DeserializeObject<ChainLevelJson>(content);
+				if (chainLevel != null) chainLevelJsons.Add(roleId, chainLevel);
+				return chainLevel;
 			}
 		}
 		return null;
@@ -204,20 +238,20 @@ public class RoleSystem : AbstractSystem
 		return null;
 	}
 
-	public async Task<StarLevelCostJson> GetStarLevelCost(string roleId)
+	public async Task<ChainLevelCostJson> GetChainLevelCost(string roleId)
 	{
-		if (starLevelCostJsons.ContainsKey(roleId)) return starLevelCostJsons[roleId];
+		if (chainLevelCostJsons.ContainsKey(roleId)) return chainLevelCostJsons[roleId];
 		if (roleJsons.TryGetValue(roleId, out RoleJson json))
 		{
-			if (!string.IsNullOrEmpty(json.roleStarLevelCost))
+			if (!string.IsNullOrEmpty(json.roleChainLevelCost))
 			{
-				string path = Path.Combine(Application.streamingAssetsPath, "RoleTable", json.roleStarLevelCost);
+				string path = Path.Combine(Application.streamingAssetsPath, "RoleTable", json.roleChainLevelCost);
 				if (File.Exists(path))
 				{
 					string content = await File.ReadAllTextAsync(path);
-					StarLevelCostJson starLevelCost = JsonConvert.DeserializeObject<StarLevelCostJson>(content);
-					if (starLevelCost != null) starLevelCostJsons.Add(roleId, starLevelCost);
-					return starLevelCost;
+					ChainLevelCostJson chainLevelCost = JsonConvert.DeserializeObject<ChainLevelCostJson>(content);
+					if (chainLevelCost != null) chainLevelCostJsons.Add(roleId, chainLevelCost);
+					return chainLevelCost;
 				}
 			}
 		}
@@ -244,20 +278,20 @@ public class RoleSystem : AbstractSystem
 		return null;
 	}
 
-	public async Task<StarUpgradeJson> GetStarUpgrade(string roleId)
+	public async Task<ChainUpgradeJson> GetChainUpgrade(string roleId)
 	{
-		if (starUpgradeJsons.ContainsKey(roleId)) return starUpgradeJsons[roleId];
+		if (chainUpgradeJsons.ContainsKey(roleId)) return chainUpgradeJsons[roleId];
 		if (roleJsons.TryGetValue(roleId, out RoleJson json))
 		{
-			if (!string.IsNullOrEmpty(json.roleStarUpgrade))
+			if (!string.IsNullOrEmpty(json.roleChainUpgrade))
 			{
-				string path = Path.Combine(Application.streamingAssetsPath, "RoleTable", json.roleStarUpgrade);
+				string path = Path.Combine(Application.streamingAssetsPath, "RoleTable", json.roleChainUpgrade);
 				if (File.Exists(path))
 				{
 					string content = await File.ReadAllTextAsync(path);
-					StarUpgradeJson starUpgrade = JsonConvert.DeserializeObject<StarUpgradeJson>(content);
-					if (starUpgrade != null) starUpgradeJsons.Add(roleId, starUpgrade);
-					return starUpgrade;
+					ChainUpgradeJson chainUpgrade = JsonConvert.DeserializeObject<ChainUpgradeJson>(content);
+					if (chainUpgrade != null) chainUpgradeJsons.Add(roleId, chainUpgrade);
+					return chainUpgrade;
 				}
 			}
 		}
@@ -265,12 +299,12 @@ public class RoleSystem : AbstractSystem
 	}
 
 
-	public async Task UpdateStarLevel(string roleId)
+	public async Task UpdateChainLevel(string roleId)
 	{
 		if (roleJsons.TryGetValue(roleId, out RoleJson json))
 		{
-			string path = Path.Combine(Application.streamingAssetsPath, "RoleTable", json.roleStarLevel);
-		    StarLevelJson data = await GetStarLevel(roleId);
+			string path = Path.Combine(Application.streamingAssetsPath, "RoleTable", json.roleChainLevel);
+		    ChainLevelJson data = await GetChainLevel(roleId);
 			string content = JsonConvert.SerializeObject(data);
 			await File.WriteAllTextAsync(path, content);
 		}

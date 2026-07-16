@@ -25,8 +25,9 @@ public class HomeMenuController : BaseController
 	/// </summary>
 	private void OnBeginPressed()
 	{
+		this.SendCommand(new SignLoginActiveCommand(true));
 		// 发送转场命令，切换到主场景
-		this.SendCommand(new OpenTransitionCommand(StageChanged));
+		//this.SendCommand(new OpenTransitionCommand(StageChanged));
 	}
 
 	/// <summary>

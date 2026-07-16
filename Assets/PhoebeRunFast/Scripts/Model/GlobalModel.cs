@@ -2,17 +2,18 @@ using QMVC;
 
 public class GlobalModel : AbstractModel
 {
-    public BindableProperty<Stage> Stage = new BindableProperty<Stage>(global::Stage.Home);
+    public BindableProperty<Stage> Stage = new BindableProperty<Stage>(global::Stage.Boot);
 
-    /// <summary>
-    /// 出战角色TableId 表格ID
-    /// </summary>
-    public BindableProperty<int> OutRoleTableId = new BindableProperty<int>();
-
+    UserJson userJson;
 
     RoleJson[] roleJsons;
     GoodsJson[] goodsJsons;
 
+    AccountJson accountJson;
+
+    SettingJson settingJson;
+
+    public UserJson UserJson => userJson;
     public RoleJson[] RoleJsons => roleJsons;
     public GoodsJson[] GoodsJsons => goodsJsons;
 

@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using QMVC;
 using UnityEngine;
-using static Codice.Client.Common.EventTracking.TrackFeatureUseEvent.Features.DesktopGUI.Filters;
 
 /// <summary>
 /// 小鸟控制器

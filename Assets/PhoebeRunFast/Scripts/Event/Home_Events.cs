@@ -10,3 +10,15 @@ public class BirdUpEvent
 }
 
 #endregion
+
+
+
+public class SignLoginActiveEvent
+{
+    public bool isActive;
+
+    public SignLoginActiveEvent(bool isActive)
+    {
+        this.isActive = isActive;
+    }
+}

@@ -5,7 +5,8 @@
 public class GoodsJson
 {
     public string goodsId;
-    public Goods goodsType;
+    public Rarity rarity;
+    public GoodsType goodsType;
     public string goodsName;
     public string goodsDesc;
 }

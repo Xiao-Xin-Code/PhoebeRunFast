@@ -19,8 +19,26 @@ public class BootController : BaseController
 		_globalSystem.SetBootSingleton(this);
 
 		MonoService.Instance.Init();
+
+
+
+		this.SendCommand(new OpenTransitionCommand(StageChanged));
 	}
 
+
+	/// <summary>
+	/// 阶段切换方法
+	/// </summary>
+	private void StageChanged()
+	{
+		Debug.Log("触发");
+		_globalSystem.GlobalModel.Stage.Value = Stage.Home;
+	}
+	
+	public void SetMaskVisible(bool visible)
+	{
+		_view.SetMaskVisible(visible);
+	}
 
 
 	//TODO: 加载出转场面板，设置面板

@@ -10,3 +10,19 @@ public class BirdUpCommand : AbstractCommand
 		this.SendEvent<BirdUpEvent>();
 	}
 }
+
+
+public class SignLoginActiveCommand : AbstractCommand
+{
+	private bool isActive;
+
+	public SignLoginActiveCommand(bool isActive)
+	{
+		this.isActive = isActive;
+	}
+
+    protected override void OnExecute()
+    {	
+        this.SendEvent(new SignLoginActiveEvent(this.isActive));
+    }		
+}

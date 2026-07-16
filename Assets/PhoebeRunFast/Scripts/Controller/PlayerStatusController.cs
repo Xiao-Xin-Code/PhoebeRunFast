@@ -1,9 +1,5 @@
-using Codice.CM.Common;
-using Frame;
 using QMVC;
-using TextMateSharp.Internal.Rules;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 /// <summary>
 /// 玩家状态控制器
