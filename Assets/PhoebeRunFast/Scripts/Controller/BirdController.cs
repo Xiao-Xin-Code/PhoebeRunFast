@@ -61,6 +61,10 @@ public class BirdController : BaseController
 		{
 			flyBird.FlyBirdState = FlyBirdState.Over;
 		}
+		else if(collision.tag == "ScoreArea")
+		{
+			flyBird.AddCurScore();
+		}
 	}
 
 }

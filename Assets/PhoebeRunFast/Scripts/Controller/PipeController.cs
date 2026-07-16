@@ -26,6 +26,7 @@ public class PipeController : BaseController
 		float halfGap = gap / 2;
 		_view.Top.rectTransform.anchoredPosition = new Vector2(0, halfGap);
 		_view.Bottom.rectTransform.anchoredPosition = new Vector2(0, -halfGap);
+		_view.SetScoreAreaActive(gap);
 	}
 
 

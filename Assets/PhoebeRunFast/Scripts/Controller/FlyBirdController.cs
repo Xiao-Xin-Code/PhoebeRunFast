@@ -58,6 +58,21 @@ public class FlyBirdController : BaseController
 		this.RegisterEvent<BirdInputDownEvent>(OnStartInput);
 	}
 
+	public void AddCurScore()
+	{
+		_entity.currentScore++;
+		Debug.Log(_entity.currentScore);
+		_view.SetScore(_entity.currentScore);
+	}
+
+	public void SetMaxScore(int maxScore)
+	{
+		_entity.maxScore = maxScore;
+		_view.SetMaxScore(maxScore);
+	}
+
+
+
 	/// <summary>
 	/// 生成管道
 	/// </summary>
@@ -90,6 +105,7 @@ public class FlyBirdController : BaseController
 		{
 			case FlyBirdState.Ready:
 				//等待开始
+				_entity.currentScore = 0;
 				break;
 			case FlyBirdState.Run:
 				bird.SetIsKinematic(false);
@@ -112,6 +128,11 @@ public class FlyBirdController : BaseController
 				bird.StateInit();
 				MonoService.Instance.StopCoroutine(coroutine);
 				pipePool.RecycleAll(OnPipeRectcle);
+				if(_entity.currentScore > _entity.maxScore)
+				{
+					_entity.maxScore = _entity.currentScore;
+					SetMaxScore(_entity.maxScore);
+				}
 				_entity.FlyBirdState.Value = FlyBirdState.Ready;
 				break;
 			default:
