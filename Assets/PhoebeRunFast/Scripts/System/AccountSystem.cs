@@ -211,13 +211,27 @@ public class AccountSystem : AbstractSystem
     {
         AccountJson[] accountJsons = this.accountJsons.Values.ToArray();
         _globalSystem.GlobalModel.SetAccountJsons(accountJsons);
-        
+
         //转换json为字符串
         string json = JsonConvert.SerializeObject(accountJsons);
         //写入文件
         string path = Path.Combine(Application.streamingAssetsPath, "AccountTable/AccountTable.json");
         await File.WriteAllTextAsync(path, json);
     }
+    
+    public async Task UpdateAccountGoods(string accountId)
+    {
+        //更新用户物品信息
+        AccountGoods[] goods = accountGoods[accountId].Values.ToArray();
+        //转换为JSON字符串
+        string json = JsonConvert.SerializeObject(goods);
+        //写入文件
+        string path = Path.Combine(Application.streamingAssetsPath, accountJsons[accountId].accountGoods);
+        await File.WriteAllTextAsync(path, json);
+    }
+
+
+
 
 
     public async Task UpdateUserCache(string accountId, string accountRoleId)

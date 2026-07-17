@@ -140,6 +140,8 @@ public class RoleSystemController : BaseController
 
 	private void OnUpGradeLevel(UpGradeLevelEvent evt)
 	{
+		//提前判断当前资源是否足够升级所需
+
 		switch (evt.level)
 		{
 			case Consts.Chain:
@@ -168,9 +170,38 @@ public class RoleSystemController : BaseController
 	{
 		string roleId = _entity.roleIds[_entity.outRoleIndex];
 		Task<ChainLevelJson> chainTask = _roleSystem.GetChainLevel(roleId);
+		Task<ChainLevelCostJson> costTask = _roleSystem.GetChainLevelCost(roleId);
 		Task<AccountRole> roleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleId);
-		Task total = Task.WhenAll(chainTask, roleTask);
+
+		Task total = Task.WhenAll(chainTask, costTask, roleTask);
 		yield return new WaitUntil(() => total.IsCompleted);
+
+		if (costTask.Result != null)
+		{
+			bool isEnough = true;
+			for (int i = 0; i < costTask.Result.chainLevelCosts[0].costJsons.Length; ++i)
+			{
+				//在用户资源中查找是否有对应的资源，且数量足够
+				Task<AccountGoods> accountGoodsTask = _accountSystem.GetGoods(_globalSystem.GlobalModel.UserJson.userId, costTask.Result.chainLevelCosts[0].costJsons[i].goodsId);
+				//等待资源加载完成
+				yield return new WaitUntil(() => accountGoodsTask.IsCompleted);
+
+				if (accountGoodsTask.Result == null || accountGoodsTask.Result.count < costTask.Result.chainLevelCosts[0].costJsons[i].amount)
+				{
+					//不可以升级
+					Debug.LogError("资源不足");
+					isEnough = false;
+					break;
+				}
+			}
+			if(!isEnough)
+			{
+				//资源不足，不升级
+				yield break;
+			}
+
+		}
+
 		if (roleTask.Result.chainLevel < chainTask.Result.chainLevel.maxLevel)
 		{
 			roleTask.Result.chainLevel++;
@@ -317,7 +348,6 @@ public class RoleSystemController : BaseController
 	{
 		GetPreviousRoleId();
 		string roleId = _entity.roleIds[_entity.outRoleIndex];
-		Debug.Log("加载角色" + roleId);
 		Task<RoleController> roleTask = _roleSystem.GetRole(roleId);
 		Task<InfoJson> infoTask = _roleSystem.GetInfo(roleId);
 		Task<LockJson> lockTask = _roleSystem.GetLock(roleId);
@@ -403,6 +433,8 @@ public class RoleSystemController : BaseController
 			this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.energy, propertyLevelTask.Result.energyLevel.maxLevel));
 			this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.defense, propertyLevelTask.Result.defenseLevel.maxLevel));
 			this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.cooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
+		
+			_view.SetPropertyOutState(roleId == _globalSystem.GlobalModel.UserJson.outRoleId);
 		}
 		else
 		{
