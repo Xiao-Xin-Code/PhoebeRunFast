@@ -13,6 +13,7 @@ public class MainController : BaseController
 
 	GlobalSystem _globalSystem;
 	RoleSystem _roleSystem;
+	AccountSystem _accountSystem;
 
 	/// <summary>
 	/// 初始化方法
@@ -24,6 +25,7 @@ public class MainController : BaseController
 		_globalSystem = this.GetSystem<GlobalSystem>();
 		_globalSystem.SetMainSingleton(this);
 		_roleSystem = this.GetSystem<RoleSystem>();
+		_accountSystem = this.GetSystem<AccountSystem>();
 
 		// 注册系统事件
 		this.RegisterEvent<LoadMainEvent>(OnLoadMain);
@@ -73,7 +75,12 @@ public class MainController : BaseController
 		string goodsPath = Path.Combine(Application.streamingAssetsPath, "GoodsTable/GoodsTable.json");
 		Task<string> rolesContent = File.ReadAllTextAsync(rolesPath);
 		Task<string> goodsContent = File.ReadAllTextAsync(goodsPath);
-		Task total = Task.WhenAll(rolesContent, goodsContent);
+
+		//提前加载角色和物品，方便角色展示与背包展示
+		Task<AccountRole[]> rolesTask = _accountSystem.GetRoles(_globalSystem.GlobalModel.UserJson.userId);
+		Task<AccountGoods[]> goodsTask = _accountSystem.GetGoods(_globalSystem.GlobalModel.UserJson.userId);
+
+		Task total = Task.WhenAll(rolesContent, goodsContent, rolesTask, goodsTask);	
 		yield return new WaitUntil(() => total.IsCompleted);
 		RoleJson[] roles = JsonConvert.DeserializeObject<RoleJson[]>(rolesContent.Result);
 		GoodsJson[] goods = JsonConvert.DeserializeObject<GoodsJson[]>(goodsContent.Result);
@@ -81,7 +88,7 @@ public class MainController : BaseController
 		_globalSystem.GlobalModel.SetGoodsJsons(goods);
 		_roleSystem.SetRoleJsons(roles);
 		yield return new WaitForSeconds(1f);
-		this.SendCommand(new InitCharacterCommand(0));
+		this.SendCommand(new InitCharacterCommand(_globalSystem.GlobalModel.UserJson.outRoleId));
 	}
 
 	/// <summary>

@@ -53,6 +53,12 @@ public class RoleSystemView : MonoBehaviour
 		propertyView.gameObject.SetActive(isActive);
 	}
 
+
+	public void SetPropertyOutState(bool isOut)
+	{
+		propertyView.SetOutState(isOut);
+	}
+
 	/// <summary>
 	/// 设置切换面板激活状态
 	/// </summary>

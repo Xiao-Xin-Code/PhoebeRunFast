@@ -8,14 +8,14 @@ public class GlobalModel : AbstractModel
 
     RoleJson[] roleJsons;
     GoodsJson[] goodsJsons;
-
-    AccountJson accountJson;
+    AccountJson[] accountJsons;
 
     SettingJson settingJson;
 
     public UserJson UserJson => userJson;
     public RoleJson[] RoleJsons => roleJsons;
     public GoodsJson[] GoodsJsons => goodsJsons;
+    public AccountJson[] AccountJsons => accountJsons;
 
     public void SetRoleJsons(RoleJson[] jsons)
     {
@@ -27,10 +27,22 @@ public class GlobalModel : AbstractModel
         goodsJsons = jsons;
     }
 
+    public void SetAccountJsons(AccountJson[] jsons)
+    {
+        accountJsons = jsons;
+    }
+
+    public void SetUserJson(UserJson json)
+    {
+        userJson = json;
+    }
+
+
+    public SettingJson SettingJson => settingJson;
 
 
     protected override void OnInit()
     {
-        
+
     }
 }

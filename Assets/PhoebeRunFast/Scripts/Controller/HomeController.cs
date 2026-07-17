@@ -13,6 +13,7 @@ public class HomeController : BaseController
     [SerializeField] HomeView _view;
 
 	GlobalSystem _globalSystem;
+	AccountSystem _accountSystem;
 
 	/// <summary>
 	/// 初始化方法
@@ -22,6 +23,7 @@ public class HomeController : BaseController
 		base.OnInit();
 
 		_globalSystem = this.GetSystem<GlobalSystem>();
+		_accountSystem = this.GetSystem<AccountSystem>();
 		_globalSystem.SetHomeSingleton(this);
 
 
@@ -72,34 +74,54 @@ public class HomeController : BaseController
 	{
 		_globalSystem.BootSingleton.SetMaskVisible(false);
 		string accountPath = Path.Combine(Application.streamingAssetsPath, "AccountTable/AccountTable.json");
-		string userPath = Path.Combine(Application.streamingAssetsPath, "User/UserJson.json");
+		string userPath = Path.Combine(Application.streamingAssetsPath, "AccountTable/UserCache.json");
 
-		if (!File.Exists(userPath))
+		if (!File.Exists(accountPath))
 		{
-			//无用户信息， 自动跳转到登陆
+			Debug.LogError("账户信息丢失");
+			yield break;
 		}
-		else
+		if (File.Exists(userPath))
 		{
 			Task<string> userContent = File.ReadAllTextAsync(userPath);
 			yield return new WaitUntil(() => userContent.IsCompleted);
-			UserJson userJson = JsonConvert.DeserializeObject<UserJson>(userContent.Result);
-			//userjson的用户ID数据合法
-
-			Task<string> accountContent = File.ReadAllTextAsync(accountPath);
-			yield return new WaitUntil(() => accountContent.IsCompleted);
-			AccountJson accountJson = JsonConvert.DeserializeObject<AccountJson>(accountContent.Result);
-			//accounttable的账户数据数据合法
-
-			//判断是否用户数据在账户数据中
-			//存在即可使用可直接进入游戏，如果不存在仍需要登陆
-
-
+			if (userContent.Result != null)
+			{
+				UserJson userJson = JsonConvert.DeserializeObject<UserJson>(userContent.Result);
+				_globalSystem.GlobalModel.SetUserJson(userJson);
+			}
 		}
 
-		
-		
 
-		yield return new WaitForSeconds(1f);
+		//直接加载完善用户数据
+		Task<string> accountContent = File.ReadAllTextAsync(accountPath);
+		yield return new WaitUntil(() => accountContent.IsCompleted);
+
+		if(accountContent.Result == null)
+		{
+			Debug.LogError("账户信息丢失");
+			yield break;
+		}
+
+		if (accountContent.Result != null)
+		{
+			//加载全部的info
+			AccountJson[] accountJsons = JsonConvert.DeserializeObject<AccountJson[]>(accountContent.Result);
+			if (accountJsons != null && accountJsons.Length > 0)
+			{
+				_globalSystem.GlobalModel.SetAccountJsons(accountJsons);
+				_accountSystem.SetAccountJsons(accountJsons);
+
+				for (int i = 0; i < accountJsons.Length; i++)
+				{
+					Task<AccountInfo> accountInfoTask = _accountSystem.GetInfo(accountJsons[i].accountId);
+					yield return new WaitUntil(() => accountInfoTask.IsCompleted);
+					AccountInfo accountInfo = accountInfoTask.Result;
+				}
+			}
+
+			
+		}
 	}
 
 	/// <summary>

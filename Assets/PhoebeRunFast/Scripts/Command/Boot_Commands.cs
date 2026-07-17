@@ -98,15 +98,15 @@ public class UpdateProgressDeltaCommand : AbstractCommand
 
 public class InitCharacterCommand : AbstractCommand
 {
-	int tableId;
+	string roleId;
 
-	public InitCharacterCommand(int tableId)
+	public InitCharacterCommand(string roleId)
 	{
-		this.tableId = tableId;
+		this.roleId = roleId;
 	}
 
 	protected override void OnExecute()
 	{
-		this.SendEvent(new InitCharacterEvent(tableId));
+		this.SendEvent(new InitCharacterEvent(roleId));
 	}
 }

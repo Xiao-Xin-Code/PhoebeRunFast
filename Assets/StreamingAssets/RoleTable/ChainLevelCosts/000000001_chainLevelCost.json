@@ -1,0 +1,52 @@
+{
+  "chainLevelCosts": [
+    {
+      "costJsons": [
+        {
+          "goodsId": "000000003",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "costJsons": [
+        {
+          "goodsId": "000000003",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "costJsons": [
+        {
+          "goodsId": "000000003",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "costJsons": [
+        {
+          "goodsId": "000000003",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "costJsons": [
+        {
+          "goodsId": "000000003",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "costJsons": [
+        {
+          "goodsId": "000000003",
+          "amount": 1
+        }
+      ]
+    }
+  ]
+}

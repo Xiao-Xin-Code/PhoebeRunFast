@@ -1,14 +1,23 @@
 [
   {
-    "goodsId": "00000001",
+    "goodsId": "000000001",
+    "rarity": 0,
     "goodsType": 0,
-    "goodsName": "StarSound",
-    "goodsDesc": "Goods description"
+    "goodsName": "金币",
+    "goodsDesc": "通用货币"
   },
   {
-    "goodsId": "00000002",
+    "goodsId": "000000002",
+    "rarity": 4,
     "goodsType": 0,
-    "goodsName": "Glod",
-    "goodsDesc": "Goods description"
+    "goodsName": "星声",
+    "goodsDesc": "一种特殊矿产，也有人作为交易使用，价值很高"
+  },
+  {
+    "goodsId": "000000003",
+    "rarity": 4,
+    "goodsType": 0,
+    "goodsName": "共鸣石_1",
+    "goodsDesc": "可以用于角色1提升共鸣等级"
   }
 ]

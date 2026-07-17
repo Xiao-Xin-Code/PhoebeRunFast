@@ -72,10 +72,10 @@ public class UpdateProgressDeltaEvent
 
 public class InitCharacterEvent
 {
-	public int tableId;
+	public string roleId;
 
-	public InitCharacterEvent(int tableId)
+	public InitCharacterEvent(string roleId)
 	{
-		this.tableId = tableId;
+		this.roleId = roleId;
 	}
 }

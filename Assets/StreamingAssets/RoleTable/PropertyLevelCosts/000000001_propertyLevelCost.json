@@ -1,87 +1,226 @@
 {
   "healthLevelCosts": [
     {
-      "goodsIds": [
-        "00000002"
-      ],
-      "amounts": [
-        100
-      ]
+      "costJsons": []
     },
     {
-      "goodsIds": [
-        "00000002"
-      ],
-      "amounts": [
-        200
-      ]
+      "costJsons": []
     },
     {
-      "goodsIds": [
-        "00000002"
-      ],
-      "amounts": [
-        300
-      ]
+      "costJsons": []
     },
     {
-      "goodsIds": [
-        "00000002"
-      ],
-      "amounts": [
-        400
-      ]
+      "costJsons": []
     },
     {
-      "goodsIds": [
-        "00000002"
-      ],
-      "amounts": [
-        500
-      ]
+      "costJsons": []
     },
     {
-      "goodsIds": [
-        "00000002"
-      ],
-      "amounts": [
-        600
-      ]
+      "costJsons": []
     },
     {
-      "goodsIds": [
-        "00000002"
-      ],
-      "amounts": [
-        700
-      ]
+      "costJsons": []
     },
     {
-      "goodsIds": [
-        "00000002"
-      ],
-      "amounts": [
-        800
-      ]
+      "costJsons": []
     },
     {
-      "goodsIds": [
-        "00000002"
-      ],
-      "amounts": [
-        900
-      ]
+      "costJsons": []
     },
     {
-      "goodsIds": [
-        "00000002"
-      ],
-      "amounts": [
-        1000
-      ]
+      "costJsons": []
     }
   ],
-  "energyLevelCosts": [],
-  "defenseLevelCosts": [],
-  "cooldownReductionLevelCosts": []
+  "energyLevelCosts": [
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    }
+  ],
+  "attackLevelCosts": [
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    }
+  ],
+  "speedLevelCosts": [
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    }
+  ],
+  "defenseLevelCosts": [
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    }
+  ],
+  "cooldownReductionLevelCosts": [
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    }
+  ],
+  "energyRecoveryRateLevelCosts": [
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    },
+    {
+      "costJsons": []
+    }
+  ]
 }

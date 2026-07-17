@@ -7,13 +7,15 @@ public class HomeMenuController : BaseController
     [SerializeField] HomeMenuView _view;
 
 	GlobalSystem _globalSystem;
+	AccountSystem _accountSystem;
 
 
     protected override void OnInit()
     {
         base.OnInit();
 		_globalSystem = this.GetSystem<GlobalSystem>();
-
+		_accountSystem = this.GetSystem<AccountSystem>();
+		
 		// 注册视图事件
 		_view.RegisterBeginPressed(OnBeginPressed);
 		_view.RegisterSetPressed(OnSetPressed);
@@ -25,9 +27,29 @@ public class HomeMenuController : BaseController
 	/// </summary>
 	private void OnBeginPressed()
 	{
-		this.SendCommand(new SignLoginActiveCommand(true));
-		// 发送转场命令，切换到主场景
-		//this.SendCommand(new OpenTransitionCommand(StageChanged));
+		if(_globalSystem.GlobalModel.AccountJsons == null || _globalSystem.GlobalModel.AccountJsons.Length == 0)
+		{
+			Debug.LogError("AccountJsons is null or empty");//去注册
+			this.SendCommand(new SignLoginActiveCommand(true, true));
+			return;
+		}
+
+
+		if(_globalSystem.GlobalModel.UserJson != null)
+		{
+			if(!string.IsNullOrEmpty(_globalSystem.GlobalModel.UserJson.userId))
+			{
+				if(_accountSystem.CheckHasAccount(_globalSystem.GlobalModel.UserJson.userId))
+				{
+					// 发送转场命令，切换到登录场景
+					this.SendCommand(new OpenTransitionCommand(StageChanged));
+					return;
+				}
+			}
+		}
+
+		//去登陆
+		this.SendCommand(new SignLoginActiveCommand(true,false));
 	}
 
 	/// <summary>
@@ -44,7 +66,6 @@ public class HomeMenuController : BaseController
 	/// </summary>
 	private void StageChanged()
 	{
-		Debug.Log("触发");
 		_globalSystem.GlobalModel.Stage.Value = Stage.Main;
 	}
 

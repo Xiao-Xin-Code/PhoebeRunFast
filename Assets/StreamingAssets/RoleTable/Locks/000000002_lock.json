@@ -1,0 +1,9 @@
+{
+  "unlockCosts": [
+    {
+      "goodsId": "000000001",
+      "amount": 1000
+    }
+  ],
+  "unlockConditionsJsons": []
+}

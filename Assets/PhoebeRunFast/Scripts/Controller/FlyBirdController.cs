@@ -65,12 +65,6 @@ public class FlyBirdController : BaseController
 		_view.SetScore(_entity.currentScore);
 	}
 
-	public void SetMaxScore(int maxScore)
-	{
-		_entity.maxScore = maxScore;
-		_view.SetMaxScore(maxScore);
-	}
-
 
 
 	/// <summary>
@@ -131,7 +125,7 @@ public class FlyBirdController : BaseController
 				if(_entity.currentScore > _entity.maxScore)
 				{
 					_entity.maxScore = _entity.currentScore;
-					SetMaxScore(_entity.maxScore);
+					_view.SetMaxScore(_entity.maxScore);
 				}
 				_entity.FlyBirdState.Value = FlyBirdState.Ready;
 				break;

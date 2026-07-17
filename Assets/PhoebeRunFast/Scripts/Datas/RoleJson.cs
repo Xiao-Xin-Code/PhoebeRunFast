@@ -181,6 +181,8 @@ public class PropertyLevelJson
 {
     public LevelJson healthLevel;
     public LevelJson energyLevel;
+    public LevelJson attackLevel;
+    public LevelJson speedLevel;
     public LevelJson defenseLevel;
     public LevelJson cooldownReductionLevel;
     public LevelJson energyRecoveryRateLevel;

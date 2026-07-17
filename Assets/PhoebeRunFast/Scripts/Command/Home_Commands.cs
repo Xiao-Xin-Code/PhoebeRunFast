@@ -15,14 +15,16 @@ public class BirdUpCommand : AbstractCommand
 public class SignLoginActiveCommand : AbstractCommand
 {
 	private bool isActive;
+	private bool isSign;
 
-	public SignLoginActiveCommand(bool isActive)
+	public SignLoginActiveCommand(bool isActive,bool isSign)
 	{
+		this.isSign = isSign;
 		this.isActive = isActive;
 	}
 
     protected override void OnExecute()
     {	
-        this.SendEvent(new SignLoginActiveEvent(this.isActive));
+        this.SendEvent(new SignLoginActiveEvent(this.isActive,this.isSign));	
     }		
 }

@@ -62,8 +62,19 @@ public class RoleSystemController : BaseController
 			MonoService.Instance.StopCoroutine(targetCoroutine);
 			targetCoroutine = null;
 		}
-		targetCoroutine = MonoService.Instance.StartCoroutine(ToTargetAsync(_entity.outRoleIndex));
+
+		targetCoroutine = MonoService.Instance.StartCoroutine(ToTargetAsync(_entity.roleIds[_entity.outRoleIndex]));
 	}
+
+	IEnumerator AsyncWithInitRoleList(IEnumerator otherCoroutine)
+	{
+		yield return otherCoroutine;
+		yield return null;
+		yield return InitRoleListAsync();
+	}
+
+
+
 
 	/// <summary>
 	/// 切换到目标
@@ -71,14 +82,28 @@ public class RoleSystemController : BaseController
 	/// <param name="evt"></param>
 	private void OnInitCharacter(InitCharacterEvent evt)
 	{
-		if(targetCoroutine != null)
+		if (targetCoroutine != null)
 		{
 			MonoService.Instance.StopCoroutine(targetCoroutine);
 			targetCoroutine = null;
 		}
-		targetCoroutine = MonoService.Instance.StartCoroutine(ToTargetAsyncWithoutData(evt.tableId));
-		_entity.outRoleIndex = evt.tableId;		
+		targetCoroutine = MonoService.Instance.StartCoroutine(AsyncWithInitRoleList(ToTargetAsyncWithoutData(evt.roleId)));
 	}
+	
+	private void SetOutRoleIndex(string roleId)
+	{
+		for (int i = 0; i < _entity.roleIds.Count; i++)
+		{
+			if (_entity.roleIds[i] == roleId)
+			{
+				_entity.outRoleIndex = i;
+				break;
+			}
+		}
+		_entity.outRoleIndex = -1;
+	}
+
+
 
 	/// <summary>
 	/// 切换到左侧角色
@@ -88,7 +113,7 @@ public class RoleSystemController : BaseController
 	{
 		if (_entity.isBusy) return;
 		_entity.isBusy = true;
-		if (leftCoroutine != null) 
+		if (leftCoroutine != null)
 		{
 			MonoService.Instance.StopCoroutine(leftCoroutine);
 			leftCoroutine = null;
@@ -241,36 +266,32 @@ public class RoleSystemController : BaseController
 	/// </summary>
 	/// <param name="index"></param>
 	/// <returns></returns>
-	IEnumerator ToTargetAsyncWithoutData(int index)
+	IEnumerator ToTargetAsyncWithoutData(string roleId)
 	{
 		if (character)
 		{
 			_roleSystem.RecycleRole(character);
 			character = null;
 		}
-		string roleId = _globalSystem.GlobalModel.RoleJsons[index].roleId;
 		Task<RoleController> task = _roleSystem.GetRole(roleId);
 		yield return new WaitUntil(() => task.IsCompleted);
 		RoleController controller = task.Result;
 		character = controller;
-		Debug.Log(_view);
 		character.transform.position = _view.Center.position;
 	}
 
 
-	IEnumerator ToTargetAsync(int index)
+	IEnumerator ToTargetAsync(string roleId)
 	{
 		if (character)
 		{
 			_roleSystem.RecycleRole(character);
 			character = null;
 		}
-		string roleId = _globalSystem.GlobalModel.RoleJsons[index].roleId;
 		Task<RoleController> task = _roleSystem.GetRole(roleId);
 		yield return new WaitUntil(() => task.IsCompleted);
 		RoleController controller = task.Result;
 		character = controller;
-		Debug.Log(_view);
 		character.transform.position = _view.Center.position;
 
 		//TODO: 确定状态
@@ -289,13 +310,14 @@ public class RoleSystemController : BaseController
 		this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, roleTask.Result.rolePropertyLevel.defense, propertyLevelTask.Result.defenseLevel.maxLevel));
 		this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, roleTask.Result.rolePropertyLevel.cooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
 
+		_view.SetPropertyOutState(roleId == _globalSystem.GlobalModel.UserJson.outRoleId);
 	}
 
 	IEnumerator ToLeftAsync()
 	{
 		GetPreviousRoleId();
-
 		string roleId = _entity.roleIds[_entity.outRoleIndex];
+		Debug.Log("加载角色" + roleId);
 		Task<RoleController> roleTask = _roleSystem.GetRole(roleId);
 		Task<InfoJson> infoTask = _roleSystem.GetInfo(roleId);
 		Task<LockJson> lockTask = _roleSystem.GetLock(roleId);
@@ -304,7 +326,6 @@ public class RoleSystemController : BaseController
 
 		Task total = Task.WhenAll(roleTask, infoTask, lockTask, accountRoleTask);
 		yield return new WaitUntil(() => total.IsCompleted);
-
 		RoleController leftCharacter = roleTask.Result;
 		leftCharacter.transform.position = _view.Left.position;
 		RoleController temp = character;
@@ -323,6 +344,8 @@ public class RoleSystemController : BaseController
 			this.SendCommand(new ShowLevelCommand(Consts.Energy, propertyLevelTask.Result.energyLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.energy, propertyLevelTask.Result.energyLevel.maxLevel));
 			this.SendCommand(new ShowLevelCommand(Consts.Defense, propertyLevelTask.Result.defenseLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.defense, propertyLevelTask.Result.defenseLevel.maxLevel));
 			this.SendCommand(new ShowLevelCommand(Consts.CooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.baseLevel, accountRoleTask.Result.rolePropertyLevel.cooldownReduction, propertyLevelTask.Result.cooldownReductionLevel.maxLevel));
+		
+			_view.SetPropertyOutState(roleId == _globalSystem.GlobalModel.UserJson.outRoleId);
 		}
 		else
 		{
@@ -421,16 +444,31 @@ public class RoleSystemController : BaseController
 
 
 	//处理初始化角色列表排序问题
-	private void InitRoleList()
+	IEnumerator InitRoleListAsync()
 	{
-
-		//先获取账户持有角色数据
-
-
-		if (_entity.outRoleIndex == -1)
+		_entity.roleIds.Clear();
+		int curUserRoleIndex = 0;
+		foreach (RoleJson roleJson in _globalSystem.GlobalModel.RoleJsons)
 		{
-			_entity.outRoleIndex = 0;
+			Task<AccountRole> accountRoleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleJson.roleId);
+			yield return new WaitUntil(() => accountRoleTask.IsCompleted);
+			if (accountRoleTask.Result != null)
+			{
+				//插入到角色列表中
+				_entity.roleIds.Insert(curUserRoleIndex, roleJson.roleId);
+				if (roleJson.roleId == _globalSystem.GlobalModel.UserJson.outRoleId)
+				{
+					_entity.outRoleIndex = curUserRoleIndex;
+				}
+				curUserRoleIndex++;
+			}
+			else
+			{
+				//直接添加
+				_entity.roleIds.Add(roleJson.roleId);
+			}
 		}
+		yield return null;
 	}
 
 	private void GetNextRoleId()

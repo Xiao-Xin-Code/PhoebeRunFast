@@ -1,1 +1,30 @@
-{"healthLevel":{"baseLevel":0,"currentLevel":6,"maxLevel":10},"energyLevel":{"baseLevel":0,"currentLevel":6,"maxLevel":10},"defenseLevel":{"baseLevel":0,"currentLevel":6,"maxLevel":10},"cooldownReductionLevel":{"baseLevel":0,"currentLevel":6,"maxLevel":10}}
+{
+  "healthLevel": {
+    "baseLevel": 0,
+    "maxLevel": 10
+  },
+  "energyLevel": {
+    "baseLevel": 0,
+    "maxLevel": 10
+  },
+  "attackLevel": {
+    "baseLevel": 0,
+    "maxLevel": 10
+  },
+  "speedLevel": {
+    "baseLevel": 0,
+    "maxLevel": 10
+  },
+  "defenseLevel": {
+    "baseLevel": 0,
+    "maxLevel": 10
+  },
+  "cooldownReductionLevel": {
+    "baseLevel": 0,
+    "maxLevel": 10
+  },
+  "energyRecoveryRateLevel": {
+    "baseLevel": 0,
+    "maxLevel": 10
+  }
+}

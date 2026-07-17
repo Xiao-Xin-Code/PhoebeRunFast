@@ -16,9 +16,11 @@ public class BirdUpEvent
 public class SignLoginActiveEvent
 {
     public bool isActive;
+    public bool isSign;
 
-    public SignLoginActiveEvent(bool isActive)
+    public SignLoginActiveEvent(bool isActive,bool isSign)
     {
         this.isActive = isActive;
+        this.isSign = isSign;
     }
 }

@@ -98,7 +98,6 @@ public class StageSystem : AbstractSystem
 	/// <returns>协程</returns>
 	IEnumerator Load(Stage stage)
 	{
-		Debug.Log("加载场景" + stage);
 		yield return SceneManager.LoadSceneAsync((int)stage, LoadSceneMode.Additive);
 		switch (stage)
 		{

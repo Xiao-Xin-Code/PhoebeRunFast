@@ -1,6 +1,4 @@
 {
-  "isUnlock": true,
-  "unlockCondition": [
-    null
-  ]
+  "unlockCosts": [],
+  "unlockConditionsJsons": []
 }

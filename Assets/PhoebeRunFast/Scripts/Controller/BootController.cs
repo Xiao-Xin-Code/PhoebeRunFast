@@ -31,7 +31,6 @@ public class BootController : BaseController
 	/// </summary>
 	private void StageChanged()
 	{
-		Debug.Log("触发");
 		_globalSystem.GlobalModel.Stage.Value = Stage.Home;
 	}
 	

@@ -1,0 +1,58 @@
+{
+  "upgradeJsons": [
+    {
+      "health": 0.0,
+      "energy": 0.0,
+      "attack": 0.0,
+      "defense": 0.0,
+      "speed": 0.0,
+      "cooldownReduction": 0.0,
+      "energyRecoveryRate": 0.0
+    },
+    {
+      "health": 0.0,
+      "energy": 0.0,
+      "attack": 0.0,
+      "defense": 0.0,
+      "speed": 0.0,
+      "cooldownReduction": 0.0,
+      "energyRecoveryRate": 0.0
+    },
+    {
+      "health": 0.0,
+      "energy": 0.0,
+      "attack": 0.0,
+      "defense": 0.0,
+      "speed": 0.0,
+      "cooldownReduction": 0.0,
+      "energyRecoveryRate": 0.0
+    },
+    {
+      "health": 0.0,
+      "energy": 0.0,
+      "attack": 0.0,
+      "defense": 0.0,
+      "speed": 0.0,
+      "cooldownReduction": 0.0,
+      "energyRecoveryRate": 0.0
+    },
+    {
+      "health": 0.0,
+      "energy": 0.0,
+      "attack": 0.0,
+      "defense": 0.0,
+      "speed": 0.0,
+      "cooldownReduction": 0.0,
+      "energyRecoveryRate": 0.0
+    },
+    {
+      "health": 0.0,
+      "energy": 0.0,
+      "attack": 0.0,
+      "defense": 0.0,
+      "speed": 0.0,
+      "cooldownReduction": 0.0,
+      "energyRecoveryRate": 0.0
+    }
+  ]
+}
