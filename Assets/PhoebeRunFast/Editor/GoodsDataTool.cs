@@ -113,6 +113,9 @@ public class GoodsDataTool : EditorWindow
         goods.goodsType = (GoodsType)EditorGUILayout.EnumPopup("物品类型", goods.goodsType);
         goods.rarity = (Rarity)EditorGUILayout.EnumPopup("稀有度", goods.rarity);
 
+        goods.goodsIcon = EditorGUILayout.TextField("物品图标路径", goods.goodsIcon);
+        goods.goodsModel = EditorGUILayout.TextField("物品模型路径", goods.goodsModel);
+
         goods.goodsDesc = EditorGUILayout.TextArea(goods.goodsDesc, GUILayout.Height(100));
 
         GUILayout.Space(10);
@@ -144,6 +147,8 @@ public class GoodsDataTool : EditorWindow
             goodsName = "",
             goodsType = GoodsType.Resource,
             rarity = Rarity.OneStar,
+            goodsIcon = "",
+            goodsModel = "",
             goodsDesc = ""
         };
 

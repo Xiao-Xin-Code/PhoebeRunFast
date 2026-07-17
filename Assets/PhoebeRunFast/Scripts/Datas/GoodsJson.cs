@@ -7,6 +7,10 @@ public class GoodsJson
     public string goodsId;
     public Rarity rarity;
     public GoodsType goodsType;
+
+    public string goodsIcon;
+    public string goodsModel;
+
     public string goodsName;
     public string goodsDesc;
 }
