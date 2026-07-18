@@ -149,7 +149,7 @@ public class PropertyJson
     public float attack;
     /// <summary>
     /// 防御力
-    /// </summary>
+    /// </summary>s
     public float defense;
     /// <summary>
     /// 移动速度

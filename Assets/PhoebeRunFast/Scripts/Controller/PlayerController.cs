@@ -49,6 +49,13 @@ public class PlayerController : BaseController
 
         Debug.Log("注册");
         this.RegisterEvent<SetPlayerRoleEvent>(OnSetPlayerRole);
+        this.RegisterEvent<SetHealthEvent>(OnSetHealth);
+        this.RegisterEvent<SetEnergyEvent>(OnSetEnergy);
+        this.RegisterEvent<SetAttackEvent>(OnSetAttack);
+        this.RegisterEvent<SetDefenseEvent>(OnSetDefense);
+        this.RegisterEvent<SetSpeedEvent>(OnSetSpeed);
+        this.RegisterEvent<SetCooldownReductionEvent>(OnSetCooldownReduction);
+        this.RegisterEvent<SetEnergyRecoveryRateEvent>(OnSetEnergyRecoveryRate);
 
         MonoService.Instance.AddFixedUpdateListener(OnFixedUpdate);
 
@@ -169,21 +176,70 @@ public class PlayerController : BaseController
     private void OnSetPlayerRole(SetPlayerRoleEvent evt)
     {
         _roleController = evt.role;
-		_roleController.transform.SetParent(transform);
-		_roleController.transform.localPosition = Vector3.zero;
-        _roleController.transform.eulerAngles = new Vector3(0, 180, 0); 
+        _roleController.transform.SetParent(transform);
+        _roleController.transform.localPosition = Vector3.zero;
+        _roleController.transform.eulerAngles = new Vector3(0, 180, 0);
     }
 
 
-	protected override void OnDeInit()
-	{
-		base.OnDeInit();
-		this.UnRegisterEvent<SetPlayerRoleEvent>(OnSetPlayerRole);
-		MonoService.Instance.RemoveFixedUpdateListener(OnFixedUpdate);
 
-         _globalSystem.Inputs.Player.Left.performed -= OnLeftPressed;
+
+    #region 属性事件
+
+    private void OnSetHealth(SetHealthEvent evt)
+    {
+        _entity.MaxHealth.Value = evt.health;
+        _entity.CurMaxHealth.Value = evt.health;
+        _entity.CurHealth.Value = evt.health;
+        this.SendCommand(new UpdateStatusCurHealthCommand(evt.health));
+    }
+
+    private void OnSetEnergy(SetEnergyEvent evt)
+    {
+        _entity.MaxEnergy.Value = evt.energy;
+        _entity.CurEnergy.Value = evt.energy;
+        this.SendCommand(new UpdateStatusCurEnergyCommand(evt.energy));
+    }
+
+    private void OnSetAttack(SetAttackEvent evt)
+    {
+
+    }
+
+    private void OnSetDefense(SetDefenseEvent evt)
+    {
+
+    }
+
+    private void OnSetSpeed(SetSpeedEvent evt)
+    {
+
+    }
+
+    private void OnSetCooldownReduction(SetCooldownReductionEvent evt)
+    {
+
+    }
+    
+    private void OnSetEnergyRecoveryRate(SetEnergyRecoveryRateEvent evt)
+    {
+        
+    }
+
+
+    #endregion
+
+
+
+    protected override void OnDeInit()
+    {
+        base.OnDeInit();
+        this.UnRegisterEvent<SetPlayerRoleEvent>(OnSetPlayerRole);
+        MonoService.Instance.RemoveFixedUpdateListener(OnFixedUpdate);
+
+        _globalSystem.Inputs.Player.Left.performed -= OnLeftPressed;
         _globalSystem.Inputs.Player.Right.performed -= OnRightPressed;
         _globalSystem.Inputs.Player.Jump.performed -= OnJumpPressed;
         _globalSystem.Inputs.Player.Slow.performed -= OnSlowPressed;
-	}
+    }
 }

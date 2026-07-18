@@ -9,10 +9,11 @@ public class PlayerStatusView : MonoBehaviour
 {
     [SerializeField] Image healthBg;
     [SerializeField] Image healthBar;
+    [SerializeField] Image lossBar;
     [SerializeField] TMP_Text healthValue;
-    [SerializeField] Image manaBg;
-    [SerializeField] Image manaBar;
-    [SerializeField] TMP_Text manaValue;
+    [SerializeField] Image energyBg;
+    [SerializeField] Image energyBar;
+    [SerializeField] TMP_Text energyValue;
 
 
     /// <summary>
@@ -27,10 +28,10 @@ public class PlayerStatusView : MonoBehaviour
     /// <summary>
     /// 更新精力值
     /// </summary>
-    /// <param name="currentMana"></param>
-    public void UpdateManaBar(float currentMana)
+    /// <param name="currentEnergy"></param>
+    public void UpdateEnergyBar(float currentEnergy)
     {
-        manaBar.fillAmount = currentMana;
+        energyBar.fillAmount = currentEnergy;
     }
 
 
@@ -40,9 +41,9 @@ public class PlayerStatusView : MonoBehaviour
         healthValue.text = value.ToString();
     }
 
-    public void UpdateManaValue(float value)
+    public void UpdateEnergyValue(float value)
     {
-        manaValue.text = value.ToString();
+        energyValue.text = value.ToString();
     }
 
 

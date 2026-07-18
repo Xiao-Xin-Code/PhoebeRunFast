@@ -21,27 +21,51 @@ public class PlayerStatusController : BaseController
         _entity = new PlayerStatusEntity();
         _globalSystem = this.GetSystem<GlobalSystem>();
 
+        this.RegisterEvent<UpdateStatusMaxHealthEvent>(OnUpdateMaxHealth);
+        this.RegisterEvent<UpdateStatusCurHealthEvent>(OnUpdateCurHealth);
+        this.RegisterEvent<UpdateStatusLossEvent>(OnUpdateLoss);
+        this.RegisterEvent<UpdateStatusMaxEnergyEvent>(OnUpdateMaxEnergy);
+        this.RegisterEvent<UpdateStatusCurEnergyEvent>(OnUpdateCurEnergy);
+
     }
 
-	private void Start()
-	{
-		_globalSystem.GameSingleton.GameEntity.Health.Register(OnHealthChanged);
-		_globalSystem.GameSingleton.GameEntity.Energy.Register(OnManaChanged);
-	}
-
-
-
-	private void OnHealthChanged(float currentHealth)
+    private void Start()
     {
-        //_view.UpdateHealthBar(_entity.Health.Value);
-        _view.UpdateHealthValue(currentHealth);
+
     }
 
-    private void OnManaChanged(float currentMana)
+
+    #region  更新玩家状态
+
+    private void OnUpdateMaxHealth(UpdateStatusMaxHealthEvent evt)
     {
-        //_view.UpdateManaBar(_entity.Mana.Value);
-        _view.UpdateManaValue(currentMana);
+
     }
+
+    private void OnUpdateCurHealth(UpdateStatusCurHealthEvent evt)
+    {
+        _view.UpdateHealthBar(evt.currentHealth);
+        _view.UpdateHealthValue(evt.currentHealth);
+    }
+
+    private void OnUpdateLoss(UpdateStatusLossEvent evt)
+    {
+
+    }
+
+    private void OnUpdateMaxEnergy(UpdateStatusMaxEnergyEvent evt)
+    {
+
+    }
+
+    private void OnUpdateCurEnergy(UpdateStatusCurEnergyEvent evt)
+    {
+        _view.UpdateEnergyBar(evt.currentEnergy);
+        _view.UpdateEnergyValue(evt.currentEnergy);
+    }
+
+    #endregion
+
 
     /// <summary>
     /// 反初始化方法
@@ -50,8 +74,11 @@ public class PlayerStatusController : BaseController
     {
         base.OnDeInit();
 
-		// 注销事件，对象会直接消失，可以不用注销
-		//_globalSystem.GameSingleton.GameEntity.Health.UnRegister(OnHealthChanged);
-		//_globalSystem.GameSingleton.GameEntity.Energy.UnRegister(OnManaChanged);
-	}
+        this.UnRegisterEvent<UpdateStatusMaxHealthEvent>(OnUpdateMaxHealth);
+        this.UnRegisterEvent<UpdateStatusCurHealthEvent>(OnUpdateCurHealth);
+        this.UnRegisterEvent<UpdateStatusLossEvent>(OnUpdateLoss);
+        this.UnRegisterEvent<UpdateStatusMaxEnergyEvent>(OnUpdateMaxEnergy);
+        this.UnRegisterEvent<UpdateStatusCurEnergyEvent>(OnUpdateCurEnergy);
+
+    }
 }

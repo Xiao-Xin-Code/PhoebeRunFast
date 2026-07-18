@@ -148,16 +148,16 @@ public class GameController : BaseController
 		Task<RoleController> roleTask = _roleSystem.GetRole(roleId);
 
 		Task<PropertyJson> propertyTask = _roleSystem.GetProperty(roleId);
-		Task<ChainLevelJson> starLevelTask = _roleSystem.GetChainLevel(roleId);
+		Task<ChainLevelJson> chainLevelTask = _roleSystem.GetChainLevel(roleId);
 		Task<PropertyLevelJson> propertyLevelTask = _roleSystem.GetPropertyLevel(roleId);
-		Task<ChainUpgradeJson> starUpgradeTask = _roleSystem.GetChainUpgrade(roleId);
+		Task<ChainUpgradeJson> chainUpgradeTask = _roleSystem.GetChainUpgrade(roleId);
 		Task<PropertyUpgradeJson> propertyUpgradeTask = _roleSystem.GetPropertyUpgrade(roleId);
 
 		Task<AccountRole> accountRoleTask = _accountSystem.GetRole(_globalSystem.GlobalModel.UserJson.userId, roleId);
 
 
 
-		Task total = Task.WhenAll(roleTask,propertyTask, starLevelTask, propertyLevelTask, starUpgradeTask, propertyUpgradeTask, accountRoleTask);
+		Task total = Task.WhenAll(roleTask,propertyTask, chainLevelTask, propertyLevelTask, chainUpgradeTask, propertyUpgradeTask, accountRoleTask);
 		yield return new WaitUntil(() => total.IsCompleted);
 		
 		yield return _roadSystem.InitRoad();
@@ -172,13 +172,16 @@ public class GameController : BaseController
 
 		Debug.Log($"{_globalSystem.GameSingleton},{_globalSystem.GameSingleton.GameEntity}");
 
-		float health = 0, energy = 0, attack = 0, defense = 0, speed = 0, cooldownReduction = 0;
+		float health = 0, energy = 0, attack = 0, defense = 0, speed = 0, cooldownReduction = 0, energyRecoveryRate = 0;
 
 		health = propertyTask.Result.health;
 		energy = propertyTask.Result.energy;
+		attack = propertyTask.Result.attack;
 		defense = propertyTask.Result.defense;
+		speed = propertyTask.Result.speed;
 		cooldownReduction = propertyTask.Result.cooldownReduction;
-		;
+		energyRecoveryRate = propertyTask.Result.energyRecoveryRate;
+
 		for (int i = 0; i < accountRoleTask.Result.rolePropertyLevel.health; i++)
 		{
 			health += propertyUpgradeTask.Result.healthUpgrade[i];
@@ -187,23 +190,35 @@ public class GameController : BaseController
 		{
 			energy += propertyUpgradeTask.Result.energyUpgrade[i];
 		}
+		for (int i = 0; i < accountRoleTask.Result.rolePropertyLevel.attack; i++)
+		{
+			attack += propertyUpgradeTask.Result.attackUpgrade[i];
+		}
 		for (int i = 0; i < accountRoleTask.Result.rolePropertyLevel.defense; i++)
 		{
 			defense += propertyUpgradeTask.Result.defenseUpgrade[i];
+		}
+		for (int i = 0; i < accountRoleTask.Result.rolePropertyLevel.speed; i++)
+		{
+			speed += propertyUpgradeTask.Result.speedUpgrade[i];
 		}
 		for (int i = 0; i < accountRoleTask.Result.rolePropertyLevel.cooldownReduction; i++)
 		{
 			cooldownReduction += propertyUpgradeTask.Result.cooldownReductionUpgrade[i];
 		}
+		for (int i = 0; i < accountRoleTask.Result.rolePropertyLevel.energyRecoveryRate; i++)
+		{
+			energyRecoveryRate += propertyUpgradeTask.Result.energyRecoveryRateUpgrade[i];
+		}
 
 		for(int i = 0; i < accountRoleTask.Result.chainLevel; i++)
 		{
-			health += starUpgradeTask.Result.upgradeJsons[i].health;
-			energy += starUpgradeTask.Result.upgradeJsons[i].energy;
-			attack += starUpgradeTask.Result.upgradeJsons[i].attack;
-			defense += starUpgradeTask.Result.upgradeJsons[i].defense;
-			speed += starUpgradeTask.Result.upgradeJsons[i].speed;
-			cooldownReduction += starUpgradeTask.Result.upgradeJsons[i].cooldownReduction;
+			health += chainUpgradeTask.Result.upgradeJsons[i].health;
+			energy += chainUpgradeTask.Result.upgradeJsons[i].energy;
+			attack += chainUpgradeTask.Result.upgradeJsons[i].attack;
+			defense += chainUpgradeTask.Result.upgradeJsons[i].defense;
+			speed += chainUpgradeTask.Result.upgradeJsons[i].speed;
+			cooldownReduction += chainUpgradeTask.Result.upgradeJsons[i].cooldownReduction;
 		}
 
 		//TODO: 应用天赋效果
@@ -211,13 +226,14 @@ public class GameController : BaseController
 
 		//TODO: 初始化界面
 
-		_globalSystem.GameSingleton.GameEntity.RoleId.Value = roleId;
-		_globalSystem.GameSingleton.GameEntity.Health.Value = health;
-		_globalSystem.GameSingleton.GameEntity.Energy.Value = energy;
-		_globalSystem.GameSingleton.GameEntity.Attack.Value = attack;
-		_globalSystem.GameSingleton.GameEntity.Defense.Value = defense;
-		_globalSystem.GameSingleton.GameEntity.Speed.Value = speed;
-		_globalSystem.GameSingleton.GameEntity.CoolDownReduction.Value = cooldownReduction;
+		this.SendCommand(new SetHealthCommand(health));
+		this.SendCommand(new SetEnergyCommand(energy));
+		this.SendCommand(new SetAttackCommand(attack));
+		this.SendCommand(new SetDefenseCommand(defense));
+		this.SendCommand(new SetSpeedCommand(speed));
+		this.SendCommand(new SetCooldownReductionCommand(cooldownReduction));
+		this.SendCommand(new SetEnergyRecoveryRateCommand(energyRecoveryRate));
+
 
 		
 		_roadSystem.StartRoad();

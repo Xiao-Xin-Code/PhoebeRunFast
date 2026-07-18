@@ -107,3 +107,190 @@ public class SetPlayerRoleCommand : AbstractCommand
 }
 
 
+public class SetHealthCommand : AbstractCommand
+{
+	private float health;
+
+	public SetHealthCommand(float health)
+	{
+		this.health = health;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new SetHealthEvent(health));
+	}
+}
+
+public class SetEnergyCommand : AbstractCommand
+{
+	private float energy;
+
+	public SetEnergyCommand(float energy)
+	{
+		this.energy = energy;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new SetEnergyEvent(energy));
+	}
+}
+
+public class SetAttackCommand : AbstractCommand
+{
+	private float attack;
+
+	public SetAttackCommand(float attack)
+	{
+		this.attack = attack;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new SetAttackEvent(attack));
+	}
+}
+
+public class SetDefenseCommand : AbstractCommand
+{
+	private float defense;
+
+	public SetDefenseCommand(float defense)
+	{
+		this.defense = defense;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new SetDefenseEvent(defense));
+	}
+}
+
+public class SetSpeedCommand : AbstractCommand
+{
+	private float speed;
+
+	public SetSpeedCommand(float speed)
+	{
+		this.speed = speed;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new SetSpeedEvent(speed));
+	}
+}
+
+public class SetCooldownReductionCommand : AbstractCommand
+{
+	private float cooldownReduction;
+
+	public SetCooldownReductionCommand(float cooldownReduction)
+	{
+		this.cooldownReduction = cooldownReduction;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new SetCooldownReductionEvent(cooldownReduction));
+	}
+}
+
+public class SetEnergyRecoveryRateCommand : AbstractCommand
+{
+	private float energyRecoveryRate;
+
+	public SetEnergyRecoveryRateCommand(float energyRecoveryRate)
+	{
+		this.energyRecoveryRate = energyRecoveryRate;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new SetEnergyRecoveryRateEvent(energyRecoveryRate));
+	}
+}
+
+
+
+#region 玩家状态设置显示设置命令
+
+public class UpdateStatusMaxHealthCommand : AbstractCommand
+{
+	private float maxHealth;
+
+	public UpdateStatusMaxHealthCommand(float maxHealth)
+	{
+		this.maxHealth = maxHealth;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new UpdateStatusMaxHealthEvent(maxHealth));
+	}
+}
+
+public class UpdateStatusCurHealthCommand : AbstractCommand
+{
+	private float currentHealth;
+
+	public UpdateStatusCurHealthCommand(float currentHealth)
+	{
+		this.currentHealth = currentHealth;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new UpdateStatusCurHealthEvent(currentHealth));
+	}
+}
+
+public class UpdateStatusLossCommand : AbstractCommand
+{
+	private float lossHealth;
+
+	public UpdateStatusLossCommand(float lossHealth)
+	{
+		this.lossHealth = lossHealth;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new UpdateStatusLossEvent(lossHealth));
+	}
+}
+
+public class UpdateStatusMaxEnergyCommand : AbstractCommand
+{
+	private float maxEnergy;
+
+	public UpdateStatusMaxEnergyCommand(float maxEnergy)
+	{
+		this.maxEnergy = maxEnergy;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new UpdateStatusMaxEnergyEvent(maxEnergy));
+	}
+}
+
+public class UpdateStatusCurEnergyCommand : AbstractCommand
+{
+	private float currentEnergy;
+
+	public UpdateStatusCurEnergyCommand(float currentEnergy)
+	{
+		this.currentEnergy = currentEnergy;
+	}
+
+	protected override void OnExecute()
+	{
+		this.SendEvent(new UpdateStatusCurEnergyEvent(currentEnergy));
+	}
+}
+
+
+#endregion
+

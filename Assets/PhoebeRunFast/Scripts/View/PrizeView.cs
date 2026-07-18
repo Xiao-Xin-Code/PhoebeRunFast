@@ -40,9 +40,9 @@ public class PrizeView : MonoBehaviour,
     public Sequence ShakeSequence()
     {
         Sequence shakeSequence = DOTween.Sequence();
-        shakeSequence.Append(rectTransform.DOShakeAnchorPos(0.1f, 0.1f, 3).SetEase(Ease.Linear));
-        shakeSequence.Join(rectTransform.DOShakeRotation(0.1f, 0.1f, 3).SetEase(Ease.Linear));
-        shakeSequence.Join(rectTransform.DOShakeScale(0.1f, 0.1f, 3).SetEase(Ease.Linear));
+        shakeSequence.Append(rectTransform.DOShakeAnchorPos(2, 15, 20).SetEase(Ease.Linear));
+        shakeSequence.Join(rectTransform.DOShakeRotation(2, 15, 20).SetEase(Ease.Linear));
+        shakeSequence.Join(rectTransform.DOShakeScale(2, 0.1f, 20).SetEase(Ease.Linear));
         return shakeSequence;
     }
 
@@ -52,12 +52,12 @@ public class PrizeView : MonoBehaviour,
         Vector3 midRot = new Vector3(0,90,0);
         Vector3 endRot = new Vector3(0,180,0);
 
-        flipSequence.Append(rectTransform.DORotate(midRot,0.5f).SetEase(Ease.InOutQuad));
+        flipSequence.Append(rectTransform.DORotate(midRot,0.2f).SetEase(Ease.InOutQuad));
         flipSequence.AppendCallback(() =>
         {
             SetState(true);
         });
-        flipSequence.Append(rectTransform.DORotate(endRot,0.5f).SetEase(Ease.InOutQuad));
+        flipSequence.Append(rectTransform.DORotate(endRot,0.2f).SetEase(Ease.InOutQuad));
         return flipSequence;
     }
 
