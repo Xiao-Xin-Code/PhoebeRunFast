@@ -346,7 +346,7 @@ public class RoleSystemController : BaseController
 
 	IEnumerator ToLeftAsync()
 	{
-		GetPreviousRoleId();
+		GetNextRoleId();
 		string roleId = _entity.roleIds[_entity.outRoleIndex];
 		Task<RoleController> roleTask = _roleSystem.GetRole(roleId);
 		Task<InfoJson> infoTask = _roleSystem.GetInfo(roleId);
@@ -410,7 +410,7 @@ public class RoleSystemController : BaseController
 
 	IEnumerator ToRightAsync()
 	{
-		GetNextRoleId();
+		GetPreviousRoleId();
 		string roleId = _entity.roleIds[_entity.outRoleIndex];
 		Task<RoleController> task = _roleSystem.GetRole(roleId);
 		Task<LockJson> lockTask = _roleSystem.GetLock(roleId);
